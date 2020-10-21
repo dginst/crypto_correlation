@@ -93,13 +93,21 @@ def mongo_indexing():
     db.dyn_var_correlation_1Q.create_index([("id", -1)])
     db.dyn_var_correlation_1M.create_index([("id", -1)])
 
+    # dynamic SP500 correlation collections
+    db.dyn_SP500_correlation_3Y.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1Y.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1Q.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1M.create_index([("id", -1)])
+
     # static altcoin correlation collections
+    db.stat_alt_correlation_all.create_index([("id", -1)])
     db.stat_alt_correlation_3Y.create_index([("id", -1)])
     db.stat_alt_correlation_1Y.create_index([("id", -1)])
     db.stat_alt_correlation_1Q.create_index([("id", -1)])
     db.stat_alt_correlation_1M.create_index([("id", -1)])
 
     # static various correlation collections
+    db.stat_var_correlation_all.create_index([("id", -1)])
     db.stat_var_correlation_3Y.create_index([("id", -1)])
     db.stat_var_correlation_1Y.create_index([("id", -1)])
     db.stat_var_correlation_1Q.create_index([("id", -1)])
@@ -116,25 +124,33 @@ def mongo_coll():
         "collection_ret_var": db.return_various,
         "collection_ret_crypto": db.return_crypto,
 
-        # dynamic correlation collections
+        # dynamic altcoins correlation collections
         "collection_3Y_dyn_alt": db.dyn_alt_correlation_3Y,
         "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
         "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
         "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
 
-        # dynamic correlation collections
+        # dynamic various correlation collections
         "collection_3Y_dyn_var": db.dyn_var_correlation_3Y,
         "collection_1Y_dyn_var": db.dyn_var_correlation_1Y,
         "collection_1Q_dyn_var": db.dyn_var_correlation_1Q,
         "collection_1M_dyn_var": db.dyn_var_correlation_1M,
 
+        # dynamic SP500 correlation collections
+        "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
+        "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
+        "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
+        "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
+
         # static various correlation collections
+        "collection_all_stat_var": db.stat_var_correlation_all,
         "collection_3Y_stat_var": db.stat_var_correlation_3Y,
         "collection_1Y_stat_var": db.stat_var_correlation_1Y,
         "collection_1Q_stat_var": db.stat_var_correlation_1Q,
         "collection_1M_stat_var": db.stat_var_correlation_1M,
 
         # static crypto correlation collections
+        "collection_all_stat_alt": db.stat_alt_correlation_all,
         "collection_3Y_stat_alt": db.stat_alt_correlation_3Y,
         "collection_1Y_stat_alt": db.stat_alt_correlation_1Y,
         "collection_1Q_stat_alt": db.stat_alt_correlation_1Q,
@@ -151,6 +167,7 @@ def mongo_coll_drop(corr_type):
 
     if corr_type == "static_alt":
 
+        db.stat_alt_correlation_all.drop()
         db.stat_alt_correlation_3Y.drop()
         db.stat_alt_correlation_1Y.drop()
         db.stat_alt_correlation_1Q.drop()
@@ -158,6 +175,7 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "static_var":
 
+        db.stat_var_correlation_all.drop()
         db.stat_var_correlation_3Y.drop()
         db.stat_var_correlation_1Y.drop()
         db.stat_var_correlation_1Q.drop()
@@ -169,6 +187,13 @@ def mongo_coll_drop(corr_type):
         db.dyn_var_correlation_1Y.drop()
         db.dyn_var_correlation_1Q.drop()
         db.dyn_var_correlation_1M.drop()
+
+    elif corr_type == "dynamic_SP500":
+
+        db.dyn_SP500_correlation_3Y.drop()
+        db.dyn_SP500_correlation_1Y.drop()
+        db.dyn_SP500_correlation_1Q.drop()
+        db.dyn_SP500_correlation_1M.drop()
 
     elif corr_type == "dynamic_alt":
 
@@ -192,6 +217,7 @@ def mongo_correlation_drop():
     mongo_coll_drop("static_var")
     mongo_coll_drop("dynamic_alt")
     mongo_coll_drop("dynamic_var")
+    mongo_coll_drop("dynamic_SP500")
 
 
 def mongo_upload(data_to_upload, where_to_upload,

@@ -2,28 +2,33 @@ from mongo_func import (
     query_mongo, mongo_indexing, mongo_upload
 )
 from config import (
-    DB_NAME
+    DB_NAME, CRYPTO_LIST
 )
 
 from calc import (
     roll_single_time, dynamic_corr,
-    dynamic_total, static_corr
+    dynamic_total, static_corr, correlation_op
 )
 import pandas as pd
 from scipy.stats.stats import pearsonr
 import numpy as np
 
-mongo_indexing()
+# mongo_indexing()
 
-tot_ret = query_mongo(DB_NAME, "return_various")
+# return_df = query_mongo(DB_NAME, "return_crypto")
 
-tot_ret = tot_ret.sort_values(by=["Date"], ascending=False)
-tot_ret.reset_index(drop=True, inplace=True)
-print(tot_ret)
+# return_df = return_df.sort_values(by=["Date"], ascending=False)
+# return_df.reset_index(drop=True, inplace=True)
 
-tot = static_corr(tot_ret, "1Y")
-# mongo_upload(tot, "collection_static_alt")
-print(tot)
+# for y in CRYPTO_LIST:
+
+#     return_df[y] = [float(x) for x in return_df[y]]
+
+# print(return_df)
+
+# tot = static_corr(return_df, "1Y")
+# # mongo_upload(tot, "collection_static_alt")
+# print(tot)
 
 # corr_1Y = dynamic_total(tot_ret, "1Y", "various")
 # mongo_upload(corr_1Y, "collection_1Y_dyn_var")
@@ -62,3 +67,6 @@ print(tot)
 # s = s.sort_values(by=["Date"], ascending=False)
 
 # print(s)
+
+
+correlation_op()
