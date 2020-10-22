@@ -5,7 +5,7 @@ from config import (
     VAR_GRAPH_LIST, GRAPH_COLOR, SP500_GRAPH_LIST,
     FORMAT_DICT, VAR_STATIC_LIST, EQUITY, BOND,
     CURRENCY, COMMODITY, CRYPTO, VARIOUS_LIST,
-    VS_SP500_LIST)
+    VS_SP500_LIST, ASSET_CATEGORY)
 
 
 # wk = writer.book
@@ -21,7 +21,7 @@ def var_to_excel(file_name, dyn_var_corr_3Y, dyn_var_corr_1Y,
                  dyn_SP500_corr_3Y):
 
     len_corr_mat = stat_var_corr_all.shape[0]
-    space = 2
+    space = 3
     space_left = 2
 
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
@@ -50,24 +50,65 @@ def var_to_excel(file_name, dyn_var_corr_3Y, dyn_var_corr_1Y,
         put_graph(writer, '1M RW', dyn_var_corr_1M,
                   graph_name='Correlation with Bitcoin on a 1 month rolling window')
 
+        # static correlation matrix
         stat_var_corr_all.to_excel(
             writer, sheet_name='all_matrix',
-            startrow=(space * 1), startcol=space_left, index=False)
+            startrow=(space * 1),
+            startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST, 3, 3)
+                              VAR_STATIC_LIST,
+                              (space * 1) + 1, space_left + 1)
+        format_header(writer, 'all_matrix', VAR_STATIC_LIST,
+                      len(VAR_STATIC_LIST) + space + 1, space_left)
+        asset_formatter(writer, 'all_matrix', len(
+            VAR_STATIC_LIST) + space + 2, space_left)
+
         stat_var_corr_3Y.to_excel(
             writer, sheet_name='all_matrix',
-            startrow=(space*2 + len_corr_mat * 1), startcol=space_left, index=False)
+            startrow=(space * 2 + len_corr_mat * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              VAR_STATIC_LIST,
+                              (space * 2) + 1 + len_corr_mat * 1,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            VAR_STATIC_LIST) + (space * 2) + 2 + len_corr_mat * 1, space_left)
+
         stat_var_corr_1Y.to_excel(
             writer, sheet_name='all_matrix',
-            startrow=(space*3 + len_corr_mat * 2), startcol=space_left, index=False)
+            startrow=(space * 3 + len_corr_mat * 2),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              VAR_STATIC_LIST,
+                              (space * 3) + 1 + len_corr_mat * 2,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            VAR_STATIC_LIST) + (space * 3) + 2 + len_corr_mat * 2, space_left)
+
         stat_var_corr_1Q.to_excel(
             writer, sheet_name='all_matrix',
-            startrow=(space*4 + len_corr_mat * 3), startcol=space_left, index=False)
+            startrow=(space * 4 + len_corr_mat * 3),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              VAR_STATIC_LIST,
+                              (space * 4) + 1 + len_corr_mat * 3,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            VAR_STATIC_LIST) + (space * 4) + 2 + len_corr_mat * 3, space_left)
+
         stat_var_corr_1M.to_excel(
             writer, sheet_name='all_matrix',
-            startrow=(space * 5 + len_corr_mat * 4), startcol=space_left, index=False)
-        static_sheet(writer, 'all_matrix')
+            startrow=(space * 5 + len_corr_mat * 4),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              VAR_STATIC_LIST,
+                              (space * 5) + 1 + len_corr_mat * 4,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            VAR_STATIC_LIST) + (space * 5) + 2 + len_corr_mat * 4, space_left)
+
+        static_sheet(writer, 'all_matrix', space, space_left)
+        format_sheets(writer, 'all_matrix')
 
         dyn_SP500_corr_3Y.to_excel(
             writer, sheet_name='3Y RW S&P500', index=False)
@@ -105,8 +146,6 @@ def corr_to_excel(dyn_var_corr_3Y, dyn_var_corr_1Y,
                  stat_var_corr_all, stat_var_corr_3Y,
                  stat_var_corr_1Y, stat_var_corr_1Q, stat_var_corr_1M,
                  dyn_SP500_corr_3Y)
-
-    #SP500_to_excel(file_name_var, dyn_SP500_corr_3Y)
 
 
 def put_graph(writer_obj, sheet_name, df_to_graph,
@@ -193,60 +232,105 @@ def format_sheets(writer_obj, sheet_name):
     format_pos_2 = workbook.add_format(FORMAT_DICT.get('light_orange'))
     format_pos_3 = workbook.add_format(FORMAT_DICT.get('orange'))
     format_pos_4 = workbook.add_format(FORMAT_DICT.get('dark_orange'))
+    format_white = workbook.add_format(FORMAT_DICT.get('white'))
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': -1,
-                                              'maximum': -0.75,
-                                              'format': format_neg_4})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -1,
+                                               'maximum': -0.75,
+                                               'format': format_neg_4})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': -0.75,
-                                              'maximum': -0.5,
-                                              'format': format_neg_3})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -0.75,
+                                               'maximum': -0.5,
+                                               'format': format_neg_3})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': -0.5,
-                                              'maximum': -0.25,
-                                              'format': format_neg_2})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -0.5,
+                                               'maximum': -0.25,
+                                               'format': format_neg_2})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': -0.25,
-                                              'maximum': -0.05,
-                                              'format': format_neg_1})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -0.25,
+                                               'maximum': -0.05,
+                                               'format': format_neg_1})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': -0.05,
-                                              'maximum': 0.05,
-                                              'format': format_neutral})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -0.05,
+                                               'maximum': -0.00002,
+                                               'format': format_neutral})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': 0.05,
-                                              'maximum': 0.25,
-                                              'format': format_pos_1})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': -0.00001,
+                                               'maximum': 0.00001,
+                                               'format': format_white})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': 0.25,
-                                              'maximum': 0.5,
-                                              'format': format_pos_2})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': 0.00002,
+                                               'maximum': 0.05,
+                                               'format': format_neutral})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': 0.5,
-                                              'maximum': 0.75,
-                                              'format': format_pos_3})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': 0.05,
+                                               'maximum': 0.25,
+                                               'format': format_pos_1})
 
-    worksheet.conditional_format('B2:R2499', {'type': 'cell',
-                                              'criteria': 'between',
-                                              'minimum': 0.75,
-                                              'maximum': 1,
-                                              'format': format_pos_4})
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': 0.25,
+                                               'maximum': 0.5,
+                                               'format': format_pos_2})
+
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': 0.5,
+                                               'maximum': 0.75,
+                                               'format': format_pos_3})
+
+    worksheet.conditional_format('A1:AR2499', {'type': 'cell',
+                                               'criteria': 'between',
+                                               'minimum': 0.75,
+                                               'maximum': 1,
+                                               'format': format_pos_4})
+
+
+def format_finder(writer_obj, element):
+
+    workbook = writer_obj.book
+    writer_obj.book = workbook
+
+    format_equity = workbook.add_format(FORMAT_DICT.get('equity_grey'))
+    format_currency = workbook.add_format(FORMAT_DICT.get('currency_blue'))
+    format_bond = workbook.add_format(FORMAT_DICT.get('bond_grey'))
+    format_commodity = workbook.add_format(FORMAT_DICT.get('commodity_green'))
+    format_crypto = workbook.add_format(FORMAT_DICT.get('crypto_orange'))
+
+    if element in CRYPTO:
+
+        return format_crypto
+
+    elif element in CURRENCY:
+
+        return format_currency
+
+    elif element in EQUITY:
+
+        return format_equity
+
+    elif element in COMMODITY:
+
+        return format_commodity
+
+    elif element in BOND:
+
+        return format_bond
 
 
 def format_header(writer_obj, sheet_name, header, row_start, col_start):
@@ -289,11 +373,13 @@ def format_header(writer_obj, sheet_name, header, row_start, col_start):
                             i, element, format_bond)
 
 
-def static_sheet(writer_obj, sheet_name):
+def static_sheet(writer_obj, sheet_name, space, space_left):
 
     workbook = writer_obj.book
     writer_obj.book = workbook
     worksheet = writer_obj.sheets[sheet_name]
+
+    c_format = workbook.add_format({'bg_color': '#FFFFFF'})
 
     header = VAR_STATIC_LIST
     try:
@@ -304,7 +390,8 @@ def static_sheet(writer_obj, sheet_name):
         pass
 
     len_head = len(header)
-    space = 2
+    under_row_start = len_head + space + 1
+    above_row_start = space
 
     for j in range(5):
 
@@ -312,8 +399,22 @@ def static_sheet(writer_obj, sheet_name):
 
         for i, var in enumerate(header):
 
+            format_to_use = format_finder(writer_obj, var)
+
+            # column names
             row_start = space * j + len_head * (j - 1) + 1
-            worksheet.write(row_start + i, 1, var)
+            worksheet.write(row_start + i, 1, var, format_to_use)
+
+            # row names
+            worksheet.write(under_row_start, space_left +
+                            i, var, format_to_use)
+
+            # row up removing
+            worksheet.write_blank(
+                above_row_start, space_left + i, '', c_format)
+
+        under_row_start = under_row_start + len_head + space
+        above_row_start = above_row_start + len_head + space
 
 
 def half_matrix_formatter(writer_obj, sheet_name, header,
@@ -323,7 +424,7 @@ def half_matrix_formatter(writer_obj, sheet_name, header,
     writer_obj.book = workbook
     worksheet = writer_obj.sheets[sheet_name]
 
-    c_format = workbook.add_format({'bg_color': '#FFFFFF'})
+    canc_format = workbook.add_format({'bg_color': '#FFFFFF'})
 
     try:
 
@@ -337,4 +438,77 @@ def half_matrix_formatter(writer_obj, sheet_name, header,
         for i in range(j-2):
 
             worksheet.write_blank(
-                row_start + i, j, '', c_format)
+                row_start + i, j, '', canc_format)
+
+
+def merging_excel(writer_obj, sheet_name, value_to_put, first_row, first_col):
+
+    workbook = writer_obj.book
+    writer_obj.book = workbook
+    worksheet = writer_obj.sheets[sheet_name]
+
+    if value_to_put == 'Crypto-currency':
+
+        bg_color = '#FF9900'
+        first_col = first_col
+        last_col = first_col + len(CRYPTO) - 1
+
+    elif value_to_put == 'Commodity':
+
+        bg_color = '#6AA84F'
+        first_col = first_col + len(CRYPTO)
+        last_col = first_col + len(COMMODITY) - 1
+
+    elif value_to_put == 'Currency':
+
+        bg_color = '#0000FF'
+        first_col = first_col + len(CRYPTO) + len(COMMODITY)
+        last_col = first_col + len(CURRENCY) - 1
+
+    elif value_to_put == 'Equity':
+
+        bg_color = '#444444'
+        first_col = first_col + len(CRYPTO) + len(COMMODITY) + len(CURRENCY)
+        last_col = first_col + (len(EQUITY) - 1) - 1
+
+    elif value_to_put == 'Volatility':
+
+        bg_color = '#CCCCCC'
+        first_col = first_col + \
+            len(CRYPTO) + len(COMMODITY) + len(CURRENCY) + (len(EQUITY) - 1)
+        last_col = first_col + 1 - 1
+
+    elif value_to_put == 'Bond':
+
+        bg_color = '#999999'
+        first_col = first_col + \
+            len(CRYPTO) + len(COMMODITY) + \
+            len(CURRENCY) + (len(EQUITY) - 1) + 1
+        last_col = first_col + len(BOND) - 1
+
+    merge_format = workbook.add_format({
+        'bold': True,
+        'border': 1,
+        'align': 'center',
+        'valign': 'vcenter',
+        'bg_color': bg_color,
+        'font_color': '#FFFFFF'
+    })
+
+    # (first_row, first_col, last_row, last_col, data[, cell_format])
+    if value_to_put == 'Volatility':
+
+        worksheet.write(first_row, first_col, value_to_put, merge_format)
+
+    else:
+
+        worksheet.merge_range(first_row, first_col, first_row,
+                              last_col, value_to_put, merge_format)
+
+
+def asset_formatter(writer_obj, sheet_name, first_row, first_col):
+
+    for element in ASSET_CATEGORY:
+
+        merging_excel(writer_obj, sheet_name,
+                      element, first_row, first_col)

@@ -6,6 +6,8 @@ REF_VARIOUS = "BITCOIN"
 
 REF_SP500 = "S&P500"
 
+ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
+                  'Currency', 'Equity', 'Volatility', 'Bond']
 
 CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
@@ -92,25 +94,41 @@ GRAPH_COLOR = {
 
 FORMAT_DICT = {
 
-    'light_grey': {'bg_color': '#F3F3F3'},
-    'lighter_blue': {'bg_color': '#CFE2F3'},
-    'light_blue': {'bg_color': '#9FC5E8'},
-    'sky_blue': {'bg_color': '#6FA8DC'},
-    'blue': {'bg_color': '#3D85C6'},
-    'lighter_orange': {'bg_color': '#FFF2CC'},
-    'light_orange': {'bg_color': '#FFE599'},
-    'orange': {'bg_color': '#FFD966'},
-    'dark_orange': {'bg_color': '#F1C232'},
+    'white': {'bg_color': '#FFFFFF'},
+    'light_grey': {'bg_color': '#F3F3F3',
+                   'num_format': '0.00%'},
+    'lighter_blue': {'bg_color': '#CFE2F3',
+                     'num_format': '0.00%'},
+    'light_blue': {'bg_color': '#9FC5E8',
+                   'num_format': '0.00%'},
+    'sky_blue': {'bg_color': '#6FA8DC',
+                 'num_format': '0.00%'},
+    'blue': {'bg_color': '#3D85C6',
+             'num_format': '0.00%'},
+    'lighter_orange': {'bg_color': '#FFF2CC',
+                       'num_format': '0.00%'},
+    'light_orange': {'bg_color': '#FFE599',
+                     'num_format': '0.00%'},
+    'orange': {'bg_color': '#FFD966',
+               'num_format': '0.00%'},
+    'dark_orange': {'bg_color': '#F1C232',
+                    'num_format': '0.00%'},
+
     'crypto_orange': {'bg_color': '#FF9900',
-                      'font_color': '#FFFFFF'},
+                      'font_color': '#FFFFFF',
+                      'bold': True,
+                      'border': 1},
+
     'commodity_green': {'bg_color': '#6AA84F',
                         'font_color': '#FFFFFF',
                         'bold': True,
                         'border': 1},
+
     'equity_grey': {'bg_color': '#444444',
                     'font_color': '#FFFFFF',
                     'bold': True,
                     'border': 1},
+
     'bond_grey': {'bg_color': '#999999',
                   'font_color': '#FFFFFF',
                   'bold': True,
