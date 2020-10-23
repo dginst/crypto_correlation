@@ -356,12 +356,14 @@ def put_graph(writer_obj, sheet_name, df_to_graph,
     chart.set_x_axis({
         'label_position': 'low',
         'date_axis': True,
-        'reverse': True,
-        'minor_unit':      1,
+        # 'reverse': True,
+        'minor_unit':      3,
         'minor_unit_type': 'months',
         'major_unit':      3,
         'major_unit_type': 'months',
-        'num_format': 'dd/mm/yyyy',
+        # 'num_format': 'dd/mm/yyyy',
+        'num_format': 'mmm-yy',
+        'num_font':  {'rotation': -30}
     })
 
     if "BSV" in df_columns:
