@@ -6,12 +6,18 @@ REF_VARIOUS = "BITCOIN"
 
 REF_SP500 = "S&P500"
 
+TIME_WINDOW = ['All', '3Y', '1Y', '1Q', '1M']
+
 ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
                   'Currency', 'Equity', 'Volatility', 'Bond']
 
 CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
                'ADA', 'XLM', 'XMR', 'BSV']
+
+CRYPTO_STATIC_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
+                      'BCH', 'EOS', 'ETC', 'ZEC',
+                      'ADA', 'XLM', 'XMR', 'BSV']
 
 VARIOUS_LIST = ["GOLD", "IND_METALS", "WTI",
                 "GRAIN", "EUR", "CHF", "GBP", "JPY",
@@ -48,6 +54,10 @@ VAR_GRAPH_LIST = ["GOLD", "GRAIN", "EUR", "JPY",
                   "EUROSTOXX50", "S&P500", "VIX Index",
                   "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
+CRYPTO_GRAPH_LIST = ['ETH', 'XRP', 'LTC',
+                     'BCH', 'EOS', 'ETC', 'ZEC',
+                     'ADA', 'XLM', 'XMR', 'BSV']
+
 VAR_STATIC_LIST = ["Date", "BITCOIN", "ETH", "LTC", "XRP",
                    "GOLD", "IND_METALS", "WTI",
                    "GRAIN", "EUR", "CHF", "GBP", "JPY",
@@ -56,39 +66,69 @@ VAR_STATIC_LIST = ["Date", "BITCOIN", "ETH", "LTC", "XRP",
                    "Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
                    "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
-GRAPH_LINE_WIDTH = 1.5
+GRAPH_LINE_WIDTH = 2
 
 GRAPH_COLOR = {
 
-    "BITCOIN": {'color': '#FF9900'},
+    "BITCOIN": {'color': '#FF9900',
+                'width': GRAPH_LINE_WIDTH},
 
-    "GOLD": {'color': 'green',
+    "GOLD": {'color': '#00FF00',
              'width': GRAPH_LINE_WIDTH},
 
-    "GRAIN":  {'color': 'green',
+    "GRAIN":  {'color': '#01A801',
                'width': GRAPH_LINE_WIDTH,
-               'dash_type': 'long_dash'},
-    "EUR":  {'color': 'blue',
+               # 'dash_type': 'long_dash'
+               },
+    "EUR":  {'color': '#0000FF',
              'width': GRAPH_LINE_WIDTH},
-    "JPY": {'color': 'blue',
+    "JPY": {'color': '#0404B2',
             'width': GRAPH_LINE_WIDTH,
-            'dash_type': 'long_dash'},
-    "EUROSTOXX50":  {'color': 'black',
+            # 'dash_type': 'long_dash'
+            },
+    "EUROSTOXX50":  {'color': '#444444',
                      'width': GRAPH_LINE_WIDTH,
-                     'dash_type': 'dash_dot'},
-    "S&P500": {'color': 'black',
+                     # 'dash_type': 'dash_dot'
+                     },
+
+    "S&P500": {'color': '#666666',
                'width': GRAPH_LINE_WIDTH
                },
-    "VIX Index": {'color': 'black',
+    "VIX Index": {'color': '#6E6D6D',
                   'width': GRAPH_LINE_WIDTH,
-                  'dash_type': 'long_dash'},
+                  # 'dash_type': 'long_dash'
+                  },
 
-    "BBG Barclays PAN EURO Aggregate": {'color': 'gray',
+    "BBG Barclays PAN EURO Aggregate": {'color': '#999999',
                                         'width': GRAPH_LINE_WIDTH,
-                                        'dash_type': 'long_dash'},
-    "BBG Barclays PAN US Aggregate": {'color': 'gray',
+                                        # 'dash_type': 'long_dash'
+                                        },
+    "BBG Barclays PAN US Aggregate": {'color': '#CCCCCC',
                                       'width': GRAPH_LINE_WIDTH,
-                                      }
+                                      },
+
+    'ETH':  {'color': '#0000FF',
+             'width': GRAPH_LINE_WIDTH},
+    'XRP':  {'color': '#CC0000',
+             'width': GRAPH_LINE_WIDTH},
+    'LTC':  {'color': '#CCCCCC',
+             'width': GRAPH_LINE_WIDTH},
+    'BCH':  {'color': '#01A801',
+             'width': GRAPH_LINE_WIDTH},
+    'EOS':  {'color': '#FFFF00',
+             'width': GRAPH_LINE_WIDTH},
+    'ETC':  {'color': '#0B5394',
+             'width': GRAPH_LINE_WIDTH},
+    'ZEC':  {'color': '#444444',
+             'width': GRAPH_LINE_WIDTH},
+    'ADA':  {'color': '#674EA7',
+             'width': GRAPH_LINE_WIDTH},
+    'XLM':  {'color': '#660000',
+             'width': GRAPH_LINE_WIDTH},
+    'XMR': {'color': '#0000FF',
+            'width': GRAPH_LINE_WIDTH},
+    'BSV':  {'color': '#FF9900',
+             'width': GRAPH_LINE_WIDTH}
 }
 
 
@@ -116,26 +156,61 @@ FORMAT_DICT = {
 
     'crypto_orange': {'bg_color': '#FF9900',
                       'font_color': '#FFFFFF',
+                      'align': 'center',
+                      'valign': 'vcenter',
                       'bold': True,
                       'border': 1},
 
-    'commodity_green': {'bg_color': '#6AA84F',
+    'crypto_orange_v': {'bg_color': '#FF9900',
                         'font_color': '#FFFFFF',
                         'bold': True,
                         'border': 1},
 
+    'commodity_green': {'bg_color': '#6AA84F',
+                        'font_color': '#FFFFFF',
+                        'align': 'center',
+                        'valign': 'vcenter',
+                        'bold': True,
+                        'border': 1},
+
+    'commodity_green_v': {'bg_color': '#6AA84F',
+                          'font_color': '#FFFFFF',
+                          'bold': True,
+                          'border': 1},
+
     'equity_grey': {'bg_color': '#444444',
+                    'font_color': '#FFFFFF',
+                    'align': 'center',
+                    'valign': 'vcenter',
+                    'bold': True,
+                    'border': 1},
+
+    'equity_grey_v': {'bg_color': '#444444',
+                      'font_color': '#FFFFFF',
+                      'bold': True,
+                      'border': 1},
+
+    'bond_grey': {'bg_color': '#999999',
+                  'font_color': '#FFFFFF',
+                  'align': 'center',
+                  'valign': 'vcenter',
+                  'bold': True,
+                  'border': 1},
+
+    'bond_grey_v': {'bg_color': '#999999',
                     'font_color': '#FFFFFF',
                     'bold': True,
                     'border': 1},
 
-    'bond_grey': {'bg_color': '#999999',
-                  'font_color': '#FFFFFF',
-                  'bold': True,
-                  'border': 1},
-
     'currency_blue': {'bg_color': '#0000FF',
                       'font_color': '#FFFFFF',
+                      'align': 'center',
+                      'valign': 'vcenter',
                       'bold': True,
-                      'border': 1}
+                      'border': 1},
+
+    'currency_blue_v': {'bg_color': '#0000FF',
+                        'font_color': '#FFFFFF',
+                        'bold': True,
+                        'border': 1}
 }

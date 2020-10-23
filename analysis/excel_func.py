@@ -5,15 +5,114 @@ from config import (
     VAR_GRAPH_LIST, GRAPH_COLOR, SP500_GRAPH_LIST,
     FORMAT_DICT, VAR_STATIC_LIST, EQUITY, BOND,
     CURRENCY, COMMODITY, CRYPTO, VARIOUS_LIST,
-    VS_SP500_LIST, ASSET_CATEGORY)
+    VS_SP500_LIST, ASSET_CATEGORY, TIME_WINDOW,
+    CRYPTO_STATIC_LIST, CRYPTO_LIST, CRYPTO_GRAPH_LIST)
 
 
-# wk = writer.book
-# worksheet = writer.sheets['Sheet_name_1']
-# chart = wk.add_chart({'type': 'line'})
+def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
+                 dyn_alt_corr_3Y, dyn_alt_corr_1Y,
+                 dyn_alt_corr_1Q, dyn_alt_corr_1M,
+                 stat_alt_corr_all, stat_alt_corr_3Y,
+                 stat_alt_corr_1Y,
+                 stat_alt_corr_1Q, stat_alt_corr_1M):
+
+    len_corr_mat = stat_alt_corr_all.shape[0]
+    space = 5
+    space_left = 2
+
+    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+
+        dyn_alt_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
+        format_sheets(writer, '3Y RW')
+        format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '3Y RW', dyn_alt_corr_3Y,
+                  graph_name='Correlation with Bitcoin on a 3 years rolling window',
+                  graph_set=CRYPTO_GRAPH_LIST)
+
+        dyn_alt_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
+        format_sheets(writer, '1Y RW')
+        format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1Y RW', dyn_alt_corr_1Y,
+                  graph_name='Correlation with Bitcoin on a 1 year rolling window',
+                  graph_set=CRYPTO_GRAPH_LIST)
+
+        dyn_alt_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
+        format_sheets(writer, '1Q RW')
+        format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1Q RW', dyn_alt_corr_1Q,
+                  graph_name='Correlation with Bitcoin on a 1 quarter rolling window',
+                  graph_set=CRYPTO_GRAPH_LIST)
+
+        dyn_alt_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
+        format_sheets(writer, '1M RW')
+        format_header(writer, '1M RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1M RW', dyn_alt_corr_1M,
+                  graph_name='Correlation with Bitcoin on a 1 month rolling window',
+                  graph_set=CRYPTO_GRAPH_LIST)
+
+        # static correlation matrix
+        stat_alt_corr_all.to_excel(
+            writer, sheet_name='all_matrix',
+            startrow=(space * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              stat_ret_list,
+                              (space * 1) + 1, space_left + 1)
+        format_header(writer, 'all_matrix', stat_ret_list,
+                      len(stat_ret_list) + space + 1, space_left)
+        asset_formatter(writer, 'all_matrix', len(
+            stat_ret_list) + space + 2, space_left)
+
+        stat_alt_corr_3Y.to_excel(
+            writer, sheet_name='all_matrix',
+            startrow=(space * 2 + len_corr_mat * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              stat_ret_list,
+                              (space * 2) + 1 + len_corr_mat * 1,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1, space_left)
+
+        stat_alt_corr_1Y.to_excel(
+            writer, sheet_name='all_matrix',
+            startrow=(space * 3 + len_corr_mat * 2),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              stat_ret_list,
+                              (space * 3) + 1 + len_corr_mat * 2,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2, space_left)
+
+        stat_alt_corr_1Q.to_excel(
+            writer, sheet_name='all_matrix',
+            startrow=(space * 4 + len_corr_mat * 3),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              stat_ret_list,
+                              (space * 4) + 1 + len_corr_mat * 3,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3, space_left)
+
+        stat_alt_corr_1M.to_excel(
+            writer, sheet_name='all_matrix',
+            startrow=(space * 5 + len_corr_mat * 4),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'all_matrix',
+                              stat_ret_list,
+                              (space * 5) + 1 + len_corr_mat * 4,
+                              space_left + 1)
+        asset_formatter(writer, 'all_matrix', len(
+            stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4, space_left)
+
+        static_sheet(writer, 'all_matrix', space, space_left, TIME_WINDOW)
+        format_sheets(writer, 'all_matrix')
 
 
-def var_to_excel(file_name, dyn_var_corr_3Y, dyn_var_corr_1Y,
+def var_to_excel(file_name, dyn_ret_list, stat_ret_list,
+                 dyn_var_corr_3Y, dyn_var_corr_1Y,
                  dyn_var_corr_1Q, dyn_var_corr_1M,
                  stat_var_corr_all, stat_var_corr_3Y,
                  stat_var_corr_1Y,
@@ -21,32 +120,32 @@ def var_to_excel(file_name, dyn_var_corr_3Y, dyn_var_corr_1Y,
                  dyn_SP500_corr_3Y):
 
     len_corr_mat = stat_var_corr_all.shape[0]
-    space = 3
+    space = 5
     space_left = 2
 
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
         dyn_var_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
         format_sheets(writer, '3Y RW')
-        format_header(writer, '3Y RW', VARIOUS_LIST, 0, 1)
+        format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '3Y RW', dyn_var_corr_3Y,
                   graph_name='Correlation with Bitcoin on a 3 years rolling window')
 
         dyn_var_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
         format_sheets(writer, '1Y RW')
-        format_header(writer, '1Y RW', VARIOUS_LIST, 0, 1)
+        format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Y RW', dyn_var_corr_1Y,
                   graph_name='Correlation with Bitcoin on a 1 year rolling window')
 
         dyn_var_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
         format_sheets(writer, '1Q RW')
-        format_header(writer, '1Q RW', VARIOUS_LIST, 0, 1)
+        format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Q RW', dyn_var_corr_1Q,
                   graph_name='Correlation with Bitcoin on a 1 quarter rolling window')
 
         dyn_var_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
         format_sheets(writer, '1M RW')
-        format_header(writer, '1M RW', VARIOUS_LIST, 0, 1)
+        format_header(writer, '1M RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1M RW', dyn_var_corr_1M,
                   graph_name='Correlation with Bitcoin on a 1 month rolling window')
 
@@ -56,58 +155,58 @@ def var_to_excel(file_name, dyn_var_corr_3Y, dyn_var_corr_1Y,
             startrow=(space * 1),
             startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST,
+                              stat_ret_list,
                               (space * 1) + 1, space_left + 1)
-        format_header(writer, 'all_matrix', VAR_STATIC_LIST,
-                      len(VAR_STATIC_LIST) + space + 1, space_left)
+        format_header(writer, 'all_matrix', stat_ret_list,
+                      len(stat_ret_list) + space + 1, space_left)
         asset_formatter(writer, 'all_matrix', len(
-            VAR_STATIC_LIST) + space + 2, space_left)
+            stat_ret_list) + space + 2, space_left)
 
         stat_var_corr_3Y.to_excel(
             writer, sheet_name='all_matrix',
             startrow=(space * 2 + len_corr_mat * 1),
             startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST,
+                              stat_ret_list,
                               (space * 2) + 1 + len_corr_mat * 1,
                               space_left + 1)
         asset_formatter(writer, 'all_matrix', len(
-            VAR_STATIC_LIST) + (space * 2) + 2 + len_corr_mat * 1, space_left)
+            stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1, space_left)
 
         stat_var_corr_1Y.to_excel(
             writer, sheet_name='all_matrix',
             startrow=(space * 3 + len_corr_mat * 2),
             startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST,
+                              stat_ret_list,
                               (space * 3) + 1 + len_corr_mat * 2,
                               space_left + 1)
         asset_formatter(writer, 'all_matrix', len(
-            VAR_STATIC_LIST) + (space * 3) + 2 + len_corr_mat * 2, space_left)
+            stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2, space_left)
 
         stat_var_corr_1Q.to_excel(
             writer, sheet_name='all_matrix',
             startrow=(space * 4 + len_corr_mat * 3),
             startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST,
+                              stat_ret_list,
                               (space * 4) + 1 + len_corr_mat * 3,
                               space_left + 1)
         asset_formatter(writer, 'all_matrix', len(
-            VAR_STATIC_LIST) + (space * 4) + 2 + len_corr_mat * 3, space_left)
+            stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3, space_left)
 
         stat_var_corr_1M.to_excel(
             writer, sheet_name='all_matrix',
             startrow=(space * 5 + len_corr_mat * 4),
             startcol=space_left, index=False)
         half_matrix_formatter(writer, 'all_matrix',
-                              VAR_STATIC_LIST,
+                              stat_ret_list,
                               (space * 5) + 1 + len_corr_mat * 4,
                               space_left + 1)
         asset_formatter(writer, 'all_matrix', len(
-            VAR_STATIC_LIST) + (space * 5) + 2 + len_corr_mat * 4, space_left)
+            stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4, space_left)
 
-        static_sheet(writer, 'all_matrix', space, space_left)
+        static_sheet(writer, 'all_matrix', space, space_left, TIME_WINDOW)
         format_sheets(writer, 'all_matrix')
 
         dyn_SP500_corr_3Y.to_excel(
@@ -133,19 +232,31 @@ def SP500_to_excel(file_name, dyn_SP500_corr_3Y):
 def corr_to_excel(dyn_var_corr_3Y, dyn_var_corr_1Y,
                   dyn_var_corr_1Q, dyn_var_corr_1M,
                   stat_var_corr_all, stat_var_corr_3Y,
-                  stat_var_corr_1Y,
-                  stat_var_corr_1Q, stat_var_corr_1M,
-                  dyn_SP500_corr_3Y):
+                  stat_var_corr_1Y, stat_var_corr_1Q,
+                  stat_var_corr_1M, dyn_SP500_corr_3Y,
+                  dyn_alt_corr_3Y, dyn_alt_corr_1Y,
+                  dyn_alt_corr_1Q, dyn_alt_corr_1M,
+                  stat_alt_corr_all, stat_alt_corr_3Y,
+                  stat_alt_corr_1Y, stat_alt_corr_1Q,
+                  stat_alt_corr_1M):
 
     today_str = datetime.now().strftime("%Y-%m-%d")
     file_name_var = today_str + "_Various-Correlations.xlsx"
     file_name_alt = today_str + "_Altcoin-Correlations.xlsx"
 
-    var_to_excel(file_name_var, dyn_var_corr_3Y, dyn_var_corr_1Y,
+    var_to_excel(file_name_var, VARIOUS_LIST, VAR_STATIC_LIST,
+                 dyn_var_corr_3Y, dyn_var_corr_1Y,
                  dyn_var_corr_1Q, dyn_var_corr_1M,
                  stat_var_corr_all, stat_var_corr_3Y,
                  stat_var_corr_1Y, stat_var_corr_1Q, stat_var_corr_1M,
                  dyn_SP500_corr_3Y)
+
+    alt_to_excel(file_name_alt, CRYPTO_LIST, CRYPTO_STATIC_LIST,
+                 dyn_alt_corr_3Y, dyn_alt_corr_1Y,
+                 dyn_alt_corr_1Q, dyn_alt_corr_1M,
+                 stat_alt_corr_all, stat_alt_corr_3Y,
+                 stat_alt_corr_1Y,
+                 stat_alt_corr_1Q, stat_alt_corr_1M)
 
 
 def put_graph(writer_obj, sheet_name, df_to_graph,
@@ -153,7 +264,7 @@ def put_graph(writer_obj, sheet_name, df_to_graph,
 
     df_columns = df_to_graph.columns
     # last_df_row = df_to_graph.shape[0]
-    last_df_row = 700
+    last_df_row = 700  # 682 per crypto
 
     workbook = writer_obj.book
     writer_obj.book = workbook
@@ -184,22 +295,40 @@ def put_graph(writer_obj, sheet_name, df_to_graph,
         else:
             pass
 
-    chart.set_y_axis({'num_format': '0.00%',
-                      'min': -0.5,
-                      'max': 0.5
-                      })
+    if "1M" in sheet_name:
+
+        chart.set_y_axis({'num_format': '0.00%',
+                          'min': -0.95,
+                          'max': 0.95
+                          })
+
+    elif "SP500" in sheet_name:
+
+        chart.set_y_axis({'num_format': '0.00%',
+                          'min': -1,
+                          'max': 0.85
+                          })
+
+    else:
+
+        chart.set_y_axis({'num_format': '0.00%',
+                          'min': -0.7,
+                          'max': 0.7
+                          })
 
     chart.set_plotarea({
         'layout': {
-            'x':      0.07,
-            'y':      0.26,
+            'x':      0.10,
+            'y':      0.10,  # 0.26
             'width':  0.90,
-            'height': 0.60,
+            'height': 0.75,  # 0.6
         }
     })
     chart.set_legend({'position': 'bottom',
-                      'font': {'size': 7, 'bold': True}
+                      'font': {'size': 7,
+                               'bold': True}
                       })
+
     chart.set_x_axis({
         'label_position': 'low',
         'date_axis': True,
@@ -301,16 +430,31 @@ def format_sheets(writer_obj, sheet_name):
                                                'format': format_pos_4})
 
 
-def format_finder(writer_obj, element):
+def format_finder(writer_obj, element, position="H"):
 
     workbook = writer_obj.book
     writer_obj.book = workbook
 
-    format_equity = workbook.add_format(FORMAT_DICT.get('equity_grey'))
-    format_currency = workbook.add_format(FORMAT_DICT.get('currency_blue'))
-    format_bond = workbook.add_format(FORMAT_DICT.get('bond_grey'))
-    format_commodity = workbook.add_format(FORMAT_DICT.get('commodity_green'))
-    format_crypto = workbook.add_format(FORMAT_DICT.get('crypto_orange'))
+    if position == "V":
+
+        # vertical format
+        format_equity = workbook.add_format(FORMAT_DICT.get('equity_grey_v'))
+        format_currency = workbook.add_format(
+            FORMAT_DICT.get('currency_blue_v'))
+        format_bond = workbook.add_format(FORMAT_DICT.get('bond_grey_v'))
+        format_commodity = workbook.add_format(
+            FORMAT_DICT.get('commodity_green_v'))
+        format_crypto = workbook.add_format(FORMAT_DICT.get('crypto_orange_v'))
+
+    else:
+
+        # horizontal format
+        format_equity = workbook.add_format(FORMAT_DICT.get('equity_grey'))
+        format_currency = workbook.add_format(FORMAT_DICT.get('currency_blue'))
+        format_bond = workbook.add_format(FORMAT_DICT.get('bond_grey'))
+        format_commodity = workbook.add_format(
+            FORMAT_DICT.get('commodity_green'))
+        format_crypto = workbook.add_format(FORMAT_DICT.get('crypto_orange'))
 
     if element in CRYPTO:
 
@@ -373,13 +517,20 @@ def format_header(writer_obj, sheet_name, header, row_start, col_start):
                             i, element, format_bond)
 
 
-def static_sheet(writer_obj, sheet_name, space, space_left):
+def static_sheet(writer_obj, sheet_name, space, space_left, window_arr):
 
     workbook = writer_obj.book
     writer_obj.book = workbook
     worksheet = writer_obj.sheets[sheet_name]
 
     c_format = workbook.add_format({'bg_color': '#FFFFFF'})
+
+    w_format = workbook.add_format({'font_color': '#000000',
+                                    'align': 'center',
+                                    'valign': 'vcenter',
+                                    'bold': True,
+                                    })
+    w_format.set_right()
 
     header = VAR_STATIC_LIST
     try:
@@ -395,15 +546,21 @@ def static_sheet(writer_obj, sheet_name, space, space_left):
 
     for j in range(5):
 
+        # time window display
+        static_window = TIME_WINDOW[j]
+        worksheet.write(above_row_start, space_left - 1,
+                        static_window, w_format)
+
         j = j + 1
 
         for i, var in enumerate(header):
 
             format_to_use = format_finder(writer_obj, var)
+            format_to_use_v = format_finder(writer_obj, var, position='V')
 
             # column names
             row_start = space * j + len_head * (j - 1) + 1
-            worksheet.write(row_start + i, 1, var, format_to_use)
+            worksheet.write(row_start + i, 1, var, format_to_use_v)
 
             # row names
             worksheet.write(under_row_start, space_left +
