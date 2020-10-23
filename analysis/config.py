@@ -11,7 +11,7 @@ TIME_WINDOW = ['All', '3Y', '1Y', '1Q', '1M']
 ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
                   'Currency', 'Equity', 'Volatility', 'Bond']
 
-CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
+CRYPTO_LIST = ['ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
                'ADA', 'XLM', 'XMR', 'BSV']
 
@@ -37,7 +37,10 @@ CURRENCY = ["EUR", "CHF", "GBP", "JPY"]
 COMMODITY = ["GOLD", "IND_METALS", "WTI",
              "GRAIN"]
 
-CRYPTO = ["BITCOIN", "ETH", "LTC", "XRP"]
+CRYPTO = ["BITCOIN", "BTC", "ETH",
+          "LTC", "XRP", 'BCH',
+          'EOS', 'ETC', 'ZEC',
+          'ADA', 'XLM', 'XMR', 'BSV']
 
 VS_SP500_LIST = ["BITCOIN", "GOLD", "IND_METALS", "WTI",
                  "GRAIN", "EUR", "CHF", "GBP", "JPY",
