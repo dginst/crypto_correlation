@@ -9,6 +9,22 @@ from config import (
     CRYPTO_STATIC_LIST, CRYPTO_LIST, CRYPTO_GRAPH_LIST)
 
 
+def date_reformat(return_df, writer_obj, sheet_name):
+
+    workbook = writer_obj.book
+    writer_obj.book = workbook
+    worksheet = writer_obj.sheets[sheet_name]
+
+    return_df["Date"] = [datetime.strptime(
+        x, "%Y-%m-%d") for x in return_df["Date"]]
+
+    format_date = workbook.add_format({'num_format': 'dd/mm/yy'})
+
+    for i, date in enumerate(return_df["Date"]):
+
+        worksheet.write(i + 1, 0, date, format_date)
+
+
 def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                  dyn_alt_corr_3Y, dyn_alt_corr_1Y,
                  dyn_alt_corr_1Q, dyn_alt_corr_1M,
@@ -23,7 +39,7 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
         dyn_alt_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
-        print(dyn_alt_corr_3Y)
+        date_reformat(dyn_alt_corr_3Y, writer, '3Y RW')
         format_sheets(writer, '3Y RW')
         format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '3Y RW', dyn_alt_corr_3Y,
@@ -31,6 +47,7 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                   graph_set=CRYPTO_GRAPH_LIST)
 
         dyn_alt_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
+        date_reformat(dyn_alt_corr_1Y, writer, '1Y RW')
         format_sheets(writer, '1Y RW')
         format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Y RW', dyn_alt_corr_1Y,
@@ -38,6 +55,7 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                   graph_set=CRYPTO_GRAPH_LIST)
 
         dyn_alt_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
+        date_reformat(dyn_alt_corr_1Q, writer, '1Q RW')
         format_sheets(writer, '1Q RW')
         format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Q RW', dyn_alt_corr_1Q,
@@ -45,6 +63,7 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                   graph_set=CRYPTO_GRAPH_LIST)
 
         dyn_alt_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
+        date_reformat(dyn_alt_corr_1M, writer, '1M RW')
         format_sheets(writer, '1M RW')
         format_header(writer, '1M RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1M RW', dyn_alt_corr_1M,
@@ -61,8 +80,6 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                               (space * 1) + 1, space_left + 1)
         format_header(writer, 'Correlation Matrix', stat_ret_list,
                       len(stat_ret_list) + space + 1, space_left)
-        # asset_formatter(writer, 'all_matrix', len(
-        #     stat_ret_list) + space + 2, space_left)
 
         stat_alt_corr_3Y.to_excel(
             writer, sheet_name='Correlation Matrix',
@@ -72,8 +89,6 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                               stat_ret_list,
                               (space * 2) + 1 + len_corr_mat * 1,
                               space_left + 1)
-        # asset_formatter(writer, 'all_matrix', len(
-        #     stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1, space_left)
 
         stat_alt_corr_1Y.to_excel(
             writer, sheet_name='Correlation Matrix',
@@ -83,8 +98,6 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                               stat_ret_list,
                               (space * 3) + 1 + len_corr_mat * 2,
                               space_left + 1)
-        # asset_formatter(writer, 'all_matrix', len(
-        #     stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2, space_left)
 
         stat_alt_corr_1Q.to_excel(
             writer, sheet_name='Correlation Matrix',
@@ -94,8 +107,6 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                               stat_ret_list,
                               (space * 4) + 1 + len_corr_mat * 3,
                               space_left + 1)
-        # asset_formatter(writer, 'all_matrix', len(
-        #     stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3, space_left)
 
         stat_alt_corr_1M.to_excel(
             writer, sheet_name='Correlation Matrix',
@@ -105,8 +116,6 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
                               stat_ret_list,
                               (space * 5) + 1 + len_corr_mat * 4,
                               space_left + 1)
-        # asset_formatter(writer, 'all_matrix', len(
-        #     stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4, space_left)
 
         static_sheet(writer, 'Correlation Matrix', space, space_left,
                      TIME_WINDOW, CRYPTO_STATIC_LIST)
@@ -128,24 +137,28 @@ def var_to_excel(file_name, dyn_ret_list, stat_ret_list,
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
         dyn_var_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
+        date_reformat(dyn_var_corr_3Y, writer, '3Y RW')
         format_sheets(writer, '3Y RW')
         format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '3Y RW', dyn_var_corr_3Y,
                   graph_name='Correlation with Bitcoin on a 3 years rolling window')
 
         dyn_var_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
+        date_reformat(dyn_var_corr_1Y, writer, '1Y RW')
         format_sheets(writer, '1Y RW')
         format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Y RW', dyn_var_corr_1Y,
                   graph_name='Correlation with Bitcoin on a 1 year rolling window')
 
         dyn_var_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
+        date_reformat(dyn_var_corr_1Q, writer, '1Q RW')
         format_sheets(writer, '1Q RW')
         format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1Q RW', dyn_var_corr_1Q,
                   graph_name='Correlation with Bitcoin on a 1 quarter rolling window')
 
         dyn_var_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
+        date_reformat(dyn_var_corr_1M, writer, '1M RW')
         format_sheets(writer, '1M RW')
         format_header(writer, '1M RW', dyn_ret_list, 0, 1)
         put_graph(writer, '1M RW', dyn_var_corr_1M,
@@ -344,12 +357,11 @@ def put_graph(writer_obj, sheet_name, df_to_graph,
         'label_position': 'low',
         'date_axis': True,
         'reverse': True,
-        # 'min': '2017-12-31',
         'minor_unit':      1,
         'minor_unit_type': 'months',
-        'major_unit':      90,
+        'major_unit':      3,
         'major_unit_type': 'months',
-        'num_format':      'dd/mm/yyyy',
+        'num_format': 'dd/mm/yyyy',
     })
 
     if "BSV" in df_columns:
