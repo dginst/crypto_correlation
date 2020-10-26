@@ -217,3 +217,18 @@ FORMAT_DICT = {
                         'bold': True,
                         'border': 1}
 }
+
+
+Y_FINANCE_DICT = {
+
+    'S&P500': '^GSPC',
+    'GOLD': 'GC=F',
+    'EUR': 'EURUSD=X',
+    'GBP': 'GBPUSD=X',
+    'JPY': 'JPYUSD=X',
+    'CHF': 'CHFUSD=X',
+    'EUROSTOXX50': '^STOXX50E',
+    'VIX Index': '^VIX',
+    'NASDAQ': '^IXIC'
+
+}
