@@ -6,7 +6,8 @@ from config import (
     FORMAT_DICT, VAR_STATIC_LIST, EQUITY, BOND,
     CURRENCY, COMMODITY, CRYPTO, VARIOUS_LIST,
     VS_SP500_LIST, ASSET_CATEGORY, TIME_WINDOW,
-    CRYPTO_STATIC_LIST, CRYPTO_LIST, CRYPTO_GRAPH_LIST)
+    CRYPTO_STATIC_LIST, CRYPTO_LIST, CRYPTO_GRAPH_LIST,
+    CRYPTO_FOR_STATIC, METAL_GRAPH_LIST, METAL_LIST)
 
 
 def date_reformat(return_df, writer_obj, sheet_name):
@@ -23,6 +24,45 @@ def date_reformat(return_df, writer_obj, sheet_name):
     for i, date in enumerate(return_df["Date"]):
 
         worksheet.write(i + 1, 0, date, format_date)
+
+
+def metal_to_excel(file_name, dyn_ret_list,
+                   dyn_met_corr_3Y, dyn_met_corr_1Y,
+                   dyn_met_corr_1Q, dyn_met_corr_1M):
+
+    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+
+        dyn_met_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
+        date_reformat(dyn_met_corr_3Y, writer, '3Y RW')
+        format_sheets(writer, '3Y RW')
+        format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '3Y RW', dyn_met_corr_3Y,
+                  graph_name='Correlation with Bitcoin on a 3 years rolling window',
+                  graph_set=METAL_GRAPH_LIST)
+
+        dyn_met_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
+        date_reformat(dyn_met_corr_1Y, writer, '1Y RW')
+        format_sheets(writer, '1Y RW')
+        format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1Y RW', dyn_met_corr_1Y,
+                  graph_name='Correlation with Bitcoin on a 1 year rolling window',
+                  graph_set=METAL_GRAPH_LIST)
+
+        dyn_met_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
+        date_reformat(dyn_met_corr_1Q, writer, '1Q RW')
+        format_sheets(writer, '1Q RW')
+        format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1Q RW', dyn_met_corr_1Q,
+                  graph_name='Correlation with Bitcoin on a 1 quarter rolling window',
+                  graph_set=METAL_GRAPH_LIST)
+
+        dyn_met_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
+        date_reformat(dyn_met_corr_1M, writer, '1M RW')
+        format_sheets(writer, '1M RW')
+        format_header(writer, '1M RW', dyn_ret_list, 0, 1)
+        put_graph(writer, '1M RW', dyn_met_corr_1M,
+                  graph_name='Correlation with Bitcoin on a 1 month rolling window',
+                  graph_set=METAL_GRAPH_LIST)
 
 
 def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
@@ -227,6 +267,7 @@ def var_to_excel(file_name, dyn_ret_list, stat_ret_list,
 
         dyn_SP500_corr_3Y.to_excel(
             writer, sheet_name='3Y RW S&P500', index=False)
+        date_reformat(dyn_SP500_corr_3Y, writer, '3Y RW S&P500')
         format_sheets(writer, '3Y RW S&P500')
         format_header(writer, '3Y RW S&P500', VS_SP500_LIST, 0, 1)
         put_graph(writer, '3Y RW S&P500', dyn_SP500_corr_3Y,
@@ -273,6 +314,17 @@ def corr_to_excel(dyn_var_corr_3Y, dyn_var_corr_1Y,
                  stat_alt_corr_all, stat_alt_corr_3Y,
                  stat_alt_corr_1Y,
                  stat_alt_corr_1Q, stat_alt_corr_1M)
+
+
+def metal_corr_to_excel(dyn_met_corr_3Y, dyn_met_corr_1Y,
+                        dyn_met_corr_1Q, dyn_met_corr_1M):
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    file_name_met = today_str + "_Metal-Correlations.xlsx"
+
+    metal_to_excel(file_name_met, METAL_LIST,
+                   dyn_met_corr_3Y, dyn_met_corr_1Y,
+                   dyn_met_corr_1Q, dyn_met_corr_1M)
 
 
 def put_graph(writer_obj, sheet_name, df_to_graph,
@@ -369,6 +421,10 @@ def put_graph(writer_obj, sheet_name, df_to_graph,
     if "BSV" in df_columns:
 
         worksheet.insert_chart('O5', chart, {'x_scale': 2, 'y_scale': 2})
+
+    elif "Copper" in df_columns:
+
+        worksheet.insert_chart('G5', chart, {'x_scale': 2, 'y_scale': 2})
 
     else:
 
@@ -638,38 +694,40 @@ def merging_excel(writer_obj, sheet_name, value_to_put, first_row, first_col):
 
         bg_color = '#FF9900'
         first_col = first_col
-        last_col = first_col + len(CRYPTO) - 1
+        last_col = first_col + len(CRYPTO_FOR_STATIC) - 1
 
     elif value_to_put == 'Commodity':
 
         bg_color = '#6AA84F'
-        first_col = first_col + len(CRYPTO)
+        first_col = first_col + len(CRYPTO_FOR_STATIC)
         last_col = first_col + len(COMMODITY) - 1
 
     elif value_to_put == 'Currency':
 
         bg_color = '#0000FF'
-        first_col = first_col + len(CRYPTO) + len(COMMODITY)
+        first_col = first_col + len(CRYPTO_FOR_STATIC) + len(COMMODITY)
         last_col = first_col + len(CURRENCY) - 1
 
     elif value_to_put == 'Equity':
 
         bg_color = '#444444'
-        first_col = first_col + len(CRYPTO) + len(COMMODITY) + len(CURRENCY)
+        first_col = first_col + \
+            len(CRYPTO_FOR_STATIC) + len(COMMODITY) + len(CURRENCY)
         last_col = first_col + (len(EQUITY) - 1) - 1
 
     elif value_to_put == 'Volatility':
 
         bg_color = '#CCCCCC'
         first_col = first_col + \
-            len(CRYPTO) + len(COMMODITY) + len(CURRENCY) + (len(EQUITY) - 1)
+            len(CRYPTO_FOR_STATIC) + len(COMMODITY) + \
+            len(CURRENCY) + (len(EQUITY) - 1)
         last_col = first_col + 1 - 1
 
     elif value_to_put == 'Bond':
 
         bg_color = '#999999'
         first_col = first_col + \
-            len(CRYPTO) + len(COMMODITY) + \
+            len(CRYPTO_FOR_STATIC) + len(COMMODITY) + \
             len(CURRENCY) + (len(EQUITY) - 1) + 1
         last_col = first_col + len(BOND) - 1
 

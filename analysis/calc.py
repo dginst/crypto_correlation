@@ -4,14 +4,36 @@ from dateutil.relativedelta import relativedelta
 from config import (
     CRYPTO_LIST, REF_CRYPTO, REF_VARIOUS,
     VARIOUS_LIST, DB_NAME, VAR_STATIC_LIST,
-    REF_SP500, VS_SP500_LIST
+    REF_SP500, VS_SP500_LIST, METAL_LIST
 )
 from mongo_func import (
     mongo_correlation_drop, query_mongo,
-    mongo_upload
+    mongo_upload, mongo_coll_drop
 )
 
 # ### TIME FUNCTION ###
+
+
+# def delete_holiday(date_list):
+
+#     first_
+
+
+def date_gen(start_date, end_date, holiday="Y"):
+
+    if holiday == "N":
+
+        date_index = pd.bdate_range(start_date, end_date)
+        date_list = [datetime.strftime(
+            date, "%Y-%m-%d") for date in date_index]
+
+    else:
+
+        date_index = pd.date_range(start_date, end_date)
+        date_list = [datetime.strftime(date, "%Y-%m-%d")
+                     for date in date_index]
+
+    return date_list
 
 
 def roll_single_time(date, time_window):
@@ -93,6 +115,12 @@ def return_retrieve(collection, corr_type=None):
         elif corr_type == "SP500":
 
             for var in VS_SP500_LIST:
+
+                return_df[var] = [float(x) for x in return_df[var]]
+
+        elif corr_type == "metal":
+
+            for var in METAL_LIST:
 
                 return_df[var] = [float(x) for x in return_df[var]]
 
@@ -185,6 +213,11 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
 
         ref_variable = REF_SP500
         others_comm = VS_SP500_LIST
+
+    elif corr_set == "metal":
+
+        ref_variable = REF_CRYPTO
+        others_comm = METAL_LIST
 
     ref_comm_df = tot_ret_df[["Date", ref_variable]]
 
@@ -311,3 +344,20 @@ def correlation_op():
     mongo_upload(stat_var_corr_1Y, "collection_1Y_stat_var")
     mongo_upload(stat_var_corr_1Q, "collection_1Q_stat_var")
     mongo_upload(stat_var_corr_1M, "collection_1M_stat_var")
+
+
+def metal_corr_op():
+
+    mongo_coll_drop("metal")
+
+    metal_ret_df = return_retrieve("metal_returns", corr_type="metal")
+
+    # dynamic correlations
+    (dyn_met_corr_3Y, dyn_met_corr_1Y,
+     dyn_met_corr_1Q, dyn_met_corr_1M) = dynamic_corr_op(
+        metal_ret_df, "metal")
+
+    mongo_upload(dyn_met_corr_3Y, "collection_3Y_dyn_met")
+    mongo_upload(dyn_met_corr_1Y, "collection_1Y_dyn_met")
+    mongo_upload(dyn_met_corr_1Q, "collection_1Q_dyn_met")
+    mongo_upload(dyn_met_corr_1M, "collection_1M_dyn_met")

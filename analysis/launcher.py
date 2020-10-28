@@ -7,7 +7,8 @@ from config import (
 
 from calc import (
     roll_single_time, dynamic_corr,
-    dynamic_total, static_corr, correlation_op
+    dynamic_total, static_corr, correlation_op,
+    metal_corr_op
 )
 import pandas as pd
 from scipy.stats.stats import pearsonr
@@ -69,4 +70,5 @@ import numpy as np
 # print(s)
 
 
-correlation_op()
+# correlation_op()
+metal_corr_op()

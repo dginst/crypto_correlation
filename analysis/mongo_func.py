@@ -77,6 +77,12 @@ def mongo_indexing():
 
     db = mongo_index_conn()
 
+    # historical series collections (yahoo)
+    db.all_prices.create_index([("id", -1)])
+    db.all_returns.create_index([("id", -1)])
+    db.metal_prices.create_index([("id", -1)])
+    db.metal_returns.create_index([("id", -1)])
+
     # return collections
     db.return_various.create_index([("id", -1)])
     db.return_crypto.create_index([("id", -1)])
@@ -86,6 +92,12 @@ def mongo_indexing():
     db.dyn_alt_correlation_1Y.create_index([("id", -1)])
     db.dyn_alt_correlation_1Q.create_index([("id", -1)])
     db.dyn_alt_correlation_1M.create_index([("id", -1)])
+
+    # dynamic metal correlation collections
+    db.dyn_met_correlation_3Y.create_index([("id", -1)])
+    db.dyn_met_correlation_1Y.create_index([("id", -1)])
+    db.dyn_met_correlation_1Q.create_index([("id", -1)])
+    db.dyn_met_correlation_1M.create_index([("id", -1)])
 
     # dynamic various correlation collections
     db.dyn_var_correlation_3Y.create_index([("id", -1)])
@@ -120,6 +132,12 @@ def mongo_coll():
 
     dict_of_coll = {
 
+        # yahoo collections
+        "collection_prices": db.all_prices,
+        "collection_returns": db.all_returns,
+        "collection_metal_price": db.metal_prices,
+        "collection_metal_ret": db.metal_returns,
+
         # return collections
         "collection_ret_var": db.return_various,
         "collection_ret_crypto": db.return_crypto,
@@ -129,6 +147,12 @@ def mongo_coll():
         "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
         "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
         "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
+
+        # dynamic metal correlation collections
+        "collection_3Y_dyn_met": db.dyn_met_correlation_3Y,
+        "collection_1Y_dyn_met": db.dyn_met_correlation_1Y,
+        "collection_1Q_dyn_met": db.dyn_met_correlation_1Q,
+        "collection_1M_dyn_met": db.dyn_met_correlation_1M,
 
         # dynamic various correlation collections
         "collection_3Y_dyn_var": db.dyn_var_correlation_3Y,
@@ -210,6 +234,23 @@ def mongo_coll_drop(corr_type):
 
         db.return_various.drop()
 
+    elif corr_type == "yahoo":
+
+        db.all_returns.drop()
+        db.all_prices.drop()
+
+    elif corr_type == "yahoo_metal":
+
+        db.metal_prices.drop()
+        db.metal_returns.drop()
+
+    elif corr_type == "metal":
+
+        db.dyn_met_correlation_3Y.drop()
+        db.dyn_met_correlation_1Y.drop()
+        db.dyn_met_correlation_1Q.drop()
+        db.dyn_met_correlation_1M.drop()
+
 
 def mongo_correlation_drop():
 
@@ -227,115 +268,3 @@ def mongo_upload(data_to_upload, where_to_upload,
 
     data_to_dict = data_to_upload.to_dict(orient="records")
     collection_dict.get(where_to_upload).insert_many(data_to_dict)
-
-
-# def mongo_delete(coll_where_del, query_to_del):
-
-#     collection_dict = mongo_coll()
-#     collection_dict.get(coll_where_del).delete_many(query_to_del)
-
-#     return None
-
-
-# def mongo_daily_delete(day_to_del, op_set):
-#     '''
-#     @param day_to_del has to be in "YY-mm-dd" string format
-#     @param op_set can be "ecb", "cw", "index"
-#     '''
-
-#     day_to_del_TS, _ = days_variable(day_to_del)
-
-#     if op_set == "ecb":
-
-#         mongo_delete("collection_ecb_raw", {"TIME_PERIOD": str(day_to_del_TS)})
-#         mongo_delete("collection_ecb_clean", {"Date": str(day_to_del_TS)})
-
-#     elif op_set == "cw":
-
-#         mongo_delete("collection_cw_raw", {"Time": day_to_del_TS})
-#         mongo_delete("collection_cw_clean", {"Time": day_to_del_TS})
-#         mongo_delete("collection_cw_vol_check", {"Time": day_to_del_TS})
-#         mongo_delete("collection_cw_converted", {"Time": day_to_del_TS})
-#         mongo_delete("collection_cw_final_data", {"Time": day_to_del_TS})
-
-#         mongo_delete("collection_stable_rate", {"Time": day_to_del_TS})
-
-#     # elif op_set == "data_feed":
-
-#     #     mongo_delete("collection_data_feed")
-
-#     elif op_set == "index":
-
-#         mongo_delete("collection_price", {"Time": day_to_del_TS})
-#         mongo_delete("collection_volume", {"Time": day_to_del_TS})
-#         mongo_delete("collection_price_ret", {"Time": day_to_del_TS})
-#         mongo_delete("collection_EWMA", {"Time": day_to_del_TS})
-#         mongo_delete("collection_divisor_reshaped", {"Time": day_to_del_TS})
-#         mongo_delete("collection_EWMA_check", {"Time": day_to_del_TS})
-#         mongo_delete("collection_synth", {"Time": day_to_del_TS})
-#         mongo_delete("collection_relative_synth", {"Time": day_to_del_TS})
-#         mongo_delete("collection_index_level_raw", {"Time": day_to_del_TS})
-#         mongo_delete("collection_index_level_1000", {"Time": day_to_del_TS})
-#         mongo_delete("collection_all_exc_vol", {"Time": day_to_del_TS})
-#         mongo_delete("collection_cw_raw", {"Time": day_to_del_TS})
-
-#     return None
-
-
-# def df_reorder(df_to_reorder, column_set):
-
-#     if column_set == "complete":
-
-#         reordered_df = df_to_reorder[
-#             [
-#                 "Date",
-#                 "Time",
-#                 "BTC",
-#                 "ETH",
-#                 "XRP",
-#                 "LTC",
-#                 "BCH",
-#                 "EOS",
-#                 "ETC",
-#                 "ZEC",
-#                 "ADA",
-#                 "XLM",
-#                 "XMR",
-#                 "BSV",
-#             ]
-#         ]
-
-#     elif column_set == "divisor":
-
-#         reordered_df = df_to_reorder[
-#             [
-#                 "Date",
-#                 "Time",
-#                 "Divisor Value"
-#             ]
-#         ]
-
-#     elif column_set == "index":
-
-#         reordered_df = df_to_reorder[
-#             [
-#                 "Date",
-#                 "Time",
-#                 "Index Value"
-#             ]
-#         ]
-
-#     elif column_set == "conversion":
-
-#         reordered_df = df_to_reorder[
-#             [
-#                 "Time",
-#                 "Close Price",
-#                 "Crypto Volume",
-#                 "Pair Volume",
-#                 "Exchange",
-#                 "Pair"
-#             ]
-#         ]
-
-#     return reordered_df

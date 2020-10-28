@@ -15,6 +15,8 @@ CRYPTO_LIST = ['ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
                'ADA', 'XLM', 'XMR', 'BSV']
 
+METAL_LIST = ["Gold", "Silver", "Copper"]
+
 CRYPTO_STATIC_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                       'BCH', 'EOS', 'ETC', 'ZEC',
                       'ADA', 'XLM', 'XMR', 'BSV']
@@ -36,6 +38,9 @@ CURRENCY = ["EUR", "CHF", "GBP", "JPY"]
 
 COMMODITY = ["GOLD", "IND_METALS", "WTI",
              "GRAIN"]
+
+CRYPTO_FOR_STATIC = ["BITCOIN", "ETH",
+                     "LTC", "XRP"]
 
 CRYPTO = ["BITCOIN", "BTC", "ETH",
           "LTC", "XRP", 'BCH',
@@ -60,6 +65,8 @@ VAR_GRAPH_LIST = ["GOLD", "GRAIN", "EUR", "JPY",
 CRYPTO_GRAPH_LIST = ['ETH', 'XRP', 'LTC',
                      'BCH', 'EOS', 'ETC', 'ZEC',
                      'ADA', 'XLM', 'XMR', 'BSV']
+
+METAL_GRAPH_LIST = ["Gold", "Silver", "Copper"]
 
 VAR_STATIC_LIST = ["Date", "BITCOIN", "ETH", "LTC", "XRP",
                    "GOLD", "IND_METALS", "WTI",
@@ -131,7 +138,14 @@ GRAPH_COLOR = {
     'XMR': {'color': '#0000FF',
             'width': GRAPH_LINE_WIDTH},
     'BSV':  {'color': '#FF9900',
-             'width': GRAPH_LINE_WIDTH}
+             'width': GRAPH_LINE_WIDTH},
+
+    'Gold': {'color': '#00FF00',
+             'width': GRAPH_LINE_WIDTH},
+    'Silver': {'color': '#CCCCCC',
+               'width': GRAPH_LINE_WIDTH},
+    'Copper': {'color': '#B45F06',
+               'width': GRAPH_LINE_WIDTH}
 }
 
 
@@ -229,6 +243,8 @@ Y_FINANCE_DICT = {
     'CHF': 'CHFUSD=X',
     'EUROSTOXX50': '^STOXX50E',
     'VIX Index': '^VIX',
-    'NASDAQ': '^IXIC'
+    'NASDAQ': '^IXIC',
+    'BBG Barclays PAN EURO Aggregate': 'EAGG.PA',
+
 
 }
