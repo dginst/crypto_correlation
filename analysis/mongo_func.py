@@ -80,6 +80,7 @@ def mongo_indexing():
     # historical series collections (yahoo)
     db.all_prices.create_index([("id", -1)])
     db.all_returns.create_index([("id", -1)])
+    db.all_logreturns.create_index([("id", -1)])
     db.metal_prices.create_index([("id", -1)])
     db.metal_returns.create_index([("id", -1)])
 
@@ -135,6 +136,7 @@ def mongo_coll():
         # yahoo collections
         "collection_prices": db.all_prices,
         "collection_returns": db.all_returns,
+        "collection_logreturns": db.all_logreturns,
         "collection_metal_price": db.metal_prices,
         "collection_metal_ret": db.metal_returns,
 
@@ -238,6 +240,7 @@ def mongo_coll_drop(corr_type):
 
         db.all_returns.drop()
         db.all_prices.drop()
+        db.all_logreturns.drop()
 
     elif corr_type == "yahoo_metal":
 
