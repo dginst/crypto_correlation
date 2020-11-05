@@ -236,14 +236,24 @@ FORMAT_DICT = {
 Y_FINANCE_DICT = {
 
     'S&P500': '^GSPC',
+    'DOWJONES': '^DJI',
+    'BTC': 'BTC-USD',
     'GOLD': 'GC=F',
+    'SILVER': 'SI=F',
+    'COPPER': 'HG=F',
+    'NATURAL_GAS': 'NG=F',
+    'PETROL': "CL=F",
+    'CORN': "ZC=F",
     'EUR': 'EURUSD=X',
     'GBP': 'GBPUSD=X',
     'JPY': 'JPYUSD=X',
     'CHF': 'CHFUSD=X',
     'EUROSTOXX50': '^STOXX50E',
-    'VIX Index': '^VIX',
+    'VIX': '^VIX',
     'NASDAQ': '^IXIC',
+    'TESLA': 'TSLA',
+    'AMAZON': 'AMZN',
+    'US_TREASURY': 'ZB=F',
     'BBG Barclays PAN EURO Aggregate': 'EAGG.PA',
 
 
