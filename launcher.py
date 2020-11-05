@@ -1,11 +1,11 @@
-from mongo_func import (
+from btc_analysis.mongo_func import (
     query_mongo, mongo_indexing, mongo_upload
 )
-from config import (
-    DB_NAME, CRYPTO_LIST
-)
 
-from calc import (
+from btc_analysis.config import (
+    CRYPTO_LIST, CRYPTO_STATIC_LIST
+)
+from btc_analysis.calc import (
     roll_single_time, dynamic_corr,
     dynamic_total, static_corr, correlation_op,
     metal_corr_op
@@ -70,5 +70,12 @@ import numpy as np
 # print(s)
 
 
-# correlation_op()
-metal_corr_op()
+correlation_op()
+# metal_corr_op()
+
+alt_to_excel('alt_corr_test', CRYPTO_LIST, CRYPTO_STATIC_LIST,
+             dyn_alt_corr_3Y, dyn_alt_corr_1Y,
+             dyn_alt_corr_1Q, dyn_alt_corr_1M,
+             stat_alt_corr_all, stat_alt_corr_3Y,
+             stat_alt_corr_1Y,
+             stat_alt_corr_1Q, stat_alt_corr_1M)
