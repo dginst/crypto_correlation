@@ -1,0 +1,10 @@
+pandas
+pymongo
+scipy
+xlsxwriter
+yfinance
+datetime
+matplotlib
+xlrd
+dash
+dash-bootstrap-components
