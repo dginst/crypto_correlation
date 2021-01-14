@@ -96,6 +96,19 @@ def roll_time_arr(date_arr, time_window):
     return date_delta
 
 
+def window_period_back(date_df, time_window):
+
+    last_date = max(date_df)
+
+    first_date = roll_single_time(last_date, time_window)
+
+    while first_date in date_df:
+
+        first_date = roll_single_time(first_date, "1D")
+
+    return first_date, last_date
+
+
 # ### RETURN RETRIEVE AND SETUP OPERATION ###
 
 def price_retrieve(collection, db_name=DB_NAME):
@@ -426,7 +439,7 @@ def metal_corr_op():
     mongo_upload(dyn_met_corr_1M, "collection_1M_dyn_met")
 
 
-# ##### OTHER CALCS FOR GRAPH
+# ##### pPRICE DENOMINATED IN btc COMPUTATION
 
 def return_in_btc_comp(total_df, time_window):
     """
@@ -469,14 +482,36 @@ def return_in_btc_comp(total_df, time_window):
     return normalized_df
 
 
-def window_period_back(date_df, time_window):
+def btc_denominated_total(yahoo_price_df, alt_price_df):
 
-    last_date = max(date_df)
+    yahoo_df_3Y = return_in_btc_comp(yahoo_price_df, "3Y")
+    alt_df_3Y = return_in_btc_comp(alt_price_df, "3Y")
 
-    first_date = roll_single_time(last_date, time_window)
+    mongo_upload(yahoo_df_3Y, "collection_yahoo_btc_den_3Y")
+    mongo_upload(alt_df_3Y, "collection_alt_btc_den_3Y")
 
-    while first_date in date_df:
+    yahoo_df_1Y = return_in_btc_comp(yahoo_price_df, "1Y")
+    alt_df_1Y = return_in_btc_comp(alt_price_df, "1Y")
 
-        first_date = roll_single_time(first_date, "1D")
+    mongo_upload(yahoo_df_1Y, "collection_yahoo_btc_den_1Y")
+    mongo_upload(alt_df_1Y, "collection_alt_btc_den_1Y")
 
-    return first_date, last_date
+    yahoo_df_6M = return_in_btc_comp(yahoo_price_df, "6M")
+    alt_df_6M = return_in_btc_comp(alt_price_df, "6M")
+
+    mongo_upload(yahoo_df_6M, "collection_yahoo_btc_den_6M")
+    mongo_upload(alt_df_6M, "collection_alt_btc_den_6M")
+
+    yahoo_df_3M = return_in_btc_comp(yahoo_price_df, "3M")
+    alt_df_3M = return_in_btc_comp(alt_price_df, "3M")
+
+    mongo_upload(yahoo_df_3M, "collection_yahoo_btc_den_3M")
+    mongo_upload(alt_df_3M, "collection_alt_btc_den_3M")
+
+    yahoo_df_1M = return_in_btc_comp(yahoo_price_df, "1M")
+    alt_df_1M = return_in_btc_comp(alt_price_df, "1M")
+
+    mongo_upload(yahoo_df_1M, "collection_yahoo_btc_den_1M")
+    mongo_upload(alt_df_1M, "collection_alt_btc_den_1M")
+
+    return None

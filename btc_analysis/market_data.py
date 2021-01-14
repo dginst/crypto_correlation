@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import yfinance as yf
 from btc_analysis.calc import date_gen
 import pandas as pd
@@ -6,6 +7,18 @@ from btc_analysis.mongo_func import (
     mongo_upload, query_mongo
 )
 from btc_analysis.config import (START_DATE, INDEX_START_DATE)
+
+
+def yesterday_str():
+
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    today = datetime.strptime(today_str, "%Y-%m-%d")
+    today_TS = int(today.replace(tzinfo=timezone.utc).timestamp())
+    yesterday_TS = today_TS - 86400
+    yesterday_date = datetime.fromtimestamp(int(yesterday_TS))
+    yesterday = yesterday_date.strftime("%Y-%m-%d")
+
+    return yesterday
 
 
 def all_series_download(series_code_list, all_el_list,
