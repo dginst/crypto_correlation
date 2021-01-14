@@ -66,8 +66,8 @@ def query_mongo(database, collection, query_dict=None):
 def mongo_index_conn():
 
     # connecting to mongo in local
-    connection = MongoClient("3.138.244.245", 27017)
-    # connection = MongoClient("localhost", 27017)
+    # connection = MongoClient("3.138.244.245", 27017)
+    connection = MongoClient("localhost", 27017)
 
     db = connection.btc_analysis
 

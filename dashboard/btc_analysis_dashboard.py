@@ -10,8 +10,8 @@ from dash.dependencies import Input, Output
 import urllib.parse
 
 
-connection = MongoClient("3.138.244.245", 27017)
-# connection = MongoClient("localhost", 27017)
+# connection = MongoClient("3.138.244.245", 27017)
+connection = MongoClient("localhost", 27017)
 
 
 def query_mongo_x(database, collection, query_dict=None):

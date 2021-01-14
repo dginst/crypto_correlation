@@ -11,7 +11,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-connection = MongoClient("3.138.244.245", 27017)
+# connection = MongoClient("3.138.244.245", 27017)
 
 
 def query_mongo_x(database, collection, query_dict=None):
