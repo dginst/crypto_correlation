@@ -27,8 +27,11 @@ app.css.append_css(
 
 window_list = ["3Y", "1Y", "1Q", "1M"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "correlation")
-df_yahoo["Year"] = df_yahoo['Date'].str[:4]
 
+df_alt["Year"] = df_alt['Date'].str[:4]
+df_alt = df_alt.loc[df_alt.Year > "2017"]
+
+df_yahoo["Year"] = df_yahoo['Date'].str[:4]
 df_yahoo = df_yahoo.loc[df_yahoo.Year > "2016"]
 
 df_alt_col = list(df_alt.columns)
