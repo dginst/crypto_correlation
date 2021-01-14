@@ -126,7 +126,7 @@ app.layout = dbc.Container([
                 options=[
                     {'label': x, 'value': x} for x in df_col_yahoo
                 ],
-                value=["GOLD", "S&P500", "WTI"],
+                value=["GOLD", "S&P500", "PETROL", "US_TREASURY"],
                 labelStyle={'display': 'inline-block'},
                 inputStyle={"margin-right": "10px",
                             "margin-left": "10px"}
