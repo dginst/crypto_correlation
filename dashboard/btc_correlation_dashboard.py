@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
 from btc_analysis.dashboard_func import (
-    btc_correlation_dfs
+    btc_total_dfs
 )
 
 # ------------------------------
@@ -26,7 +26,7 @@ app.css.append_css(
 # Data
 
 window_list = ["3Y", "1Y", "1Q", "1M"]
-df_alt, df_yahoo = btc_correlation_dfs(window_list)
+df_alt, df_yahoo = btc_total_dfs(window_list, "correlation")
 df_yahoo["Year"] = df_yahoo['Date'].str[:4]
 
 df_yahoo = df_yahoo.loc[df_yahoo.Year > "2016"]

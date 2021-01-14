@@ -4,18 +4,17 @@ from btc_analysis.mongo_func import (
 )
 
 
-def btc_denominated_dfs(window_list):
+def btc_total_dfs(window_list, operation):
 
-    altcoin_df = reunite_df(window_list, "altcoin", "btc_denominated")
-    yahoo_df = reunite_df(window_list, "yahoo", "btc_denominated")
+    if operation == "btc_denominated":
 
-    return altcoin_df, yahoo_df
+        altcoin_df = reunite_df(window_list, "altcoin", "btc_denominated")
+        yahoo_df = reunite_df(window_list, "yahoo", "btc_denominated")
 
+    elif operation == "correlation":
 
-def btc_correlation_dfs(window_list):
-
-    yahoo_df = reunite_df(window_list, "yahoo", "correlation")
-    altcoin_df = reunite_df(window_list, "alt", "correlation")
+        yahoo_df = reunite_df(window_list, "yahoo", "correlation")
+        altcoin_df = reunite_df(window_list, "alt", "correlation")
 
     return altcoin_df, yahoo_df
 
@@ -42,10 +41,8 @@ def retrieve_and_add(window, typology, op):
     elif op == "btc_denominated":
 
         coll = typology + "_" + "btc_denominated" + "_" + window
-    print(coll)
-    coll = typology + "_" + "btc_denominated" + "_" + window
+
     df = query_mongo("btc_analysis", coll)
-    print(df)
     df["Window"] = window
 
     return df

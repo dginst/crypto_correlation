@@ -28,6 +28,8 @@ def query_mongo(database, collection, query_dict=None):
     # defining the variable that allows to work with MongoDB
     db = connection[database]
     coll = db[collection]
+    print(coll)
+    print(connection)
     if query_dict is None:
 
         df = pd.DataFrame(list(coll.find()))

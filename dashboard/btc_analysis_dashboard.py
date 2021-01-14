@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
 from btc_analysis.dashboard_func import (
-    btc_denominated_dfs
+    btc_total_dfs
 )
 
 
@@ -28,7 +28,7 @@ app.css.append_css(
 # Data
 
 window_list = ["3Y", "1Y", "6M", "3M", "1M"]
-df_alt, df_yahoo = btc_denominated_dfs(window_list)
+df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
