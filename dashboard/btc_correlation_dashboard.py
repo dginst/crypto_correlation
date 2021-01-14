@@ -1,97 +1,15 @@
-import pandas as pd
-import numpy as np
 import plotly.express as px
-from pymongo import MongoClient
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
+from btc_analysis.dashboard_func import (
+    btc_correlation_dfs
+)
 
-
-# connection = MongoClient("3.138.244.245", 27017)
-connection = MongoClient("localhost", 27017)
-
-
-def query_mongo_x(database, collection, query_dict=None):
-
-    # defining the variable that allows to work with MongoDB
-    db = connection[database]
-    coll = db[collection]
-    if query_dict is None:
-
-        df = pd.DataFrame(list(coll.find()))
-
-        try:
-
-            df = df.drop(columns="_id")
-
-        except AttributeError:
-
-            df = []
-
-        except KeyError:
-
-            df = []
-
-    else:
-
-        df = pd.DataFrame(list(coll.find(query_dict)))
-
-        try:
-
-            df = df.drop(columns="_id")
-
-        except AttributeError:
-
-            df = []
-
-        except KeyError:
-
-            df = []
-
-    return df
-
-
-def btc_correlation_dfs(window_list):
-
-    altcoin_df = reunite_df(window_list, "alt")
-    yahoo_df = reunite_df(window_list, "var")
-
-    return altcoin_df, yahoo_df
-
-
-def reunite_df(window_list, typology):
-
-    col_set = column_set_finder(typology)
-    unified_df = pd.DataFrame(columns=col_set)
-
-    for w in window_list:
-
-        df = retrieve_and_add(w, typology)
-        unified_df = unified_df.append(df)
-
-    return unified_df
-
-
-def retrieve_and_add(window, typology):
-
-    coll = "dyn" + "_" + typology + "_" + "correlation" + "_" + window
-    df = query_mongo_x("btc_analysis", coll)
-    df["Window"] = window
-
-    return df
-
-
-def column_set_finder(typology):
-
-    coll = "dyn" + "_" + typology + "_" + "correlation" + "_1M"
-    df_col = query_mongo_x("btc_analysis", coll)
-    df_col["Window"] = "1M"
-    col_set = df_col.columns
-
-    return col_set
 # ------------------------------
 # start app
 
@@ -99,6 +17,9 @@ def column_set_finder(typology):
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}])
+
+server = app.server
+
 app.css.append_css(
     {"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
 # -------------------
@@ -319,4 +240,4 @@ def update_download_link_yahoo(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4600)
+    app.run_server(debug=True, port=4500, host='0.0.0.0')

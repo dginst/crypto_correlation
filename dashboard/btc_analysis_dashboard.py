@@ -1,97 +1,17 @@
-import pandas as pd
-import numpy as np
+
 import plotly.express as px
-from pymongo import MongoClient
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
+from btc_analysis.dashboard_func import (
+    btc_denominated_dfs
+)
 
 
-# connection = MongoClient("3.138.244.245", 27017)
-connection = MongoClient("localhost", 27017)
-
-
-def query_mongo_x(database, collection, query_dict=None):
-
-    # defining the variable that allows to work with MongoDB
-    db = connection[database]
-    coll = db[collection]
-    if query_dict is None:
-
-        df = pd.DataFrame(list(coll.find()))
-
-        try:
-
-            df = df.drop(columns="_id")
-
-        except AttributeError:
-
-            df = []
-
-        except KeyError:
-
-            df = []
-
-    else:
-
-        df = pd.DataFrame(list(coll.find(query_dict)))
-
-        try:
-
-            df = df.drop(columns="_id")
-
-        except AttributeError:
-
-            df = []
-
-        except KeyError:
-
-            df = []
-
-    return df
-
-
-def btc_denominated_dfs(window_list):
-
-    altcoin_df = reunite_df(window_list, "altcoin")
-    yahoo_df = reunite_df(window_list, "yahoo")
-
-    return altcoin_df, yahoo_df
-
-
-def reunite_df(window_list, typology):
-
-    col_set = column_set_finder(typology)
-    unified_df = pd.DataFrame(columns=col_set)
-
-    for w in window_list:
-
-        df = retrieve_and_add(w, typology)
-        unified_df = unified_df.append(df)
-
-    return unified_df
-
-
-def retrieve_and_add(window, typology):
-
-    coll = typology + "_" + "btc_denominated" + "_" + window
-    df = query_mongo_x("btc_analysis", coll)
-    df["Window"] = window
-
-    return df
-
-
-def column_set_finder(typology):
-
-    coll = typology + "_" + "btc_denominated" + "_1M"
-    df_col = query_mongo_x("btc_analysis", coll)
-    df_col["Window"] = "1M"
-    col_set = df_col.columns
-
-    return col_set
 # ------------------------------
 # start app
 
