@@ -101,6 +101,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR],
                             'content': 'width=device-width, initial-scale=1.0'}])
 app.css.append_css(
     {"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"})
+
+server = app.server
 # -------------------
 # Data
 
@@ -313,4 +315,4 @@ def update_download_link_yahoo(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000)
+    app.run_server(debug=True, port=4000, host='0.0.0.0')
