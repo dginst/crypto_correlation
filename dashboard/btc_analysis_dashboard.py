@@ -169,7 +169,22 @@ def update_graph_alt(window_selection, asset_selection):
         data_frame=dff_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark'
+        template='plotly_dark',
+        title='Altcoin prices denominated in Bitcoin,
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "ETH": "#511CFB",
+            "XRP": "#F6222E",
+            "LTC": "#E2E2E2",
+            "BCH": "#86CE00",
+            "EOS": "#FBE426",
+            "ETC": "#DA16FF",
+            "ZEC": "#B68100",
+            "ADA": "#00B5F7",
+            "XLM": "#750D86",
+            "XMR": "#A777F1",
+            "BSV": "#F58518"
+        }
     )
 
     return fig_alt
@@ -211,7 +226,24 @@ def update_graph_yahoo(window_selection, asset_selection):
         data_frame=dff_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark'
+        template='plotly_dark',
+        title='to be defined',
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "S&P500": "#511CFB",
+            "PETROL": "#222A2A",
+            "SILVER": "#E2E2E2",
+            "TESLA": "#86CE00",
+            "US index": "#FBE426",
+            "CORN": "#DA16FF",
+            "NASDAQ": "#B68100",
+            "VIX": "#00B5F7",
+            "DOWJONES": "#750D86",
+            "US_TREASURY": "#A777F1",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
     )
 
     return fig_yahoo

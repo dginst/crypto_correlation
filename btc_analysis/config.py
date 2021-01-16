@@ -369,6 +369,8 @@ Y_FINANCE_DICT = {
     'NASDAQ': '^IXIC',
     'TESLA': 'TSLA',
     'AMAZON': 'AMZN',
+    'APPLE': 'AAPL',
+    'NETFLIX': 'NFLX',
     'US_TREASURY': 'ZB=F',
     'BBG Barclays PAN EURO Aggregate': 'EAGG.PA',
     'US Aggregate Bond': 'SCHZ',
@@ -420,7 +422,9 @@ YAHOO_TO_DOWNLOAD_NAME = ['S&P500',
                           'US Aggregate Bond',
                           'US index',
                           'TESLA',
-                          'AMAZON']
+                          'AMAZON',
+                          'APPLE',
+                          'NETFLIX']
 
 YAHOO_TO_DOWNLOAD_CODE = ['^GSPC',
                           '^DJI',
@@ -442,4 +446,6 @@ YAHOO_TO_DOWNLOAD_CODE = ['^GSPC',
                           'SCHZ',
                           'DX-Y.NYB',
                           'TSLA',
-                          'AMZN']
+                          'AMZN',
+                          'AAPL',
+                          'NFLX']

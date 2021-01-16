@@ -238,16 +238,18 @@ def update_graph_yahoo(window_selection, asset_selection):
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
-            "PETROL": "#F6222E",
+            "PETROL": "#85660D",
+            "COPPER": "#B68100",
             "SILVER": "#E2E2E2",
             "TESLA": "#86CE00",
             "US index": "#FBE426",
             "CORN": "#DA16FF",
-            "NASDAQ": "#B68100",
+            "NASDAQ": "#0A08B",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
             "US_TREASURY": "#A777F1",
-            "AMAZON": "#F58518"
+            "AMAZON": "#F58518",
+            "GOLD": "#F6F926"
         }
     )
 
