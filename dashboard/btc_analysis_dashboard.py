@@ -122,7 +122,7 @@ app.layout = dbc.Container([
                 options=[
                     {'label': x, 'value': x} for x in df_col_yahoo
                 ],
-                value=["BTC", "GOLD", "AMAZON", "TESLA"],
+                value=["BTC", "GOLD", "AMAZON", "TESLA", "APPLE", "NETFLIX"],
                 labelStyle={'display': 'inline-block'},
                 inputStyle={"margin-right": "10px",
                             "margin-left": "10px"}
