@@ -190,7 +190,10 @@ def add_crypto(initial_df):
                                'US Aggregate Bond',
                                'US index',
                                'TESLA',
-                               'AMAZON']]
+                               'AMAZON',
+                               'APPLE',
+                               'NETFLIX'
+                               ]]
 
     return complete_df
 
