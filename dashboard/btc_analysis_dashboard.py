@@ -170,7 +170,7 @@ def update_graph_alt(window_selection, asset_selection):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Altcoin prices denominated in Bitcoin,
+        title='Altcoin prices denominated in Bitcoin',
         color_discrete_map={
             "BTC": "#FEAF16",
             "ETH": "#511CFB",
