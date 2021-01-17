@@ -170,7 +170,7 @@ app.layout = dbc.Container([
                     options=[
                         {'label': x, 'value': x} for x in df_norm_col
                     ],
-                    value=["BTC", "BTC", "AMAZON",
+                    value=["BTC", "AMAZON",
                            "TESLA", "APPLE", "NETFLIX"],
                     labelStyle={'display': 'inline-block'},
                     inputStyle={"margin-right": "10px",
