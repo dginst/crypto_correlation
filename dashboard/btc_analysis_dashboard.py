@@ -257,7 +257,7 @@ def update_download_link_alt(window_selection):
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_3", component_property="figure"),
+    Output(component_id="my_multi_line_2", component_property="figure"),
     [Input(component_id="my_yahoo_dropdown", component_property="value"),
      Input(component_id="my_yahoo_check", component_property="value")]
 )
@@ -317,7 +317,7 @@ def update_download_link_yahoo(window_selection):
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_2", component_property="figure"),
+    Output(component_id="my_multi_line_3", component_property="figure"),
     Input(component_id="my_yahoo_norm", component_property="value")
 )
 def update_graph_norm(asset_selection):
