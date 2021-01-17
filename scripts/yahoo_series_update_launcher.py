@@ -5,7 +5,7 @@ from btc_analysis.market_data import (
     mkt_data_op, yesterday_str
 )
 from btc_analysis.config import (
-    VARIOUS_LIST_Y,
+    YAHOO_TO_RETURN,
     YAHOO_TO_DOWNLOAD_CODE,
     YAHOO_TO_DOWNLOAD_NAME)
 
@@ -19,5 +19,5 @@ mongo_coll_drop("yahoo")
 
 yesterday_str = yesterday_str()
 
-mkt_data_op(YAHOO_TO_DOWNLOAD_CODE, YAHOO_TO_DOWNLOAD_NAME, VARIOUS_LIST_Y,
-            "2015-12-31", yesterday_str)
+mkt_data_op(YAHOO_TO_DOWNLOAD_CODE, YAHOO_TO_DOWNLOAD_NAME,
+            YAHOO_TO_RETURN, "2015-12-31", yesterday_str)

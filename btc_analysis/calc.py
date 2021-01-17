@@ -439,7 +439,7 @@ def metal_corr_op():
     mongo_upload(dyn_met_corr_1M, "collection_1M_dyn_met")
 
 
-# ##### pPRICE DENOMINATED IN btc COMPUTATION
+# ##### PRICE DENOMINATED IN BTC COMPUTATION
 
 def return_in_btc_comp(total_df, time_window):
     """
@@ -513,5 +513,54 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 
     mongo_upload(yahoo_df_1M, "collection_yahoo_btc_den_1M")
     mongo_upload(alt_df_1M, "collection_alt_btc_den_1M")
+
+    return None
+
+# ######### NORMALIZED PRICES COMPUTATION
+
+
+def normalized_prices_calc(yahoo_returns):
+
+    yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
+    yahoo_returns = yahoo_returns.replace(np.inf, np.nan)
+    yahoo_returns.fillna(0, inplace=True)
+
+    yahoo_returns.reset_index(drop=True, inplace=True)
+
+    yahoo_col_tot = list(yahoo_returns.columns)
+    yahoo_col = yahoo_col_tot.copy()
+    yahoo_col.remove("Date")
+
+    norm_matrix = np.array(yahoo_returns["Date"])
+    for asset in yahoo_col:
+
+        asset_col = np.array(yahoo_returns[asset])
+        asset_col = asset_col[1:len(asset_col)]
+        norm_arr = np.array([1])
+        current_value = 1
+
+        for ret in asset_col:
+
+            next_value = current_value * (1 + ret)
+            norm_arr = np.append(norm_arr, next_value)
+
+            current_value = next_value
+
+        norm_matrix = np.column_stack((norm_matrix, norm_arr))
+
+    header = yahoo_col_tot
+    norm_df = pd.DataFrame(norm_matrix, columns=header)
+
+    return norm_df
+
+
+def normalized_price_op():
+
+    # retrieve the returns
+    yahoo_returns = query_mongo(DB_NAME, "all_returns_y")
+
+    norm_df = normalized_prices_calc(yahoo_returns)
+
+    mongo_upload(norm_df, "collection_normalized_prices")
 
     return None

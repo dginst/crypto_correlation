@@ -10,6 +10,12 @@ import urllib.parse
 from btc_analysis.dashboard_func import (
     btc_total_dfs
 )
+from btc_analysis.mongo_func import (
+    query_mongo
+)
+from btc_analysis.config import (
+    DB_NAME
+)
 
 
 # ------------------------------
@@ -42,6 +48,18 @@ df_col_yahoo = list(df_yahoo.columns)
 df_col_yahoo.remove('Date')
 df_col_yahoo.remove('Window')
 
+df_yahoo_norm = query_mongo(DB_NAME, "normalized_prices")
+df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
+                               "APPLE", "NETFLIX", "TESLA", "AMAZON"]]
+df_norm_col = list(df_yahoo_norm.columns)
+df_norm_col.remove("Date")
+
+
+# ----------
+# string of normalized pries to download
+csv_string_norm = df_yahoo_norm.to_csv(index=False, encoding='utf-8')
+csv_string_norm = "data:text/csv;charset=utf-8," + \
+    urllib.parse.quote(csv_string_norm)
 # ----------------
 # app layout: bootstrap
 
@@ -141,6 +159,36 @@ app.layout = dbc.Container([
         ])
 
     ]),
+
+    dbc.Row([
+            dbc.Col([
+
+                html.Label(['Assets']),
+
+                dcc.Checklist(
+                    id='my_yahoo_norm',
+                    options=[
+                        {'label': x, 'value': x} for x in df_norm_col
+                    ],
+                    value=["BTC", "BTC", "AMAZON",
+                           "TESLA", "APPLE", "NETFLIX"],
+                    labelStyle={'display': 'inline-block'},
+                    inputStyle={"margin-right": "10px",
+                                "margin-left": "10px"}
+                ),
+
+                dcc.Graph(id='my_multi_line_3', figure={}),
+
+                html.A(
+                    'Download Data',
+                    id='download-link_yahoo_norm',
+                    download="yahoo_normalized.csv",
+                    href=csv_string_norm,
+                    target="_blank"
+                )
+            ])
+
+            ]),
 ])
 
 # --------------------------
@@ -209,7 +257,7 @@ def update_download_link_alt(window_selection):
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_2", component_property="figure"),
+    Output(component_id="my_multi_line_3", component_property="figure"),
     [Input(component_id="my_yahoo_dropdown", component_property="value"),
      Input(component_id="my_yahoo_check", component_property="value")]
 )
@@ -263,6 +311,36 @@ def update_download_link_yahoo(window_selection):
         urllib.parse.quote(csv_string)
 
     return csv_string
+
+# ------------
+# normalized prices
+
+
+@ app.callback(
+    Output(component_id="my_multi_line_2", component_property="figure"),
+    Input(component_id="my_yahoo_norm", component_property="value")
+)
+def update_graph_norm(asset_selection):
+
+    dff_yahoo = df_yahoo_norm.copy()
+    dff_filtered = dff_yahoo[asset_selection]
+
+    fig_yahoo_norm = px.line(
+        data_frame=dff_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        title='to be defined',
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "TESLA": "#86CE00",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
+    )
+
+    return fig_yahoo_norm
 
 
 print("Done")

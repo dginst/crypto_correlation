@@ -141,6 +141,9 @@ def mongo_indexing():
     db.yahoo_btc_denominated_1M.create_index([("id", -1)])
     db.altcoin_btc_denominated_1M.create_index([("id", -1)])
 
+    # series normalized prices
+    db.normalized_prices.create_index([("id", -1)])
+
 
 def mongo_coll():
 
@@ -228,6 +231,10 @@ def mongo_coll():
         "collection_alt_btc_den_3M": db.altcoin_btc_denominated_3M,
         "collection_yahoo_btc_den_1M": db.yahoo_btc_denominated_1M,
         "collection_alt_btc_den_1M": db.altcoin_btc_denominated_1M,
+
+        # normalized prices
+
+        "collection_normalized_prices": db.normalized_prices
 
     }
 
@@ -334,6 +341,10 @@ def mongo_coll_drop(corr_type):
         db.altcoin_btc_denominated_3M.drop()
         db.yahoo_btc_denominated_1M.drop()
         db.altcoin_btc_denominated_1M.drop()
+
+    elif corr_type == "norm":
+
+        db.normalized_prices.drop()
 
 
 def mongo_correlation_drop():
