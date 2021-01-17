@@ -53,6 +53,8 @@ df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
                                "APPLE", "NETFLIX", "TESLA", "AMAZON"]]
 df_norm_col = list(df_yahoo_norm.columns)
 df_norm_col.remove("Date")
+print(df_norm_col)
+print(df_yahoo_norm)
 
 
 # ----------
@@ -323,14 +325,16 @@ def update_download_link_yahoo(window_selection):
 def update_graph_norm(asset_selection):
 
     dff_yahoo = df_yahoo_norm.copy()
+    dff_date = dff_yahoo["Date"]
     dff_filtered = dff_yahoo[asset_selection]
+    dff_filtered["Date"] = dff_date
 
     fig_yahoo_norm = px.line(
         data_frame=dff_filtered,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='to be defined',
+        title='Asset Normalized Prices',
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
