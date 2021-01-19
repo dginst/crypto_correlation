@@ -443,7 +443,7 @@ def metal_corr_op():
 
 def return_in_btc_comp(total_df, time_window):
     """
-    time_window can be "3Y", "1Y", "6M", "3M", "1M"
+    time_window can be "3Y", "2Y", "1Y", "6M", "3M", "1M"
     """
 
     # order values from oldest to newest
@@ -490,6 +490,12 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
     mongo_upload(yahoo_df_3Y, "collection_yahoo_btc_den_3Y")
     mongo_upload(alt_df_3Y, "collection_alt_btc_den_3Y")
 
+    yahoo_df_1Y = return_in_btc_comp(yahoo_price_df, "2Y")
+    alt_df_1Y = return_in_btc_comp(alt_price_df, "2Y")
+
+    mongo_upload(yahoo_df_1Y, "collection_yahoo_btc_den_2Y")
+    mongo_upload(alt_df_1Y, "collection_alt_btc_den_2Y")
+
     yahoo_df_1Y = return_in_btc_comp(yahoo_price_df, "1Y")
     alt_df_1Y = return_in_btc_comp(alt_price_df, "1Y")
 
@@ -521,7 +527,7 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 
 def usd_normalized_calc(yahoo_returns, time_window):
     """
-    time_window can be "3Y", "1Y", "6M", "3M", "1M"
+    time_window can be "3Y", "2Y", 1Y", "6M", "3M", "1M"
     """
 
     yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
@@ -574,6 +580,10 @@ def usd_normalized_total(yahoo_price_df):
     yahoo_df_3Y = usd_normalized_calc(yahoo_price_df, "3Y")
 
     mongo_upload(yahoo_df_3Y, "collection_normalized_prices_3Y")
+
+    yahoo_df_2Y = usd_normalized_calc(yahoo_price_df, "2Y")
+
+    mongo_upload(yahoo_df_2Y, "collection_normalized_prices_2Y")
 
     yahoo_df_1Y = usd_normalized_calc(yahoo_price_df, "1Y")
 

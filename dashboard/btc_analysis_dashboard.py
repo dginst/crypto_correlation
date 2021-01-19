@@ -33,7 +33,7 @@ app.css.append_css(
 # -------------------
 # Data
 
-window_list = ["3Y", "1Y", "6M", "3M", "1M"]
+window_list = ["3Y", "2Y", "1Y", "6M", "3M", "1M"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 df_usd_norm = usd_den_total_df(window_list)
 
@@ -234,7 +234,7 @@ def update_graph_alt(window_selection, asset_selection):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Altcoin prices denominated in Bitcoin',
+        title='Altcoin performances denominated in BTC',
         color_discrete_map={
             "BTC": "#FEAF16",
             "ETH": "#511CFB",
@@ -291,7 +291,7 @@ def update_graph_yahoo(window_selection, asset_selection):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='to be defined',
+        title='Asset Class performances denominated in BTC',
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -353,7 +353,7 @@ def update_graph_norm(window_selection, asset_selection):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Asset Normalized Prices',
+        title='Performances denominated in USD',
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
