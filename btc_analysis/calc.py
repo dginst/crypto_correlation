@@ -459,7 +459,7 @@ def metal_corr_op():
 
 def return_in_btc_comp(total_df, time_window):
     """
-    time_window can be "3Y", "2Y", "1Y", "6M", "3M", "1M"
+    time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M"
     """
 
     # order values from oldest to newest
@@ -468,10 +468,14 @@ def return_in_btc_comp(total_df, time_window):
     date_df = total_df["Date"]
 
     first_date, last_date = window_period_back(date_df, time_window)
+    print(first_date)
+    print(last_date)
 
     total_df = total_df.loc[total_df.Date.between(
         first_date, last_date, inclusive=True)]
+    total_df.reset_index(drop=True, inplace=True)
 
+    print(total_df)
     sub_date = pd.DataFrame(columns=["Date"])
     sub_date["Date"] = total_df["Date"]
     sub_date.reset_index(drop=True, inplace=True)
@@ -486,11 +490,15 @@ def return_in_btc_comp(total_df, time_window):
     btc_series = np.array(btc_series)
 
     # dividing for BTC price series
-    df_in_btc = np.divide(total_arr, btc_series)
+    df_in_btc = np.divide(total_arr, btc_series,
+                          out=np.zeros_like(total_arr),
+                          where=btc_series != 0.0)
 
     first_row = df_in_btc[0, :]
 
-    normalized_arr = np.divide(df_in_btc, first_row)
+    normalized_arr = np.divide(df_in_btc, first_row,
+                               out=np.zeros_like(df_in_btc),
+                               where=first_row != 0.0)
 
     normalized_df = pd.DataFrame(normalized_arr, columns=header)
     normalized_df = pd.concat([sub_date, normalized_df], axis=1)
