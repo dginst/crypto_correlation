@@ -41,6 +41,10 @@ def roll_single_time(date, time_window):
 
         delta = relativedelta(months=-12)
 
+    elif time_window == "2Y":
+
+        delta = relativedelta(months=-24)
+
     elif time_window == "3Y":
 
         delta = relativedelta(months=-36)
@@ -78,6 +82,10 @@ def roll_time_arr(date_arr, time_window):
     if time_window == "1Y":
 
         delta = relativedelta(months=-12)
+
+    elif time_window == "2Y":
+
+        delta = relativedelta(months=-36)
 
     elif time_window == "3Y":
 
