@@ -178,6 +178,7 @@ def update_graph_alt(window_selection, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         title='Altcoin correlation with Bitcoin',
+        range_y=[-1, 1],
         color_discrete_map={
             "BTC": "#FEAF16",
             "ETH": "#511CFB",
@@ -235,6 +236,7 @@ def update_graph_yahoo(window_selection, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         title='Asset Class correlation with Bitcoin',
+        range_y=[-1, 1],
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",

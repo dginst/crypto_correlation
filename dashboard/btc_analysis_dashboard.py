@@ -211,6 +211,9 @@ app.layout = dbc.Container([
 
 # btc denominated altcoin callback
 
+# dropdown can be unified putting the same ID into the Input of each callback,
+#  NB: the dropdpwn display should be, at that point, disabled except for the first one
+# naming has to be commented in the layout part for the second and third graph
 
 @ app.callback(
     Output(component_id="my_multi_line", component_property="figure"),
@@ -367,4 +370,4 @@ def update_graph_norm(window_selection, asset_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000, host='0.0.0.0')
+    app.run_server(debug=True, port=4000)  # , host='0.0.0.0')
