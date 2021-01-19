@@ -19,6 +19,13 @@ def btc_total_dfs(window_list, operation):
     return altcoin_df, yahoo_df
 
 
+def usd_den_total_df(window_list):
+
+    total_df = reunite_df(window_list, "other", "usd_denominated")
+
+    return total_df
+
+
 def reunite_df(window_list, typology, op):
 
     col_set = column_set_finder(typology, op)
@@ -42,6 +49,10 @@ def retrieve_and_add(window, typology, op):
 
         coll = typology + "_" + "btc_denominated" + "_" + window
 
+    elif op == "usd_denominated":
+
+        coll = "normalized_prices_" + window
+
     df = query_mongo("btc_analysis", coll)
     df["Window"] = window
 
@@ -57,6 +68,10 @@ def column_set_finder(typology, op):
     elif op == "btc_denominated":
 
         coll = typology + "_" + "btc_denominated" + "_1M"
+
+    elif op == "usd_denominated":
+
+        coll = "normalized_prices_1M"
 
     df_col = query_mongo("btc_analysis", coll)
     df_col["Window"] = "1M"

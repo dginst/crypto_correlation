@@ -142,7 +142,11 @@ def mongo_indexing():
     db.altcoin_btc_denominated_1M.create_index([("id", -1)])
 
     # series normalized prices
-    db.normalized_prices.create_index([("id", -1)])
+    db.normalized_prices_3Y.create_index([("id", -1)])
+    db.normalized_prices_1Y.create_index([("id", -1)])
+    db.normalized_prices_6M.create_index([("id", -1)])
+    db.normalized_prices_3M.create_index([("id", -1)])
+    db.normalized_prices_1M.create_index([("id", -1)])
 
 
 def mongo_coll():
@@ -234,7 +238,11 @@ def mongo_coll():
 
         # normalized prices
 
-        "collection_normalized_prices": db.normalized_prices
+        "collection_normalized_prices_3Y": db.normalized_prices_3Y,
+        "collection_normalized_prices_1Y": db.normalized_prices_1Y,
+        "collection_normalized_prices_6M": db.normalized_prices_6M,
+        "collection_normalized_prices_3M": db.normalized_prices_3M,
+        "collection_normalized_prices_1M": db.normalized_prices_1M,
 
     }
 
@@ -344,7 +352,11 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "norm":
 
-        db.normalized_prices.drop()
+        db.normalized_prices_3Y.drop()
+        db.normalized_prices_1Y.drop()
+        db.normalized_prices_6M.drop()
+        db.normalized_prices_3M.drop()
+        db.normalized_prices_1M.drop()
 
 
 def mongo_correlation_drop():

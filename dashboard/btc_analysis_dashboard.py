@@ -8,7 +8,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
 from btc_analysis.dashboard_func import (
-    btc_total_dfs
+    btc_total_dfs, usd_den_total_df
 )
 from btc_analysis.mongo_func import (
     query_mongo
@@ -35,6 +35,7 @@ app.css.append_css(
 
 window_list = ["3Y", "1Y", "6M", "3M", "1M"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
+df_usd_norm = usd_den_total_df(window_list)
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -164,6 +165,19 @@ app.layout = dbc.Container([
 
     dbc.Row([
             dbc.Col([
+
+                html.Label(['Time Window']),
+
+                dcc.Dropdown(
+                    id='my_norm_dropdown',
+                    options=[
+                        {'label': w, 'value': w} for w in window_list
+                    ],
+                    multi=False,
+                    value="3Y",
+                    style={"width": "50%"},
+                    clearable=False
+                ),
 
                 html.Label(['Assets']),
 
@@ -320,13 +334,18 @@ def update_download_link_yahoo(window_selection):
 
 @ app.callback(
     Output(component_id="my_multi_line_3", component_property="figure"),
-    Input(component_id="my_yahoo_norm", component_property="value")
+    [Input(component_id="my_norm_dropdown", component_property="value"),
+     Input(component_id="my_yahoo_norm", component_property="value")]
 )
-def update_graph_norm(asset_selection):
+def update_graph_norm(window_selection, asset_selection):
 
-    dff_yahoo = df_yahoo_norm.copy()
-    dff_date = dff_yahoo["Date"]
-    dff_filtered = dff_yahoo[asset_selection]
+    dff_norm = df_usd_norm.copy()
+    dff_w = dff_norm.loc[dff_norm.Window == window_selection]
+    dff_w = dff_w.drop(columns=["Window"])
+
+    dff_date = dff_w["Date"]
+
+    dff_filtered = dff_w[asset_selection]
     dff_filtered["Date"] = dff_date
 
     fig_yahoo_norm = px.line(

@@ -519,11 +519,16 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 # ######### NORMALIZED PRICES COMPUTATION
 
 
-def normalized_prices_calc(yahoo_returns):
+def usd_normalized_calc(yahoo_returns, time_window):
+    """
+    time_window can be "3Y", "1Y", "6M", "3M", "1M"
+    """
 
     yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
     yahoo_returns = yahoo_returns.replace(np.inf, np.nan)
     yahoo_returns.fillna(0, inplace=True)
+
+    date_df = yahoo_returns["Date"]
 
     yahoo_returns.reset_index(drop=True, inplace=True)
 
@@ -531,10 +536,20 @@ def normalized_prices_calc(yahoo_returns):
     yahoo_col = yahoo_col_tot.copy()
     yahoo_col.remove("Date")
 
-    norm_matrix = np.array(yahoo_returns["Date"])
+    first_date, last_date = window_period_back(date_df, time_window)
+
+    total_df = yahoo_returns.loc[yahoo_returns.Date.between(
+        first_date, last_date, inclusive=True)]
+
+    sub_date = pd.DataFrame(columns=["Date"])
+    sub_date["Date"] = total_df["Date"]
+    sub_date.reset_index(drop=True, inplace=True)
+
+    norm_matrix = np.array(total_df["Date"])
+
     for asset in yahoo_col:
 
-        asset_col = np.array(yahoo_returns[asset])
+        asset_col = np.array(total_df[asset])
         asset_col = asset_col[1:len(asset_col)]
         norm_arr = np.array([1])
         current_value = 1
@@ -554,13 +569,26 @@ def normalized_prices_calc(yahoo_returns):
     return norm_df
 
 
-def normalized_price_op():
+def usd_normalized_total(yahoo_price_df):
 
-    # retrieve the returns
-    yahoo_returns = query_mongo(DB_NAME, "all_returns_y")
+    yahoo_df_3Y = usd_normalized_calc(yahoo_price_df, "3Y")
 
-    norm_df = normalized_prices_calc(yahoo_returns)
+    mongo_upload(yahoo_df_3Y, "collection_normalized_prices_3Y")
 
-    mongo_upload(norm_df, "collection_normalized_prices")
+    yahoo_df_1Y = usd_normalized_calc(yahoo_price_df, "1Y")
+
+    mongo_upload(yahoo_df_1Y, "collection_normalized_prices_1Y")
+
+    yahoo_df_6M = usd_normalized_calc(yahoo_price_df, "6M")
+
+    mongo_upload(yahoo_df_6M, "collection_normalized_prices_6M")
+
+    yahoo_df_3M = usd_normalized_calc(yahoo_price_df, "3M")
+
+    mongo_upload(yahoo_df_3M, "collection_normalized_prices_3M")
+
+    yahoo_df_1M = usd_normalized_calc(yahoo_price_df, "1M")
+
+    mongo_upload(yahoo_df_1M, "collection_normalized_prices_1M")
 
     return None
