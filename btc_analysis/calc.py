@@ -41,6 +41,10 @@ def roll_single_time(date, time_window):
 
         delta = relativedelta(months=-12)
 
+    elif time_window == "5Y":
+
+        delta = relativedelta(months=-60)
+
     elif time_window == "2Y":
 
         delta = relativedelta(months=-24)
@@ -85,7 +89,11 @@ def roll_time_arr(date_arr, time_window):
 
     elif time_window == "2Y":
 
-        delta = relativedelta(months=-36)
+        delta = relativedelta(months=-24)
+
+    elif time_window == "5Y":
+
+        delta = relativedelta(months=-60)
 
     elif time_window == "3Y":
 
@@ -492,17 +500,23 @@ def return_in_btc_comp(total_df, time_window):
 
 def btc_denominated_total(yahoo_price_df, alt_price_df):
 
+    yahoo_df_5Y = return_in_btc_comp(yahoo_price_df, "5Y")
+    alt_df_5Y = return_in_btc_comp(alt_price_df, "5Y")
+
+    mongo_upload(yahoo_df_5Y, "collection_yahoo_btc_den_5Y")
+    mongo_upload(alt_df_5Y, "collection_alt_btc_den_5Y")
+
     yahoo_df_3Y = return_in_btc_comp(yahoo_price_df, "3Y")
     alt_df_3Y = return_in_btc_comp(alt_price_df, "3Y")
 
     mongo_upload(yahoo_df_3Y, "collection_yahoo_btc_den_3Y")
     mongo_upload(alt_df_3Y, "collection_alt_btc_den_3Y")
 
-    yahoo_df_1Y = return_in_btc_comp(yahoo_price_df, "2Y")
-    alt_df_1Y = return_in_btc_comp(alt_price_df, "2Y")
+    yahoo_df_2Y = return_in_btc_comp(yahoo_price_df, "2Y")
+    alt_df_2Y = return_in_btc_comp(alt_price_df, "2Y")
 
-    mongo_upload(yahoo_df_1Y, "collection_yahoo_btc_den_2Y")
-    mongo_upload(alt_df_1Y, "collection_alt_btc_den_2Y")
+    mongo_upload(yahoo_df_2Y, "collection_yahoo_btc_den_2Y")
+    mongo_upload(alt_df_2Y, "collection_alt_btc_den_2Y")
 
     yahoo_df_1Y = return_in_btc_comp(yahoo_price_df, "1Y")
     alt_df_1Y = return_in_btc_comp(alt_price_df, "1Y")
@@ -535,7 +549,7 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 
 def usd_normalized_calc(yahoo_returns, time_window):
     """
-    time_window can be "3Y", "2Y", 1Y", "6M", "3M", "1M"
+    time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M"
     """
 
     yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
@@ -584,6 +598,10 @@ def usd_normalized_calc(yahoo_returns, time_window):
 
 
 def usd_normalized_total(yahoo_price_df):
+
+    yahoo_df_5Y = usd_normalized_calc(yahoo_price_df, "5Y")
+
+    mongo_upload(yahoo_df_5Y, "collection_normalized_prices_5Y")
 
     yahoo_df_3Y = usd_normalized_calc(yahoo_price_df, "3Y")
 

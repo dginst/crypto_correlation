@@ -130,6 +130,8 @@ def mongo_indexing():
     db.stat_var_correlation_1M.create_index([("id", -1)])
 
     # series in BTC price
+    db.yahoo_btc_denominated_5Y.create_index([("id", -1)])
+    db.altcoin_btc_denominated_5Y.create_index([("id", -1)])
     db.yahoo_btc_denominated_3Y.create_index([("id", -1)])
     db.altcoin_btc_denominated_3Y.create_index([("id", -1)])
     db.yahoo_btc_denominated_2Y.create_index([("id", -1)])
@@ -144,6 +146,7 @@ def mongo_indexing():
     db.altcoin_btc_denominated_1M.create_index([("id", -1)])
 
     # series normalized prices
+    db.normalized_prices_5Y.create_index([("id", -1)])
     db.normalized_prices_3Y.create_index([("id", -1)])
     db.normalized_prices_2Y.create_index([("id", -1)])
     db.normalized_prices_1Y.create_index([("id", -1)])
@@ -228,6 +231,8 @@ def mongo_coll():
         "collection_1M_stat_alt": db.stat_alt_correlation_1M,
 
         # priced denominated in BTC collections
+        "collection_yahoo_btc_den_5Y": db.yahoo_btc_denominated_5Y,
+        "collection_alt_btc_den_5Y": db.altcoin_btc_denominated_5Y,
         "collection_yahoo_btc_den_3Y": db.yahoo_btc_denominated_3Y,
         "collection_alt_btc_den_2Y": db.altcoin_btc_denominated_2Y,
         "collection_yahoo_btc_den_2Y": db.yahoo_btc_denominated_2Y,
@@ -242,7 +247,7 @@ def mongo_coll():
         "collection_alt_btc_den_1M": db.altcoin_btc_denominated_1M,
 
         # normalized prices
-
+        "collection_normalized_prices_5Y": db.normalized_prices_5Y,
         "collection_normalized_prices_3Y": db.normalized_prices_3Y,
         "collection_normalized_prices_2Y": db.normalized_prices_2Y,
         "collection_normalized_prices_1Y": db.normalized_prices_1Y,
@@ -345,6 +350,8 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "btc_den":
 
+        db.yahoo_btc_denominated_5Y.drop()
+        db.altcoin_btc_denominated_5Y.drop()
         db.yahoo_btc_denominated_3Y.drop()
         db.altcoin_btc_denominated_3Y.drop()
         db.yahoo_btc_denominated_2Y.drop()
@@ -360,6 +367,7 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "norm":
 
+        db.normalized_prices_5Y.drop()
         db.normalized_prices_3Y.drop()
         db.normalized_prices_2Y.drop()
         db.normalized_prices_1Y.drop()

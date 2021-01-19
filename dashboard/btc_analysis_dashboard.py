@@ -33,7 +33,7 @@ app.css.append_css(
 # -------------------
 # Data
 
-window_list = ["3Y", "2Y", "1Y", "6M", "3M", "1M"]
+window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 df_usd_norm = usd_den_total_df(window_list)
 
@@ -54,8 +54,6 @@ df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
                                "APPLE", "NETFLIX", "TESLA", "AMAZON"]]
 df_norm_col = list(df_yahoo_norm.columns)
 df_norm_col.remove("Date")
-print(df_norm_col)
-print(df_yahoo_norm)
 
 
 # ----------
