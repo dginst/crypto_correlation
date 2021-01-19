@@ -166,14 +166,15 @@ app.layout = dbc.Container([
 def update_graph_alt(window_selection, asset_selection):
 
     dff_alt = df_alt.copy()
-    dff_w = dff_alt.loc[dff_alt.Window == window_selection]
-    dff_w = dff_w.drop(columns=["Window"])
-    dff_date = dff_w["Date"]
-    dff_filtered = dff_w[asset_selection]
-    dff_filtered["Date"] = dff_date
+    dff_w_alt = dff_alt.loc[dff_alt.Window == window_selection]
+    dff_w_alt = dff_w_alt.drop(columns=["Window"])
+    dff_date = dff_w_alt["Date"]
+
+    dff_alt_filtered = dff_w_alt[asset_selection]
+    dff_alt_filtered["Date"] = dff_date
 
     fig_alt = px.line(
-        data_frame=dff_filtered,
+        data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
