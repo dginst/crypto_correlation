@@ -26,6 +26,13 @@ def usd_den_total_df(window_list):
     return total_df
 
 
+def vola_total_df(days_list):
+
+    total_df = reunite_df(days_list, "other", "volatility")
+
+    return total_df
+
+
 def reunite_df(window_list, typology, op):
 
     col_set = column_set_finder(typology, op)
@@ -53,8 +60,19 @@ def retrieve_and_add(window, typology, op):
 
         coll = "normalized_prices_" + window
 
+    elif op == "volatility":
+
+        coll = "volatility_" + window
+
     df = query_mongo("btc_analysis", coll)
-    df["Window"] = window
+
+    if op == "volatility":
+
+        df["Days"] = window
+
+    else:
+
+        df["Window"] = window
 
     return df
 
@@ -73,8 +91,20 @@ def column_set_finder(typology, op):
 
         coll = "normalized_prices_1M"
 
+    elif op == "volatility":
+
+        coll = "volatility_30"
+
     df_col = query_mongo("btc_analysis", coll)
-    df_col["Window"] = "1M"
+
+    if op == "volatility":
+
+        df_col["Days"] = "30"
+
+    else:
+
+        df_col["Window"] = "1M"
+
     col_set = df_col.columns
 
     return col_set

@@ -28,8 +28,7 @@ def query_mongo(database, collection, query_dict=None):
     # defining the variable that allows to work with MongoDB
     db = connection[database]
     coll = db[collection]
-    print(coll)
-    print(connection)
+
     if query_dict is None:
 
         df = pd.DataFrame(list(coll.find()))
@@ -155,6 +154,8 @@ def mongo_indexing():
     db.normalized_prices_1M.create_index([("id", -1)])
 
     # volatility
+    db.volatility_30.create_index([("id", -1)])
+    db.volatility_90.create_index([("id", -1)])
     db.volatility_252.create_index([("id", -1)])
 
 
@@ -260,6 +261,8 @@ def mongo_coll():
 
         # volatility
         "collection_volatility_252": db.volatility_252,
+        "collection_volatility_90": db.volatility_90,
+        "collection_volatility_30": db.volatility_30,
 
     }
 
@@ -384,6 +387,8 @@ def mongo_coll_drop(corr_type):
     elif corr_type == "vola":
 
         db.volatility_252.drop()
+        db.volatility_90.drop()
+        db.volatility_30.drop()
 
 
 def mongo_correlation_drop():

@@ -21,12 +21,24 @@ date.reset_index(drop=True, inplace=True)
 logret_df = query_mongo(DB_NAME, "all_logreturns_y")
 logret_df.fillna(0, inplace=True)
 
-hist_vola = hist_std_dev(logret_df)
-hist_vola["Date"] = date
+hist_vola_252 = hist_std_dev(logret_df)
+hist_vola_90 = hist_std_dev(logret_df, window=90)
+hist_vola_30 = hist_std_dev(logret_df, window=30)
 
-print(len(date) - 252)
-hist_vola = hist_vola.tail(len(date) - 252)
-print(hist_vola)
-hist_vola.reset_index(drop=True, inplace=True)
+hist_vola_252["Date"] = date
+hist_vola_90["Date"] = date
+hist_vola_30["Date"] = date
 
-mongo_upload(hist_vola, "collection_volatility_252")
+
+hist_vola_252 = hist_vola_252.tail(len(date) - 252)
+hist_vola_90 = hist_vola_252.tail(len(date) - 90)
+hist_vola_30 = hist_vola_252.tail(len(date) - 30)
+
+
+hist_vola_252.reset_index(drop=True, inplace=True)
+hist_vola_90.reset_index(drop=True, inplace=True)
+hist_vola_30.reset_index(drop=True, inplace=True)
+
+mongo_upload(hist_vola_252, "collection_volatility_252")
+mongo_upload(hist_vola_90, "collection_volatility_90")
+mongo_upload(hist_vola_30, "collection_volatility_30")

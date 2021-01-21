@@ -8,7 +8,8 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import urllib.parse
 from btc_analysis.dashboard_func import (
-    btc_total_dfs, usd_den_total_df
+    btc_total_dfs, usd_den_total_df,
+    vola_total_df
 )
 from btc_analysis.mongo_func import (
     query_mongo
@@ -34,8 +35,11 @@ app.css.append_css(
 # Data
 
 window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M"]
+vola_days_list = ["252", "90", "30"]
+
 df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 df_usd_norm = usd_den_total_df(window_list)
+df_vola = vola_total_df(vola_days_list)
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -55,7 +59,6 @@ df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
 df_norm_col = list(df_yahoo_norm.columns)
 df_norm_col.remove("Date")
 
-df_vola = query_mongo(DB_NAME, "volatility_252")
 # ----------
 # string of normalized pries to download
 csv_string_norm = df_yahoo_norm.to_csv(index=False, encoding='utf-8')
@@ -206,6 +209,19 @@ app.layout = dbc.Container([
 
     dbc.Row([
         dbc.Col([
+
+            html.Label(['Days']),
+
+            dcc.Dropdown(
+                id='my_vola_dropdown',
+                options=[
+                    {'label': w, 'value': w} for w in vola_days_list
+                ],
+                multi=False,
+                value="252",
+                style={"width": "50%"},
+                clearable=False
+            ),
 
             html.Label(['Assets']),
 
@@ -399,24 +415,28 @@ def update_graph_norm(window_selection, asset_selection):
 
 @ app.callback(
     Output(component_id="my_multi_line_4", component_property="figure"),
-    Input(component_id="my_yahoo_norm", component_property="value")
+    [Input(component_id="my_vola_dropdown", component_property="value"),
+     Input(component_id="my_yahoo_vola", component_property="value"))]
 )
-def update_graph_vola(asset_selection):
+def update_graph_vola(days_selection, asset_selection):
 
-    dff_vola = df_vola.copy()
+    dff_vola=df_vola.copy()
 
-    dff_date = dff_vola["Date"]
+    dff_days=dff_vola.loc[dff_vola.Days == days_selection]
+    dff_days=dff_w.drop(columns = ["Days"])
 
-    dff_vola_filtered = dff_vola[asset_selection]
-    dff_vola_filtered["Date"] = dff_date
+    dff_v_date=dff_days["Date"]
 
-    fig_yahoo_vola = px.line(
-        data_frame=dff_vola_filtered,
-        x="Date",
-        y=asset_selection,
-        template='plotly_dark',
-        title='Annualized Volatility',
-        color_discrete_map={
+    dff_vola_filtered=dff_days[asset_selection]
+    dff_vola_filtered["Date"]=dff_date
+
+    fig_yahoo_vola=px.line(
+        data_frame = dff_vola_filtered,
+        x = "Date",
+        y = asset_selection,
+        template = 'plotly_dark',
+        title = 'Annualized Volatility',
+        color_discrete_map = {
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
             "AMAZON": "#F58518",
