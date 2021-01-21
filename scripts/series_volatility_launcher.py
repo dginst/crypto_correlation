@@ -31,8 +31,8 @@ hist_vola_30["Date"] = date
 
 
 hist_vola_252 = hist_vola_252.tail(len(date) - 252)
-hist_vola_90 = hist_vola_252.tail(len(date) - 90)
-hist_vola_30 = hist_vola_252.tail(len(date) - 30)
+hist_vola_90 = hist_vola_90.tail(len(date) - 90)
+hist_vola_30 = hist_vola_30.tail(len(date) - 30)
 
 
 hist_vola_252.reset_index(drop=True, inplace=True)
