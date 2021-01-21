@@ -423,12 +423,12 @@ def update_graph_vola(days_selection, asset_selection):
     dff_vola = df_vola.copy()
 
     dff_days = dff_vola.loc[dff_vola.Days == days_selection]
-    dff_days = dff_w.drop(columns=["Days"])
+    dff_days = dff_days.drop(columns=["Days"])
 
     dff_v_date = dff_days["Date"]
 
     dff_vola_filtered = dff_days[asset_selection]
-    dff_vola_filtered["Date"] = dff_date
+    dff_vola_filtered["Date"] = dff_v_date
 
     fig_yahoo_vola = px.line(
         data_frame=dff_vola_filtered,
