@@ -1,4 +1,4 @@
-import seaborn as sns
+
 import yfinance as yf
 from datetime import datetime
 import pandas as pd

@@ -154,6 +154,9 @@ def mongo_indexing():
     db.normalized_prices_3M.create_index([("id", -1)])
     db.normalized_prices_1M.create_index([("id", -1)])
 
+    # volatility
+    db.volatility_252.create_index([("id", -1)])
+
 
 def mongo_coll():
 
@@ -254,6 +257,9 @@ def mongo_coll():
         "collection_normalized_prices_6M": db.normalized_prices_6M,
         "collection_normalized_prices_3M": db.normalized_prices_3M,
         "collection_normalized_prices_1M": db.normalized_prices_1M,
+
+        # volatility
+        "collection_volatility_252": db.volatility_252,
 
     }
 
@@ -374,6 +380,10 @@ def mongo_coll_drop(corr_type):
         db.normalized_prices_6M.drop()
         db.normalized_prices_3M.drop()
         db.normalized_prices_1M.drop()
+
+    elif corr_type == "vola":
+
+        db.volatility_252.drop()
 
 
 def mongo_correlation_drop():

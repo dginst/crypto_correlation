@@ -55,7 +55,7 @@ df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
 df_norm_col = list(df_yahoo_norm.columns)
 df_norm_col.remove("Date")
 
-
+df_vola = query_mongo(DB_NAME, "volatility_252")
 # ----------
 # string of normalized pries to download
 csv_string_norm = df_yahoo_norm.to_csv(index=False, encoding='utf-8')
@@ -203,6 +203,36 @@ app.layout = dbc.Container([
             ])
 
             ]),
+
+    dbc.Row([
+        dbc.Col([
+
+            html.Label(['Assets']),
+
+            dcc.Checklist(
+                id='my_yahoo_vola',
+                options=[
+                    {'label': x, 'value': x} for x in df_norm_col
+                ],
+                value=["BTC", "AMAZON",
+                       "TESLA", "APPLE", "NETFLIX"],
+                labelStyle={'display': 'inline-block'},
+                inputStyle={"margin-right": "10px",
+                            "margin-left": "10px"}
+            ),
+
+            dcc.Graph(id='my_multi_line_4', figure={}),
+
+            html.A(
+                'Download Data',
+                id='download-link_yahoo_vola',
+                download="yahoo_vola.csv",
+                href=csv_string_norm,
+                target="_blank"
+            )
+        ])
+
+    ]),
 ])
 
 # --------------------------
@@ -227,11 +257,11 @@ def update_graph_alt(window_selection, asset_selection):
     dff_w = dff_alt.loc[dff_alt.Window == window_selection]
     dff_w = dff_w.drop(columns=["Window"])
     dff_date = dff_w["Date"]
-    dff_filtered = dff_w[asset_selection]
-    dff_filtered["Date"] = dff_date
+    dff_alt_filtered = dff_w[asset_selection]
+    dff_alt_filtered["Date"] = dff_date
 
     fig_alt = px.line(
-        data_frame=dff_filtered,
+        data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
@@ -365,6 +395,37 @@ def update_graph_norm(window_selection, asset_selection):
     )
 
     return fig_yahoo_norm
+
+
+@ app.callback(
+    Output(component_id="my_multi_line_4", component_property="figure"),
+    Input(component_id="my_yahoo_norm", component_property="value")
+)
+def update_graph_vola(asset_selection):
+
+    dff_vola = df_vola.copy()
+
+    dff_date = dff_vola["Date"]
+
+    dff_vola_filtered = dff_vola[asset_selection]
+    dff_vola_filtered["Date"] = dff_date
+
+    fig_yahoo_vola = px.line(
+        data_frame=dff_vola_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        title='Annualized Volatility',
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "TESLA": "#86CE00",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
+    )
+
+    return fig_yahoo_vola
 
 
 print("Done")
