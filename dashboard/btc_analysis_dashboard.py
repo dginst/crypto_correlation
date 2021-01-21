@@ -416,27 +416,27 @@ def update_graph_norm(window_selection, asset_selection):
 @ app.callback(
     Output(component_id="my_multi_line_4", component_property="figure"),
     [Input(component_id="my_vola_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_vola", component_property="value"))]
+     Input(component_id="my_yahoo_vola", component_property="value")]
 )
 def update_graph_vola(days_selection, asset_selection):
 
-    dff_vola=df_vola.copy()
+    dff_vola = df_vola.copy()
 
-    dff_days=dff_vola.loc[dff_vola.Days == days_selection]
-    dff_days=dff_w.drop(columns = ["Days"])
+    dff_days = dff_vola.loc[dff_vola.Days == days_selection]
+    dff_days = dff_w.drop(columns=["Days"])
 
-    dff_v_date=dff_days["Date"]
+    dff_v_date = dff_days["Date"]
 
-    dff_vola_filtered=dff_days[asset_selection]
-    dff_vola_filtered["Date"]=dff_date
+    dff_vola_filtered = dff_days[asset_selection]
+    dff_vola_filtered["Date"] = dff_date
 
-    fig_yahoo_vola=px.line(
-        data_frame = dff_vola_filtered,
-        x = "Date",
-        y = asset_selection,
-        template = 'plotly_dark',
-        title = 'Annualized Volatility',
-        color_discrete_map = {
+    fig_yahoo_vola = px.line(
+        data_frame=dff_vola_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        title='Annualized Volatility',
+        color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
             "AMAZON": "#F58518",
