@@ -479,3 +479,36 @@ YAHOO_TO_RETURN = ["BTC",
                    'APPLE',
                    'NETFLIX'
                    ]
+
+
+# ##############
+
+ASSET_ANALYSIS_LIST = ["BTC",
+                       "APPLE",
+                       "NETFLIX",
+                       "TESLA",
+                       "AMAZON"]
+
+YAHOO_DASH_LIST = ['S&P500',
+                          'DOWJONES',
+                          'GOLD',
+                          'SILVER',
+                          'COPPER',
+                          'NATURAL_GAS',
+                          'PETROL',
+                          'CORN',
+                          'EUR',
+                          'GBP',
+                          'JPY',
+                          'CHF',
+                          'EUROSTOXX50',
+                          'VIX',
+                          'NASDAQ',
+                          'US_TREASURY',
+                          'EUR Aggregate Bond',
+                          'US Aggregate Bond',
+                          'US index',
+                          'TESLA',
+                          'AMAZON',
+                          'APPLE',
+                          'NETFLIX']

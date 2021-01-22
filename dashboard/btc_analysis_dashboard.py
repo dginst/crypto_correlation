@@ -15,7 +15,10 @@ from btc_analysis.mongo_func import (
     query_mongo
 )
 from btc_analysis.config import (
-    DB_NAME
+    DB_NAME, CRYPTO_LIST,
+    YAHOO_DASH_LIST,
+    ASSET_ANALYSIS_LIST
+
 )
 
 
@@ -37,33 +40,7 @@ app.css.append_css(
 window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M"]
 vola_days_list = ["252", "90", "30"]
 
-df_alt, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
-df_usd_norm = usd_den_total_df(window_list)
-df_vola = vola_total_df(vola_days_list)
 
-df_alt_col = list(df_alt.columns)
-df_alt_col.remove('Date')
-df_alt_col.remove('Window')
-
-
-df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC", "BCH"])
-df_yahoo = df_yahoo.rename(
-    columns={'BBG Barclays PAN EURO Aggregate': 'Eur Aggregate Bond'})
-df_col_yahoo = list(df_yahoo.columns)
-df_col_yahoo.remove('Date')
-df_col_yahoo.remove('Window')
-
-df_yahoo_norm = query_mongo(DB_NAME, "normalized_prices")
-df_yahoo_norm = df_yahoo_norm[["Date", "BTC",
-                               "APPLE", "NETFLIX", "TESLA", "AMAZON"]]
-df_norm_col = list(df_yahoo_norm.columns)
-df_norm_col.remove("Date")
-
-# ----------
-# string of normalized pries to download
-csv_string_norm = df_yahoo_norm.to_csv(index=False, encoding='utf-8')
-csv_string_norm = "data:text/csv;charset=utf-8," + \
-    urllib.parse.quote(csv_string_norm)
 # ----------------
 # app layout: bootstrap
 
@@ -98,7 +75,7 @@ app.layout = dbc.Container([
             dcc.Checklist(
                 id='my_alt_check',
                 options=[
-                    {'label': x, 'value': x} for x in df_alt_col
+                    {'label': x, 'value': x} for x in CRYPTO_LIST
                 ],
                 value=["BTC", "ETH", "XRP", "LTC", "BCH"],
                 labelStyle={'display': 'inline-block'},
@@ -142,7 +119,7 @@ app.layout = dbc.Container([
             dcc.Checklist(
                 id='my_yahoo_check',
                 options=[
-                    {'label': x, 'value': x} for x in df_col_yahoo
+                    {'label': x, 'value': x} for x in YAHOO_DASH_LIST
                 ],
                 value=["BTC", "GOLD", "AMAZON", "TESLA", "APPLE", "NETFLIX"],
                 labelStyle={'display': 'inline-block'},
@@ -185,7 +162,7 @@ app.layout = dbc.Container([
                 dcc.Checklist(
                     id='my_yahoo_norm',
                     options=[
-                        {'label': x, 'value': x} for x in df_norm_col
+                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
                     ],
                     value=["BTC", "AMAZON",
                            "TESLA", "APPLE", "NETFLIX"],
@@ -200,7 +177,7 @@ app.layout = dbc.Container([
                     'Download Data',
                     id='download-link_yahoo_norm',
                     download="yahoo_normalized.csv",
-                    href=csv_string_norm,
+                    href='',
                     target="_blank"
                 )
             ])
@@ -228,7 +205,7 @@ app.layout = dbc.Container([
             dcc.Checklist(
                 id='my_yahoo_vola',
                 options=[
-                    {'label': x, 'value': x} for x in df_norm_col
+                    {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
                 ],
                 value=["BTC", "AMAZON",
                        "TESLA", "APPLE", "NETFLIX"],
@@ -243,7 +220,7 @@ app.layout = dbc.Container([
                 'Download Data',
                 id='download-link_yahoo_vola',
                 download="yahoo_vola.csv",
-                href=csv_string_norm,
+                href='',
                 target="_blank"
             )
         ])
@@ -262,26 +239,29 @@ app.layout = dbc.Container([
 # naming has to be commented in the layout part for the second and third graph
 
 @ app.callback(
-    Output(component_id="my_multi_line", component_property="figure"),
+    [Output(component_id="my_multi_line", component_property="figure"),
+     Output(component_id='download-link_alt', component_property='href')],
     [Input(component_id="my_alt_dropdown", component_property="value"),
      Input(component_id="my_alt_check", component_property="value"),
      ]
 )
 def update_graph_alt(window_selection, asset_selection):
 
+    df_alt, _ = btc_total_dfs(window_list, "btc_denominated")
+
     dff_alt = df_alt.copy()
-    dff_w = dff_alt.loc[dff_alt.Window == window_selection]
-    dff_w = dff_w.drop(columns=["Window"])
-    dff_date = dff_w["Date"]
-    dff_alt_filtered = dff_w[asset_selection]
-    dff_alt_filtered["Date"] = dff_date
+    dff_alt_w = dff_alt.loc[dff_alt.Window == window_selection]
+    dff_alt_w = dff_alt_w.drop(columns=["Window"])
+    dff_date_alt = dff_alt_w["Date"]
+    dff_alt_filtered = dff_alt_w[asset_selection]
+    dff_alt_filtered["Date"] = dff_date_alt
 
     fig_alt = px.line(
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Altcoin performances denominated in BTC',
+        title='Altcoin performances BTC denominated',
         color_discrete_map={
             "BTC": "#FEAF16",
             "ETH": "#511CFB",
@@ -298,47 +278,58 @@ def update_graph_alt(window_selection, asset_selection):
         }
     )
 
-    return fig_alt
+    csv_string_alt = dff_alt_w.to_csv(index=False, encoding='utf-8')
+    csv_string_alt = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_alt)
+
+    return fig_alt, csv_string_alt
 
 
-@app.callback(
-    Output(component_id='download-link_alt', component_property='href'),
-    Input(component_id='my_alt_dropdown', component_property='value')
-)
-def update_download_link_alt(window_selection):
+# @app.callback(
+#     Output(component_id='download-link_alt', component_property='href'),
+#     Input(component_id='my_alt_dropdown', component_property='value')
+# )
+# def update_download_link_alt(window_selection):
 
-    dff_alt_d = df_alt.copy()
-    dff_w = dff_alt_d.loc[dff_alt_d.Window == window_selection]
+#     dff_alt_d = df_alt.copy()
+#     dff_w = dff_alt_d.loc[dff_alt_d.Window == window_selection]
 
-    csv_string = dff_w.to_csv(index=False, encoding='utf-8')
-    csv_string = "data:text/csv;charset=utf-8," + \
-        urllib.parse.quote(csv_string)
+#     csv_string = dff_w.to_csv(index=False, encoding='utf-8')
+#     csv_string = "data:text/csv;charset=utf-8," + \
+#         urllib.parse.quote(csv_string)
 
-    return csv_string
+#     return csv_string
 
 # various asset btc den
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_2", component_property="figure"),
+    [Output(component_id="my_multi_line_2", component_property="figure"),
+     Output(component_id='download-link_yahoo', component_property='href')],
     [Input(component_id="my_yahoo_dropdown", component_property="value"),
      Input(component_id="my_yahoo_check", component_property="value")]
 )
 def update_graph_yahoo(window_selection, asset_selection):
 
+    _, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
+
+    df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC", "BCH"])
+    df_yahoo = df_yahoo.rename(
+        columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond'})
+
     dff_yahoo = df_yahoo.copy()
-    dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
-    dff_w = dff_w.drop(columns=["Window"])
-    dff_date = dff_w["Date"]
-    dff_filtered = dff_w[asset_selection]
-    dff_filtered["Date"] = dff_date
+    dff_y_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
+    dff_y_w = dff_y_w.drop(columns=["Window"])
+    dff_date_y = dff_y_w["Date"]
+    dff_y_filtered = dff_y_w[asset_selection]
+    dff_y_filtered["Date"] = dff_date_y
 
     fig_yahoo = px.line(
-        data_frame=dff_filtered,
+        data_frame=dff_y_filtered,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Asset Class performances denominated in BTC',
+        title='Asset Class performances BTC denominated',
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -357,46 +348,53 @@ def update_graph_yahoo(window_selection, asset_selection):
         }
     )
 
-    return fig_yahoo
+    csv_string_yahoo = dff_y_w.to_csv(index=False, encoding='utf-8')
+    csv_string_yahoo = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_yahoo)
+
+    return fig_yahoo, csv_string_yahoo
 
 
-@app.callback(
-    Output(component_id='download-link_yahoo', component_property='href'),
-    Input(component_id='my_yahoo_dropdown', component_property='value')
-)
-def update_download_link_yahoo(window_selection):
+# @app.callback(
+#     Output(component_id='download-link_yahoo', component_property='href'),
+#     Input(component_id='my_yahoo_dropdown', component_property='value')
+# )
+# def update_download_link_yahoo(window_selection):
 
-    dff_y_d = df_yahoo.copy()
-    dff_w = dff_y_d.loc[dff_y_d.Window == window_selection]
+#     dff_y_d = df_yahoo.copy()
+#     dff_w = dff_y_d.loc[dff_y_d.Window == window_selection]
 
-    csv_string = dff_w.to_csv(index=False, encoding='utf-8')
-    csv_string = "data:text/csv;charset=utf-8," + \
-        urllib.parse.quote(csv_string)
+#     csv_string = dff_w.to_csv(index=False, encoding='utf-8')
+#     csv_string = "data:text/csv;charset=utf-8," + \
+#         urllib.parse.quote(csv_string)
 
-    return csv_string
+#     return csv_string
 
 # ------------
 # normalized prices
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_3", component_property="figure"),
+    [Output(component_id="my_multi_line_3", component_property="figure"),
+     Output(component_id='download-link_yahoo_norm', component_property='href')],
     [Input(component_id="my_norm_dropdown", component_property="value"),
      Input(component_id="my_yahoo_norm", component_property="value")]
 )
 def update_graph_norm(window_selection, asset_selection):
 
+    df_usd_norm = usd_den_total_df(window_list)
+
     dff_norm = df_usd_norm.copy()
-    dff_w = dff_norm.loc[dff_norm.Window == window_selection]
-    dff_w = dff_w.drop(columns=["Window"])
+    dff_norm_w = dff_norm.loc[dff_norm.Window == window_selection]
+    dff_norm_w = dff_norm_w.drop(columns=["Window"])
 
-    dff_date = dff_w["Date"]
+    dff_date_n = dff_norm_w["Date"]
 
-    dff_filtered = dff_w[asset_selection]
-    dff_filtered["Date"] = dff_date
+    dff_filtered_norm = dff_norm_w[asset_selection]
+    dff_filtered_norm["Date"] = dff_date_n
 
     fig_yahoo_norm = px.line(
-        data_frame=dff_filtered,
+        data_frame=dff_filtered_norm,
         x="Date",
         y=asset_selection,
         template='plotly_dark',
@@ -410,15 +408,22 @@ def update_graph_norm(window_selection, asset_selection):
         }
     )
 
-    return fig_yahoo_norm
+    csv_string_norm = dff_norm_w.to_csv(index=False, encoding='utf-8')
+    csv_string_norm = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_norm)
+
+    return fig_yahoo_norm, csv_string_norm
 
 
 @ app.callback(
-    Output(component_id="my_multi_line_4", component_property="figure"),
+    [Output(component_id="my_multi_line_4", component_property="figure"),
+     Output(component_id='download-link_yahoo_vola', component_property='href')],
     [Input(component_id="my_vola_dropdown", component_property="value"),
      Input(component_id="my_yahoo_vola", component_property="value")]
 )
 def update_graph_vola(days_selection, asset_selection):
+
+    df_vola = vola_total_df(vola_days_list)
 
     dff_vola = df_vola.copy()
 
@@ -445,7 +450,11 @@ def update_graph_vola(days_selection, asset_selection):
         }
     )
 
-    return fig_yahoo_vola
+    csv_string_vola = dff_days.to_csv(index=False, encoding='utf-8')
+    csv_string_vola = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_vola)
+
+    return fig_yahoo_vola, csv_string_vola
 
 
 print("Done")
