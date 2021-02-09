@@ -230,7 +230,7 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
 
-            html.Label(['Yahoo Price Data']),
+            html.Label(['Yahoo Price Data: ']),
 
             html.A(
                 'Download Data',
