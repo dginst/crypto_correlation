@@ -226,6 +226,24 @@ app.layout = dbc.Container([
         ])
 
     ]),
+
+    dbc.Row([
+        dbc.Col([
+
+            html.Label(['Yahoo Price Data']),
+
+            html.A(
+                'Download Data',
+                id='download-link_yahoo_price',
+                download="yahoo_price.csv",
+                href='',
+                target="_blank"
+            )
+        ])
+
+    ]),
+
+    dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
 ])
 
 # --------------------------
@@ -237,6 +255,23 @@ app.layout = dbc.Container([
 # dropdown can be unified putting the same ID into the Input of each callback,
 # NB: the dropdpwn display should be, at that point, disabled except for the first one
 # naming has to be commented in the layout part for the second and third graph
+
+@app.callback(
+    Output(component_id='download-link_yahoo_price', component_property='href'),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def update_price_yahoo(n):
+
+    df_yahoo_price = query_mongo(DB_NAME, "all_prices_y")
+    dff_yahoo_price = df_yahoo_price.copy()
+
+    csv_string_yahoo_price = dff_yahoo_price.to_csv(
+        index=False, encoding='utf-8')
+    csv_string_yahoo_price = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_yahoo_price)
+
+    return csv_string_yahoo_price
+
 
 @ app.callback(
     [Output(component_id="my_multi_line", component_property="figure"),
