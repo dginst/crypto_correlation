@@ -243,6 +243,8 @@ app.layout = dbc.Container([
 
     ]),
 
+    dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
+
     dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
 ])
 
@@ -278,6 +280,7 @@ def update_price_yahoo(n):
      Output(component_id='download-link_alt', component_property='href')],
     [Input(component_id="my_alt_dropdown", component_property="value"),
      Input(component_id="my_alt_check", component_property="value"),
+     Input(component_id='update', component_property='n_intervals')
      ]
 )
 def update_graph_alt(window_selection, asset_selection):
