@@ -243,6 +243,37 @@ app.layout = dbc.Container([
 
     ]),
 
+    dbc.Row([
+            dbc.Col([
+
+
+                html.Label(['Assets']),
+
+                dcc.Checklist(
+                    id='my_yahoo_volume',
+                    options=[
+                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                    ],
+                    value=["BTC", "AMAZON",
+                           "TESLA", "APPLE", "NETFLIX"],
+                    labelStyle={'display': 'inline-block'},
+                    inputStyle={"margin-right": "10px",
+                                "margin-left": "10px"}
+                ),
+
+                dcc.Graph(id='my_multi_line_5', figure={}),
+
+                html.A(
+                    'Download Data',
+                    id='download-link_yahoo_volume',
+                    download="yahoo_volume.csv",
+                    href='',
+                    target="_blank"
+                )
+            ])
+
+            ]),
+
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
     dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
@@ -492,6 +523,43 @@ def update_graph_vola(days_selection, asset_selection):
         urllib.parse.quote(csv_string_vola)
 
     return fig_yahoo_vola, csv_string_vola
+
+
+@ app.callback(
+    [Output(component_id="my_multi_line_5", component_property="figure"),
+     Output(component_id='download-link_yahoo_volume', component_property='href')],
+    Input(component_id="my_yahoo_volume", component_property="value")
+)
+def update_graph_volume(asset_selection):
+
+    df_volume = query_mongo(DB_NAME, "all_volume_y")
+
+    dff_volume = df_volume.copy()
+    dff_vol_date = dff_volume["Date"]
+
+    dff_vol_filtered = dff_volume[asset_selection]
+    dff_vol_filtered["Date"] = dff_vol_date
+
+    fig_yahoo_volume = px.line(
+        data_frame=dff_vol_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        title='Volume in USD',
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "TESLA": "#86CE00",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
+    )
+
+    csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
+    csv_string_volume = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_volume)
+
+    return fig_yahoo_volume, csv_string_volume
 
 
 print("Done")

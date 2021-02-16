@@ -169,6 +169,7 @@ def mongo_coll():
         "collection_prices_y": db.all_prices_y,
         "collection_returns_y": db.all_returns_y,
         "collection_logreturns_y": db.all_logreturns_y,
+        "collection_volume_y": db.all_volume_y,
 
         # bloomberg
         "collection_prices": db.all_prices,
@@ -338,6 +339,7 @@ def mongo_coll_drop(corr_type):
         db.all_returns_y.drop()
         db.all_prices_y.drop()
         db.all_logreturns_y.drop()
+        db.all_volume_y.drop()
 
     elif corr_type == "bloom":
 

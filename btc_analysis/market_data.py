@@ -24,7 +24,8 @@ def yesterday_str():
 def all_series_download(series_code_list, all_el_list,
                         start_period, end_period):
 
-    all_series_df = pd.DataFrame(columns=all_el_list)
+    all_series_df_price = pd.DataFrame(columns=all_el_list)
+    all_series_df_volume = pd.DataFrame(columns=all_el_list)
 
     for i, element in enumerate(series_code_list):
 
@@ -47,15 +48,18 @@ def all_series_download(series_code_list, all_el_list,
 
                 date_arr = single_series["Date"]
 
-        all_series_df[var] = single_series["Close"]
+        all_series_df_price[var] = single_series["Close"]
+        all_series_df_volume[var] = single_series["Volume"]
 
-    all_series_df["Date"] = date_arr
+    all_series_df_price["Date"] = date_arr
+    all_series_df_volume["Date"] = date_arr
 
-    return all_series_df
+    return all_series_df_price, all_series_df_volume
 
 
 def single_series_download(series_code, start_period, end_period):
 
+    print(series_code)
     # creatre object
     series_obj = yf.Ticker(series_code)
 
@@ -70,7 +74,7 @@ def single_series_download(series_code, start_period, end_period):
 
     # modifying date format
     df["Date"] = [x.strftime("%Y-%m-%d") for x in df["Date"]]
-    df = df[["Date", "Close"]]
+    df = df[["Date", "Close", "Volume"]]
 
     merged = pd.merge(date_df, df, how="left", on="Date")
 
@@ -131,31 +135,47 @@ def mkt_data_op(series_code_list, all_el_list_d,
                 all_el_list_r,
                 start_period, end_period):
 
-    all_series_df = all_series_download(series_code_list, all_el_list_d,
-                                        start_period, end_period)
+    (all_series_df_price,
+     all_series_df_volume) = all_series_download(series_code_list,
+                                                 all_el_list_d,
+                                                 start_period,
+                                                 end_period)
+
+    print(all_series_df_price)
+    print(all_series_df_volume)
 
     # mongo_upload(all_series_df, "collection_prices_y")
 
-    complete_series_df = add_crypto(all_series_df)
+    complete_series_df_price = add_crypto(all_series_df_price)
+    mongo_upload(complete_series_df_price, "collection_prices_y")
 
-    mongo_upload(complete_series_df, "collection_prices_y")
+    complete_series_df_volume = add_crypto(
+        all_series_df_price, collection="crypto_volume")
+    mongo_upload(complete_series_df_volume, "collection_volume_y")
 
-    all_ret_df = all_series_to_return(complete_series_df, all_el_list_r)
+    all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
 
     mongo_upload(all_ret_df, "collection_returns_y")
 
-    all_logret_df = all_series_to_logret(complete_series_df)
+    all_logret_df = all_series_to_logret(complete_series_df_price)
 
     mongo_upload(all_logret_df, "collection_logreturns_y")
 
 
-def add_crypto(initial_df):
+def add_crypto(initial_df, collection="crypto_price"):
 
-    crypto_df = query_mongo("index", "crypto_price")
+    if collection == "crypto_price":
+
+        crypto_df = query_mongo("index", collection)
+        yahoo_old_crypto, _ = crypto_old_series_y(START_DATE, "2015-12-31")
+
+    elif collection == "crypto_volume":
+
+        crypto_df = query_mongo("index", collection)
+        _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
+
     crypto_df = crypto_df[["Date", "BTC", "ETH", "LTC", "XRP", "BCH"]]
     crypto_df = crypto_df.rename({"BTC": "BITCOIN"})
-
-    yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
@@ -204,7 +224,7 @@ def crypto_old_series_y(start, stop):
 
     yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']
 
-    crypto_df = all_series_download(yahoo_code, yahoo_name,
-                                    start, stop)
+    crypto_df_price, crypto_df_volume = all_series_download(yahoo_code, yahoo_name,
+                                                            start, stop)
 
-    return crypto_df
+    return crypto_df_price, crypto_df_volume
