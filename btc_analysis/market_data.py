@@ -278,7 +278,7 @@ def add_no_stable(initial_df, no_stable_vol_df):
     crypto_df = yahoo_old_crypto[["Date", "BTC"]]
     crypto_df = crypto_df.rename({"BTC": "BTC no stable"})
 
-    tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
+    tot_crypto_df = crypto_df.append(no_stable_vol_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
     print(tot_crypto_df)
 
