@@ -317,4 +317,4 @@ def add_no_stable(initial_df, no_stable_vol_df):
                                'NETFLIX'
                                ]]
 
-    return df
+    return complete_df
