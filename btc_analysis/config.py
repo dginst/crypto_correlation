@@ -489,6 +489,14 @@ ASSET_ANALYSIS_LIST = ["BTC",
                        "TESLA",
                        "AMAZON"]
 
+
+ASSET_ANALYSIS_LIST_VOL = ["BTC",
+                           "BTC no stable",
+                           "APPLE",
+                           "NETFLIX",
+                           "TESLA",
+                           "AMAZON"]
+
 YAHOO_DASH_LIST = ['S&P500',
                    'DOWJONES',
                    'GOLD',

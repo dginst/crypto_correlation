@@ -17,7 +17,8 @@ from btc_analysis.mongo_func import (
 from btc_analysis.config import (
     DB_NAME, CRYPTO_LIST,
     YAHOO_DASH_LIST,
-    ASSET_ANALYSIS_LIST
+    ASSET_ANALYSIS_LIST,
+    ASSET_ANALYSIS_LIST_VOL
 
 )
 
@@ -252,9 +253,9 @@ app.layout = dbc.Container([
                 dcc.Checklist(
                     id='my_yahoo_volume',
                     options=[
-                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST_VOL
                     ],
-                    value=["BTC", "AMAZON",
+                    value=["BTC", "BTC no stable", "AMAZON",
                            "TESLA", "APPLE", "NETFLIX"],
                     labelStyle={'display': 'inline-block'},
                     inputStyle={"margin-right": "10px",
@@ -548,6 +549,7 @@ def update_graph_volume(asset_selection):
         title='Volume in USD',
         color_discrete_map={
             "BTC": "#FEAF16",
+            "BTC no stable": "#8e16fe",
             "TESLA": "#86CE00",
             "AMAZON": "#F58518",
             "APPLE": "#BAB0AC",
