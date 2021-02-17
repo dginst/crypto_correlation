@@ -276,10 +276,10 @@ def add_no_stable(initial_df, no_stable_vol_df):
     _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
 
     crypto_df = yahoo_old_crypto[["Date", "BTC"]]
-    crypto_df = crypto_df.rename(columns={"BTC": "BTC no stable"})
 
     tot_crypto_df = crypto_df.append(no_stable_vol_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
+    tot_crypto_df = tot_crypto_df.rename(columns={"BTC": "BTC no stable"})
     print(tot_crypto_df)
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
