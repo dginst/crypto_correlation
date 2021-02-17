@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 from btc_analysis.config import (
     CRYPTO_LIST, REF_CRYPTO, REF_VARIOUS,
@@ -14,6 +14,42 @@ from btc_analysis.mongo_func import (
 )
 
 # ### TIME FUNCTION ###
+# function that generate an array of date in timstamp format starting from
+# start_date to end_date given in mm-dd-yyyy format;
+# if not specified end_date = today()
+# function only returns timestamp value in second since epoch where every
+# day is in the exact 12:00 am UTC
+# function considers End of Day price series so, if not otherwise specified,
+# the returned array of date will be from start to today - 1 (EoD = 'Y')
+
+
+def date_gen_TS(start_date, end_date=None, timeST="Y", clss="array", EoD="Y"):
+
+    if end_date is None:
+
+        end_date = datetime.now().strftime("%m-%d-%Y")
+
+    date_index = pd.date_range(start_date, end_date)
+
+    if timeST == "Y":
+
+        date_ll = [
+            int(date.replace(tzinfo=timezone.utc).timestamp()) for date in date_index
+        ]
+
+    else:
+
+        date_ll = [datetime.strftime(date, "%m-%d-%Y") for date in date_index]
+
+    if clss == "array":
+
+        date_ll = np.array(date_ll)
+
+    if EoD == "Y":
+
+        date_ll = date_ll[: len(date_ll) - 1]
+
+    return date_ll
 
 
 def date_gen(start_date, end_date, holiday="Y"):

@@ -1,12 +1,12 @@
 from datetime import datetime, timezone
 import yfinance as yf
-from btc_analysis.calc import date_gen
+from btc_analysis.calc import date_gen, date_gen_TS
 import pandas as pd
 import numpy as np
 from btc_analysis.mongo_func import (
     mongo_upload, query_mongo
 )
-from btc_analysis.config import (START_DATE, INDEX_START_DATE)
+from btc_analysis.config import (START_DATE, INDEX_START_DATE, INDEX_DB_NAME)
 
 
 def yesterday_str():
@@ -141,9 +141,6 @@ def mkt_data_op(series_code_list, all_el_list_d,
                                                  start_period,
                                                  end_period)
 
-    print(all_series_df_price)
-    print(all_series_df_volume)
-
     # mongo_upload(all_series_df, "collection_prices_y")
 
     complete_series_df_price = add_crypto(all_series_df_price)
@@ -151,7 +148,15 @@ def mkt_data_op(series_code_list, all_el_list_d,
 
     complete_series_df_volume = add_crypto(
         all_series_df_volume, collection="crypto_volume")
-    mongo_upload(complete_series_df_volume, "collection_volume_y")
+
+    df_all_pair = query_mongo("index", "index_data_feed")
+
+    no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+    complete_series_df_volume = add_no_stable(
+        complete_series_df_volume, no_stable_vol_df)
+
+    complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
+    mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
 
     all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
 
@@ -179,8 +184,6 @@ def add_crypto(initial_df, collection="crypto_price"):
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
-
-    print(tot_crypto_df)
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
 
@@ -228,3 +231,88 @@ def crypto_old_series_y(start, stop):
                                                             start, stop)
 
     return crypto_df_price, crypto_df_volume
+
+
+def stablecoin_volume(all_exc_df):
+
+    date_arr = date_gen_TS("01-01-2016")
+
+    stable_vol_df = pd.DataFrame(columns=["Date", "Volume"])
+    stable_vol_df["Date"] = date_arr
+
+    only_stable_usdc = all_exc_df.loc[all_exc_df.Pair == "btcusdc"]
+    only_stable_usdt = all_exc_df.loc[all_exc_df.Pair == "btcusdt"]
+    only_stable = only_stable_usdt.append(only_stable_usdc)
+
+    for date in date_arr:
+
+        only_stable_date = only_stable.loc[only_stable.Time == date]
+
+        df_sum = only_stable_date.sum(axis=0, skipna=True)
+        vol_sum = float(np.array(df_sum["Pair Volume"]))
+
+        stable_vol_df.loc[stable_vol_df.Date == date, "Volume"] = vol_sum
+
+    return stable_vol_df
+
+
+def crypto_vol_no_stable(all_exc_df):
+
+    only_stable_vol = stablecoin_volume(all_exc_df)
+    vol_arr = np.array(only_stable_vol["Volume"])
+
+    total_crypto_vol = query_mongo(INDEX_DB_NAME, "crypto_volume")
+    total_crypto_vol = total_crypto_vol[["Time", "Date", "BTC"]]
+
+    total_crypto_vol["BTC"] = total_crypto_vol["BTC"].sub(vol_arr)
+
+    return total_crypto_vol
+
+
+def add_no_stable(initial_df, no_stable_vol_df):
+
+    no_stable_vol_df = no_stable_vol_df.drop(columns="Time")
+
+    _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
+
+    crypto_df = yahoo_old_crypto[["Date", "BTC"]]
+    crypto_df = crypto_df.rename({"BTC": "BTC no stable"})
+
+    tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
+    tot_crypto_df.reset_index(drop=True, inplace=True)
+
+    complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
+
+    complete_df = complete_df[["Date",
+                               "BTC",
+                               "BTC no stable",
+                               "ETH",
+                               "LTC",
+                               "XRP",
+                               "BCH",
+                               'GOLD',
+                               'SILVER',
+                               'COPPER',
+                               'NATURAL_GAS',
+                               'PETROL',
+                               'CORN',
+                               'EUR',
+                               'GBP',
+                               'JPY',
+                               'CHF',
+                               'NASDAQ',
+                               'DOWJONES',
+                               'S&P500',
+                               'EUROSTOXX50',
+                               'VIX',
+                               'US_TREASURY',
+                               'BBG Barclays PAN EURO Aggregate',
+                               'US Aggregate Bond',
+                               'US index',
+                               'TESLA',
+                               'AMAZON',
+                               'APPLE',
+                               'NETFLIX'
+                               ]]
+
+    return df
