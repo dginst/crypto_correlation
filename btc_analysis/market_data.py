@@ -154,8 +154,11 @@ def mkt_data_op(series_code_list, all_el_list_d,
     no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
     complete_series_df_volume = add_no_stable(
         complete_series_df_volume, no_stable_vol_df)
+    date_arr = complete_series_df_volume["Date"]
+    complete_series_df_volume = complete_series_df_volume.drop(columns="Date")
 
     complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
+    complete_series_df_vol_rolling["Date"] = date_arr
     mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
 
     all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
