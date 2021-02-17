@@ -280,8 +280,10 @@ def add_no_stable(initial_df, no_stable_vol_df):
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
+    print(tot_crypto_df)
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
+    print(complete_df)
 
     complete_df = complete_df[["Date",
                                "BTC",
