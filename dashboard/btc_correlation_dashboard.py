@@ -58,7 +58,7 @@ app.layout = dbc.Container([
 
     # create as much rows and columns as needed foe the dashboard
     dbc.Row([
-        dbc.Col(html.H1("BTC analysis Dashboard",
+        dbc.Col(html.H1("BTC Correlations Dashboard",
                         className='text-center text-primary, mb-4'),
                 width=12)
 
