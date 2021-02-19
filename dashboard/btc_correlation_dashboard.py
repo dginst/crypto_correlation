@@ -43,11 +43,13 @@ df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC"])
 df_yahoo = df_yahoo.rename(
     columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
              'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
+             'PETROL': 'CRUDE OIL',
              'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
 df_col_yahoo = list(df_yahoo.columns)
 df_col_yahoo.remove('Date')
 df_col_yahoo.remove('Window')
 df_col_yahoo.remove('Year')
+df_col_yahoo.remove('NATURAL_GAS')
 
 # ----------------
 # app layout: bootstrap
@@ -129,7 +131,7 @@ app.layout = dbc.Container([
                 options=[
                     {'label': x, 'value': x} for x in df_col_yahoo
                 ],
-                value=["GOLD", "S&P500", "PETROL", "US_TREASURY"],
+                value=["GOLD", "S&P500", "CRUDE OIL", "US_TREASURY"],
                 labelStyle={'display': 'inline-block'},
                 inputStyle={"margin-right": "10px",
                             "margin-left": "10px"}
@@ -241,7 +243,7 @@ def update_graph_yahoo(window_selection, asset_selection):
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
-            "PETROL": "#85660D",
+            "CRUDE OIL": "#85660D",
             "COPPER": "#B68100",
             "SILVER": "#E2E2E2",
             "TESLA": "#86CE00",
