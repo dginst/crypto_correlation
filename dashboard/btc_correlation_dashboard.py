@@ -247,7 +247,7 @@ def update_graph_yahoo(window_selection, asset_selection):
             "TESLA": "#86CE00",
             "US index": "#FBE426",
             "CORN": "#DA16FF",
-            "NASDAQ": "#0A08B",
+            "NASDAQ": "black",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
             "US_TREASURY": "#A777F1",
