@@ -543,3 +543,19 @@ STATIC_COLORSCALE = [[0.0, "rgb(49,54,149)"],
                      [0.7777777777777778, "rgb(244,109,67)"],
                      [0.8888888888888888, "rgb(215,48,39)"],
                      [1.0, "rgb(165,0,38)"]]
+
+
+# ###
+# market cap
+
+TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
+                       "AMZN", "TSLA", "NFLX", "PYPL", "MA", "TCEHY", "V"]
+
+NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
+                    "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa"]
+
+USD_SUPPLY = 19632088542000
+
+GOLD_OUNCES_SUPPLY = 2500000000
+
+SILVER_OUNCES_SUPPLY = 4000000000

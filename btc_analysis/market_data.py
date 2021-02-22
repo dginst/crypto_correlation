@@ -2,11 +2,14 @@ from datetime import datetime, timezone
 import yfinance as yf
 from btc_analysis.calc import date_gen, date_gen_TS
 import pandas as pd
+from pandas_datareader import data
 import numpy as np
 from btc_analysis.mongo_func import (
     mongo_upload, query_mongo
 )
-from btc_analysis.config import (START_DATE, INDEX_START_DATE, INDEX_DB_NAME)
+from btc_analysis.config import (START_DATE, INDEX_START_DATE,
+                                 INDEX_DB_NAME, USD_SUPPLY, GOLD_OUNCES_SUPPLY,
+                                 SILVER_OUNCES_SUPPLY)
 
 
 def yesterday_str():
@@ -321,3 +324,50 @@ def add_no_stable(initial_df, no_stable_vol_df):
                                ]]
 
     return complete_df
+
+# market cap fucntion
+
+
+def mkt_cap_downloader(tickers_list, name_list):
+
+    mkt_cap_df = pd.DataFrame()
+    i = 0
+
+    for str in tickers_list:
+
+        name = name_list[i]
+        market_cap = pd.DataFrame(
+            {name: int(data.get_quote_yahoo(str)['marketCap'])}, index=[0])
+        mkt_cap_df[name] = market_cap[name]
+
+        i = i+1
+
+    return mkt_cap_df
+
+
+def mkt_cap_adder(mkt_cap_df, yesterday, USD_SUPPLY,
+                  GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY):
+
+    mkt_cap_df["USD"] = USD_SUPPLY
+
+    query_date = {"Date": yesterday}
+    yesterday_yahoo = query_mongo("btc_analysis", "all_prices_y", query_date)
+
+    gold_mkt_cap = GOLD_OUNCES_SUPPLY * np.array(yesterday_yahoo["GOLD"])
+    silver_mkt_cap = SILVER_OUNCES_SUPPLY * np.array(yesterday_yahoo["SILVER"])
+
+    mkt_cap_df["Gold"] = gold_mkt_cap
+    mkt_cap_df["Silver"] = silver_mkt_cap
+
+    return mkt_cap_df
+
+
+def mkt_cap_op(tickers_list, name_list, yesterday):
+
+    mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
+
+    mkt_cap_df_comp = mkt_cap_adder(
+        mkt_cap_df, yesterday, USD_SUPPLY,
+        GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY)
+
+    mongo_upload(mkt_cap_df_comp, "collection_market_cap")
