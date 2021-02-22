@@ -345,16 +345,16 @@ def mkt_cap_downloader(tickers_list, name_list):
     return mkt_cap_df
 
 
-def mkt_cap_adder(mkt_cap_df, yesterday, USD_SUPPLY,
+def mkt_cap_adder(mkt_cap_df, USD_SUPPLY,
                   GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY):
 
     mkt_cap_df["USD"] = USD_SUPPLY
 
-    query_date = {"Date": yesterday}
-    yesterday_yahoo = query_mongo("btc_analysis", "all_prices_y", query_date)
+    all_yahoo = query_mongo("btc_analysis", "all_prices_y")
+    last_day_yahoo = all_yahoo.tail(1)
 
-    gold_mkt_cap = GOLD_OUNCES_SUPPLY * np.array(yesterday_yahoo["GOLD"])
-    silver_mkt_cap = SILVER_OUNCES_SUPPLY * np.array(yesterday_yahoo["SILVER"])
+    gold_mkt_cap = GOLD_OUNCES_SUPPLY * np.array(last_day_yahoo["GOLD"])
+    silver_mkt_cap = SILVER_OUNCES_SUPPLY * np.array(last_day_yahoo["SILVER"])
 
     mkt_cap_df["Gold"] = gold_mkt_cap
     mkt_cap_df["Silver"] = silver_mkt_cap
@@ -362,12 +362,12 @@ def mkt_cap_adder(mkt_cap_df, yesterday, USD_SUPPLY,
     return mkt_cap_df
 
 
-def mkt_cap_op(tickers_list, name_list, yesterday):
+def mkt_cap_op(tickers_list, name_list):
 
     mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
 
     mkt_cap_df_comp = mkt_cap_adder(
-        mkt_cap_df, yesterday, USD_SUPPLY,
+        mkt_cap_df, USD_SUPPLY,
         GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY)
 
     mongo_upload(mkt_cap_df_comp, "collection_market_cap")
