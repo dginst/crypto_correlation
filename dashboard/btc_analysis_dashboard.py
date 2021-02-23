@@ -1,6 +1,7 @@
 
 import plotly.express as px
-
+import pandas as pd
+import numpy as np
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -607,10 +608,14 @@ def update_graph_bar(n):
 
     dff_mkt_cap = df_mkt_cap.copy()
 
+    mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
+    mkt_cap_df["Name"] = np.array(COMPLETE_MKT_CAP)
+    mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap.head(1))
+
     fig_mkt_cap = px.bar(
-        data_frame=dff_mkt_cap,
-        x=COMPLETE_MKT_CAP,
-        # y=asset_selection,
+        data_frame=mkt_cap_df,
+        x="Name",
+        y="Market Cap",
         template='plotly_dark',
         title='Market Capitalization',
         color_discrete_map={
