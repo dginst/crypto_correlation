@@ -435,6 +435,8 @@ def blockchain_stats_op():
 
     raw_data = blockchain_stats_api()
 
-    mongo_upload(raw_data, "collection_btc_supply")
+    raw_data_df = pd.DataFrame.from_dict(raw_data)
+
+    mongo_upload(raw_data_df, "collection_btc_supply")
 
     return None
