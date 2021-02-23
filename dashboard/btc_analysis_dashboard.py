@@ -610,7 +610,7 @@ def update_graph_bar(n):
 
     mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
     mkt_cap_df["Name"] = np.array(COMPLETE_MKT_CAP)
-    mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap.head(1))
+    mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap)
 
     fig_mkt_cap = px.bar(
         data_frame=mkt_cap_df,
