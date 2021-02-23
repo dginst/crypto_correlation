@@ -556,7 +556,7 @@ NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
 
 COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
-                    "Gold", "Silver", "USD", "BTC"]
+                    "USD", "Gold", "Silver", "BTC"]
 
 USD_SUPPLY = 19632088542000
 
