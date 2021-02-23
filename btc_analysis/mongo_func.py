@@ -160,6 +160,7 @@ def mongo_indexing():
 
     # market cap
     db.market_cap.create_index([("id", -1)])
+    db.btc_supply.create_index([("id", -1)])
 
 
 def mongo_coll():
@@ -270,6 +271,7 @@ def mongo_coll():
 
         # market cap
         "collection_market_cap": db.market_cap,
+        "collection_btc_supply": db.btc_supply,
 
     }
 
@@ -401,6 +403,7 @@ def mongo_coll_drop(corr_type):
     elif corr_type == "market_cap":
 
         db.market_cap.drop()
+        db.btc_supply.drop()
 
 
 def mongo_correlation_drop():

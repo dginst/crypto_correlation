@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 import yfinance as yf
+import json
+import requests
 from btc_analysis.calc import date_gen, date_gen_TS
 import pandas as pd
 from pandas_datareader import data
@@ -362,7 +364,7 @@ def mkt_cap_adder(mkt_cap_df, USD_SUPPLY,
     return mkt_cap_df
 
 
-def mkt_cap_op(tickers_list, name_list):
+def mkt_cap_op(tickers_list, name_list, yesterday_human):
 
     mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
 
@@ -370,4 +372,69 @@ def mkt_cap_op(tickers_list, name_list):
         mkt_cap_df, USD_SUPPLY,
         GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY)
 
+    btc_mkt_cap = mkt_cap_btc(yesterday_human)
+
+    mkt_cap_df_comp["BTC"] = btc_mkt_cap
+
     mongo_upload(mkt_cap_df_comp, "collection_market_cap")
+
+
+def mkt_cap_btc(yesterday_human):
+
+    blockchain_stats_op()
+
+    btc_supply_df = query_mongo("btc_analysis", "btc_supply")
+
+    query_btc_price = {"Date": yesterday_human}
+    all_price_df = query_mongo("index", "crypto_price", query_btc_price)
+
+    btc_price = np.array(all_price_df["BTC"])
+    btc_supply = np.array(btc_supply_df["Supply"])
+
+    btc_mkt_cap = btc_price * btc_supply
+
+    return btc_mkt_cap
+
+# blockchain.com statistics
+
+
+def blockchain_stats_api():
+
+    entrypoint = "https://api.blockchain.info/stats"
+
+    response = requests.get(entrypoint)
+
+    try:
+        response = response.json()
+        r = response
+        sats_for_btc = 100000000
+        total_supply = r["totalbc"] / sats_for_btc
+
+        rawdata = {
+            "Supply": total_supply,
+        }
+
+        return rawdata
+
+    except KeyError:
+
+        err = "This key doesn't exist"
+        print(err)
+
+        return err
+
+    except json.decoder.JSONDecodeError:
+
+        err = "No value in response"
+        print(err)
+
+        return err
+
+
+def blockchain_stats_op():
+
+    raw_data = blockchain_stats_api()
+
+    mongo_upload(raw_data, "collection_btc_supply")
+
+    return None
