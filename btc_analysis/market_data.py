@@ -353,7 +353,8 @@ def mkt_cap_adder(mkt_cap_df, USD_SUPPLY,
     mkt_cap_df["USD"] = USD_SUPPLY
 
     all_yahoo = query_mongo("btc_analysis", "all_prices_y")
-    last_day_yahoo = all_yahoo.tail(1)
+    last_day_yahoo = all_yahoo.tail(2)
+    last_day_yahoo = last_day_yahoo.head(1)
 
     gold_mkt_cap = GOLD_OUNCES_SUPPLY * np.array(last_day_yahoo["GOLD"])
     silver_mkt_cap = SILVER_OUNCES_SUPPLY * np.array(last_day_yahoo["SILVER"])

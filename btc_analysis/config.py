@@ -554,6 +554,10 @@ TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
 NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa"]
 
+COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
+                    "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
+                    "Gold", "Silver", "USD", "BTC"]
+
 USD_SUPPLY = 19632088542000
 
 GOLD_OUNCES_SUPPLY = 2500000000
