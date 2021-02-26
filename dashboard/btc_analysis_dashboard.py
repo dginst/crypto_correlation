@@ -277,36 +277,15 @@ app.layout = dbc.Container([
 
             ]),
 
-    dbc.Row([
-        dbc.Col([
+    # dbc.Row([
+    #     dbc.Col([
 
 
-            # html.Label(['Assets']),
+    #         dcc.Graph(id='my_bar_graph', figure={}),
 
-            # dcc.Checklist(
-            #     id='my_yahoo_volume',
-            #     options=[
-            #         {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST_VOL
-            #     ],
-            #     value=["BTC", "BTC no stable", "AMAZON",
-            #            "TESLA", "APPLE", "NETFLIX"],
-            #     labelStyle={'display': 'inline-block'},
-            #     inputStyle={"margin-right": "10px",
-            #                 "margin-left": "10px"}
-            # ),
+    #     ])
 
-            dcc.Graph(id='my_bar_graph', figure={}),
-
-            # html.A(
-            #     'Download Data',
-            #     id='download-link_yahoo_volume',
-            #     download="yahoo_volume.csv",
-            #     href='',
-            #     target="_blank"
-            # )
-        ])
-
-    ]),
+    # ]),
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
@@ -598,39 +577,39 @@ def update_graph_volume(asset_selection):
     return fig_yahoo_volume, csv_string_volume
 
 
-@ app.callback(
-    Output(component_id="my_bar_graph", component_property="figure"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
-)
-def update_graph_bar(n):
+# @ app.callback(
+#     Output(component_id="my_bar_graph", component_property="figure"),
+#     Input(component_id="yahoo-update", component_property="n_intervals")
+# )
+# def update_graph_bar(n):
 
-    df_mkt_cap = query_mongo(DB_NAME, "market_cap")
+#     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
 
-    dff_mkt_cap = df_mkt_cap.copy()
+#     dff_mkt_cap = df_mkt_cap.copy()
 
-    mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
-    mkt_cap_df["Name"] = np.array(COMPLETE_MKT_CAP)
-    print(mkt_cap_df)
-    mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap).T
-    print(mkt_cap_df)
+#     mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
+#     mkt_cap_df["Name"] = np.array(COMPLETE_MKT_CAP)
+#     print(mkt_cap_df)
+#     mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap).T
+#     print(mkt_cap_df)
 
-    fig_mkt_cap = px.bar(
-        data_frame=mkt_cap_df,
-        x="Name",
-        y="Market Cap",
-        template='plotly_dark',
-        title='Market Capitalization',
-        color_discrete_map={
-            "BTC": "#FEAF16",
-            "BTC no stable": "#8e16fe",
-            "TESLA": "#86CE00",
-            "AMAZON": "#F58518",
-            "APPLE": "#BAB0AC",
-            "NETFLIX": "#FD3216",
-        }
-    )
+#     fig_mkt_cap = px.bar(
+#         data_frame=mkt_cap_df,
+#         x="Name",
+#         y="Market Cap",
+#         template='plotly_dark',
+#         title='Market Capitalization',
+#         color_discrete_map={
+#             "BTC": "#FEAF16",
+#             "BTC no stable": "#8e16fe",
+#             "TESLA": "#86CE00",
+#             "AMAZON": "#F58518",
+#             "APPLE": "#BAB0AC",
+#             "NETFLIX": "#FD3216",
+#         }
+#     )
 
-    return fig_mkt_cap
+#     return fig_mkt_cap
 
 
 print("Done")
