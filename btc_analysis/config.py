@@ -521,17 +521,6 @@ YAHOO_DASH_LIST = ['S&P500',
                    'APPLE',
                    'NETFLIX']
 
-# STATIC_COLORSCALE = [[-1.0, '#0066ff'],  # cmap = sns.diverging_palette(220, 10, as_cmap = True)
-#                      [-0.75, '#3385ff'],
-#                      [-0.5, '#80b3ff'],
-#                      [-0.25, '#cce0ff'],
-#                      [0.0, '#ffffff'],
-#                      # [0.05, '#fffae6'],
-#                      [0.25, '#fff5cc'],
-#                      [0.5, '#ffeb99'],
-#                      [0.75, '#ffdb4d'],
-#                      [1.0, '#ffcc00']]
-
 
 STATIC_COLORSCALE = [[0.0, "rgb(49,54,149)"],
                      [0.1111111111111111, "rgb(69,117,180)"],
@@ -545,8 +534,9 @@ STATIC_COLORSCALE = [[0.0, "rgb(49,54,149)"],
                      [1.0, "rgb(165,0,38)"]]
 
 
-# ###
-# market cap
+# ---------------------
+# MARKET CAP VARIABLES
+# ----------------------
 
 TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
                        "AMZN", "TSLA", "NFLX", "PYPL", "MA", "TCEHY", "V"]

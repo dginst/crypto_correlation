@@ -1,17 +1,21 @@
-from datetime import datetime, timezone
-import yfinance as yf
 import json
-import requests
-from btc_analysis.calc import date_gen, date_gen_TS
-import pandas as pd
-from pandas_datareader import data
+from datetime import datetime, timezone
+
 import numpy as np
-from btc_analysis.mongo_func import (
-    mongo_upload, query_mongo
-)
-from btc_analysis.config import (START_DATE, INDEX_START_DATE,
-                                 INDEX_DB_NAME, USD_SUPPLY, GOLD_OUNCES_SUPPLY,
-                                 SILVER_OUNCES_SUPPLY)
+import pandas as pd
+import requests
+import yfinance as yf
+from pandas_datareader import data
+
+from btc_analysis.calc import date_gen, date_gen_TS
+from btc_analysis.config import (GOLD_OUNCES_SUPPLY, INDEX_DB_NAME,
+                                 SILVER_OUNCES_SUPPLY, START_DATE, USD_SUPPLY)
+from btc_analysis.mongo_func import mongo_upload, query_mongo
+from btc_analysis.statistics import hist_std_dev
+
+# -----------------------
+# TIME FUNCTIONS
+# -----------------------
 
 
 def yesterday_str():
@@ -25,6 +29,10 @@ def yesterday_str():
 
     return yesterday
 
+
+# ----------------------------
+# MARKET DATA OPERATIONS
+# ---------------------------
 
 def all_series_download(series_code_list, all_el_list,
                         start_period, end_period):
@@ -146,8 +154,6 @@ def mkt_data_op(series_code_list, all_el_list_d,
                                                  start_period,
                                                  end_period)
 
-    # mongo_upload(all_series_df, "collection_prices_y")
-
     complete_series_df_price = add_crypto(all_series_df_price)
     mongo_upload(complete_series_df_price, "collection_prices_y")
 
@@ -173,6 +179,14 @@ def mkt_data_op(series_code_list, all_el_list_d,
     all_logret_df = all_series_to_logret(complete_series_df_price)
 
     mongo_upload(all_logret_df, "collection_logreturns_y")
+
+# -----------------------------
+# ADDING CRYPTOCURRENCIES DATA TO DATAFRAME
+# ----------------------------
+
+# function that adds the crypto prices or volume retrived from the "index"
+# database. The default value of the varibale "collection" implies that
+# the prices will be added, if the volumes are needed specify "crypto_volume"
 
 
 def add_crypto(initial_df, collection="crypto_price"):
@@ -229,17 +243,29 @@ def add_crypto(initial_df, collection="crypto_price"):
     return complete_df
 
 
+# function that allows to download from Yahoo Finance the historical series
+# of crypto prior to 01/01/2016 (the starting date of "index" DB series)
+
 def crypto_old_series_y(start, stop):
 
     yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD']
 
     yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']
 
-    crypto_df_price, crypto_df_volume = all_series_download(yahoo_code, yahoo_name,
-                                                            start, stop)
+    (crypto_df_price,
+     crypto_df_volume) = all_series_download(yahoo_code,
+                                             yahoo_name,
+                                             start, stop)
 
     return crypto_df_price, crypto_df_volume
 
+
+# -----------------------------
+# STABLECOIN VOLUME OPERATION
+# ------------------------------
+
+# function that allows to isolate the volumes of BTC related to stablecoins
+# transaction (USDT and USDC only)
 
 def stablecoin_volume(all_exc_df):
 
@@ -264,6 +290,10 @@ def stablecoin_volume(all_exc_df):
     return stable_vol_df
 
 
+# function that takes as input the df with all the exchanges values
+# of volume and then subtracts the volumes related to stablecoins
+# transactions
+
 def crypto_vol_no_stable(all_exc_df):
 
     only_stable_vol = stablecoin_volume(all_exc_df)
@@ -277,6 +307,9 @@ def crypto_vol_no_stable(all_exc_df):
     return total_crypto_vol
 
 
+# function that add to a given dataframe (initial_df) the data related
+# to BTC volumes without stablecoins transaction
+
 def add_no_stable(initial_df, no_stable_vol_df):
 
     no_stable_vol_df = no_stable_vol_df.drop(columns="Time")
@@ -288,10 +321,8 @@ def add_no_stable(initial_df, no_stable_vol_df):
     tot_crypto_df = crypto_df.append(no_stable_vol_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
     tot_crypto_df = tot_crypto_df.rename(columns={"BTC": "BTC no stable"})
-    print(tot_crypto_df)
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
-    print(complete_df)
 
     complete_df = complete_df[["Date",
                                "BTC",
@@ -327,7 +358,11 @@ def add_no_stable(initial_df, no_stable_vol_df):
 
     return complete_df
 
-# market cap fucntion
+# -----------------------
+# MARKET CAP OPERATION
+# -----------------------
+
+# function that downloads the market cap information from Yahoo Finance
 
 
 def mkt_cap_downloader(tickers_list, name_list):
@@ -396,7 +431,11 @@ def mkt_cap_btc(yesterday_human):
 
     return btc_mkt_cap
 
-# blockchain.com statistics
+# ------------------------
+# BTC SUPPLY AND MARKET CAP
+# -----------------------
+
+# function that download data from blockchain.info website
 
 
 def blockchain_stats_api():
@@ -440,4 +479,22 @@ def blockchain_stats_op():
 
     mongo_upload(raw_data_df, "collection_btc_supply")
 
-    return None
+
+# ----------------------
+# HISTORICAL VOLATILITY
+# ----------------------
+
+def historical_vola(return_df, logret_df, window_days):
+
+    date = return_df["Date"]
+    date = date.sort_values(ascending=True)
+    date.reset_index(drop=True, inplace=True)
+
+    logret_df.fillna(0, inplace=True)
+
+    hist_vola = hist_std_dev(logret_df, window=window_days)
+    hist_vola["Date"] = date
+    hist_vola = hist_vola.tail(len(date) - window_days)
+    hist_vola.reset_index(drop=True, inplace=True)
+
+    return hist_vola

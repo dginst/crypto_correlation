@@ -14,9 +14,11 @@ CRYPTO_CORRELATION
 |
 |--- btc_analysis --> folder containing all the functions needed in the repository
 |
-|--- scripts --> folder containing the scripts that upload the data into MongoDB collections
+|--- analysis scripts -->contains the scripts that upload the data into MongoDB collections
 |
 |--- dashboard --> folder containing the scripts that launch the dashbopard app
+|
+|--- excel creator
 
 # analysis scripts
 
@@ -26,11 +28,29 @@ In order to effectively run the scripts the order of running is relevant. More s
 
     The script downloads the updated financial data from Yahoo Finance using the API and retrieves crypto's prices and volumes from the "index" database; then compiutes returns and logreturns.
 
-    Once launched, the script updates the MongoDB collection "all_prices_y", "all_returns_y", "all_logreturns_y" and "all_volume_y".
+    Once launched, the script updates the MongoDB collection:
+    - "all_prices_y"
+    - "all_returns_y"
+    - "all_logreturns_y"
+    - "all_volume_y"
 
-    Moreover the script updates the collection "market_cap" and "btc_supply". Specifically, the supply update leverages on the API of blockchain.info websites.
+    Moreover the script updates the collections:
+    - "market_cap" 
+    - "btc_supply"
+    Specifically, the supply update leverages on the API of blockchain.info website.
+
 
 # 2) series_volatility_launcher.py
+
+    The script computes the historical volatility for the stocks, bonds, commodity, currencies and cryptos contained in the "all_logreturns_y" collection.
+    The historical volatility is computed with a rolling window of 252, 90 and 30 days.
+    Once finished the collections:
+
+    - volatility_252
+    - volatility_90
+    - volatility_30
+    
+    will be updated.
 
 # 3) usd_denominated_launcher.py
 
