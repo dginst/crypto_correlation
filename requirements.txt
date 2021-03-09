@@ -8,3 +8,4 @@ matplotlib
 xlrd
 dash
 dash-bootstrap-components
+pandas_datareader
