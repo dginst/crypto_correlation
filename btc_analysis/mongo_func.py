@@ -1,12 +1,5 @@
-from datetime import datetime, timezone
-# third party packages
 import pandas as pd
-
 from pymongo import MongoClient
-
-from btc_analysis.config import (
-    DB_NAME
-)
 
 # connecting to mongo in local
 # connection = MongoClient("3.138.244.245", 27017)
