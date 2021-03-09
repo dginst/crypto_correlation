@@ -316,11 +316,14 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
                    ):
 
     len_corr_mat = stat_yahoo_corr_all.shape[0]
+    print(len_corr_mat)
     space = 5
     space_left = 2
 
     price_df = price_retrieve("all_prices_y")
+    price_df = price_df.drop(columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
     return_df = return_retrieve("all_returns_y")
+    return_df = return_df.drop(columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
 
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
