@@ -106,7 +106,7 @@ def update_graph_vola(window_selection):
 
     hovertext = [[f'corr_mat({column_set[i]}, {column_set[j]})= {corr_mat[i][j]:.2f}' if i >=
                   j else '' for j in range(N)] for i in range(N)]
-
+    print(hovertext)
     heat = go.Heatmap(z=corr_mat,
                       x=column_set,
                       y=column_set,
@@ -115,6 +115,7 @@ def update_graph_vola(window_selection):
                       colorbar_thickness=20,
                       colorbar_ticklen=4,
                       hovertext=hovertext,
+
                       hoverinfo='text'
                       )
 
@@ -128,6 +129,7 @@ def update_graph_vola(window_selection):
                        template='plotly_dark')
 
     fig = go.Figure(data=[heat], layout=layout)
+    fig.update_traces(text=corr_mat, selector=dict(type='heatmap'))
 
     csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \
@@ -139,4 +141,4 @@ def update_graph_vola(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=5000, host='0.0.0.0')
+    app.run_server(debug=True, port=5000)  # host='0.0.0.0')

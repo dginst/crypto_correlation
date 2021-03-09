@@ -133,3 +133,6 @@ dmypy.json
 
 # excel file
 *.xlsx
+
+# png file 
+*.png
