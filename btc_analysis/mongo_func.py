@@ -89,23 +89,11 @@ def mongo_indexing():
     db.dyn_alt_correlation_1Q.create_index([("id", -1)])
     db.dyn_alt_correlation_1M.create_index([("id", -1)])
 
-    # dynamic metal correlation collections
-    db.dyn_met_correlation_3Y.create_index([("id", -1)])
-    db.dyn_met_correlation_1Y.create_index([("id", -1)])
-    db.dyn_met_correlation_1Q.create_index([("id", -1)])
-    db.dyn_met_correlation_1M.create_index([("id", -1)])
-
-    # dynamic various correlation collections
-    db.dyn_var_correlation_3Y.create_index([("id", -1)])
-    db.dyn_var_correlation_1Y.create_index([("id", -1)])
-    db.dyn_var_correlation_1Q.create_index([("id", -1)])
-    db.dyn_var_correlation_1M.create_index([("id", -1)])
-
-    # dynamic SP500 correlation collections
-    db.dyn_SP500_correlation_3Y.create_index([("id", -1)])
-    db.dyn_SP500_correlation_1Y.create_index([("id", -1)])
-    db.dyn_SP500_correlation_1Q.create_index([("id", -1)])
-    db.dyn_SP500_correlation_1M.create_index([("id", -1)])
+    # dynamic "Yahoo" correlation collections
+    db.dyn_yahoo_correlation_3Y.create_index([("id", -1)])
+    db.dyn_yahoo_correlation_1Y.create_index([("id", -1)])
+    db.dyn_yahoo_correlation_1Q.create_index([("id", -1)])
+    db.dyn_yahoo_correlation_1M.create_index([("id", -1)])
 
     # static altcoin correlation collections
     db.stat_alt_correlation_all.create_index([("id", -1)])
@@ -114,12 +102,18 @@ def mongo_indexing():
     db.stat_alt_correlation_1Q.create_index([("id", -1)])
     db.stat_alt_correlation_1M.create_index([("id", -1)])
 
-    # static various correlation collections
-    db.stat_var_correlation_all.create_index([("id", -1)])
-    db.stat_var_correlation_3Y.create_index([("id", -1)])
-    db.stat_var_correlation_1Y.create_index([("id", -1)])
-    db.stat_var_correlation_1Q.create_index([("id", -1)])
-    db.stat_var_correlation_1M.create_index([("id", -1)])
+    # static "yahoo" correlation collections
+    db.stat_yahoo_correlation_all.create_index([("id", -1)])
+    db.stat_yahoo_correlation_3Y.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1Y.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1Q.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1M.create_index([("id", -1)])
+
+    # dynamic SP500 correlation collections
+    db.dyn_SP500_correlation_3Y.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1Y.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1Q.create_index([("id", -1)])
+    db.dyn_SP500_correlation_1M.create_index([("id", -1)])
 
     # series in BTC price
     db.yahoo_btc_denominated_5Y.create_index([("id", -1)])
@@ -137,7 +131,7 @@ def mongo_indexing():
     db.yahoo_btc_denominated_1M.create_index([("id", -1)])
     db.altcoin_btc_denominated_1M.create_index([("id", -1)])
 
-    # series normalized prices
+    # series USD prices
     db.normalized_prices_5Y.create_index([("id", -1)])
     db.normalized_prices_3Y.create_index([("id", -1)])
     db.normalized_prices_2Y.create_index([("id", -1)])
@@ -168,14 +162,6 @@ def mongo_coll():
         "collection_logreturns_y": db.all_logreturns_y,
         "collection_volume_y": db.all_volume_y,
 
-        # bloomberg
-        "collection_prices": db.all_prices,
-        "collection_returns": db.all_returns,
-        "collection_logreturns": db.all_logreturns,
-
-        # metal only collections (yahoo)
-        "collection_metal_price": db.metal_prices,
-        "collection_metal_ret": db.metal_returns,
 
         # return collections
         "collection_ret_var": db.return_various,
@@ -187,36 +173,11 @@ def mongo_coll():
         "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
         "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
 
-        # dynamic metal correlation collections
-        "collection_3Y_dyn_met": db.dyn_met_correlation_3Y,
-        "collection_1Y_dyn_met": db.dyn_met_correlation_1Y,
-        "collection_1Q_dyn_met": db.dyn_met_correlation_1Q,
-        "collection_1M_dyn_met": db.dyn_met_correlation_1M,
-
-        # dynamic various correlation collections
-        "collection_3Y_dyn_var": db.dyn_var_correlation_3Y,
-        "collection_1Y_dyn_var": db.dyn_var_correlation_1Y,
-        "collection_1Q_dyn_var": db.dyn_var_correlation_1Q,
-        "collection_1M_dyn_var": db.dyn_var_correlation_1M,
-
         # dynamic yahoo correlation collections
         "collection_3Y_dyn_yahoo": db.dyn_yahoo_correlation_3Y,
         "collection_1Y_dyn_yahoo": db.dyn_yahoo_correlation_1Y,
         "collection_1Q_dyn_yahoo": db.dyn_yahoo_correlation_1Q,
         "collection_1M_dyn_yahoo": db.dyn_yahoo_correlation_1M,
-
-        # dynamic SP500 correlation collections
-        "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
-        "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
-        "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
-        "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
-
-        # static various correlation collections
-        "collection_all_stat_var": db.stat_var_correlation_all,
-        "collection_3Y_stat_var": db.stat_var_correlation_3Y,
-        "collection_1Y_stat_var": db.stat_var_correlation_1Y,
-        "collection_1Q_stat_var": db.stat_var_correlation_1Q,
-        "collection_1M_stat_var": db.stat_var_correlation_1M,
 
         # static yahoo correlation collections
         "collection_all_stat_yahoo": db.stat_yahoo_correlation_all,
@@ -225,12 +186,18 @@ def mongo_coll():
         "collection_1Q_stat_yahoo": db.stat_yahoo_correlation_1Q,
         "collection_1M_stat_yahoo": db.stat_yahoo_correlation_1M,
 
-        # static crypto correlation collections
+        # static altcoins correlation collections
         "collection_all_stat_alt": db.stat_alt_correlation_all,
         "collection_3Y_stat_alt": db.stat_alt_correlation_3Y,
         "collection_1Y_stat_alt": db.stat_alt_correlation_1Y,
         "collection_1Q_stat_alt": db.stat_alt_correlation_1Q,
         "collection_1M_stat_alt": db.stat_alt_correlation_1M,
+
+        # dynamic SP500 correlation collections
+        "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
+        "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
+        "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
+        "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
 
         # priced denominated in BTC collections
         "collection_yahoo_btc_den_5Y": db.yahoo_btc_denominated_5Y,

@@ -49,13 +49,88 @@ In order to effectively run the scripts the order of running is relevant. More s
     - volatility_252
     - volatility_90
     - volatility_30
-    
+
     will be updated.
 
 # 3) usd_denominated_launcher.py
 
+    The script computes the price series of the stocks, bonds, commodity, currencies and cryptos contained in the "all_returns_y" collection each denominated in USD and starting at the normalized value 1.
+
+    Different time windows are computed computed, specifically 5, 3, 2, 1 year and 6, 3, 1 month, and the following collections updated:
+
+    - normalized_prices_5Y
+    - normalized_prices_3Y
+    - normalized_prices_2Y
+    - normalized_prices_1Y
+    - normalized_prices_6M
+    - normalized_prices_3M
+    - normalized_prices_1M
+
+
 # 4) btc_denominated_launcher.py
+
+    The script computes the price series of the stocks, bonds, commodity, currencies and cryptos contained in the "all_returns_y" collection each denominated in BTC and all the altcoin prices still BTC denoiminated. Each series starts at the normalized value 1.
+
+    Different time windows are computed computed, specifically 5, 3, 2, 1 year and 6, 3, 1 month, and the following collections updated:
+
+    - yahoo_btc_denominated_5Y
+    - yahoo_btc_denominated_3Y
+    - yahoo_btc_denominated_2Y
+    - yahoo_btc_denominated_1Y
+    - yahoo_btc_denominated_6M
+    - yahoo_btc_denominated_3M
+    - yahoo_btc_denominated_1M
+
+    - altcoin_btc_denominated_5Y
+    - altcoin_btc_denominated_3Y
+    - altcoin_btc_denominated_2Y
+    - altcoin_btc_denominated_1Y
+    - altcoin_btc_denominated_6M
+    - altcoin_btc_denominated_3M
+    - altcoin_btc_denominated_1M
+
 
 # 5) btc_correlation_launcher.py
 
-# 6) 
+    The script computes both dynamic and static correlations between Bitcoin and differents assets. The correlations results are divided into two main streams: one related to the stocks, bonds, commodity, currencies downloaded from Yahoo Finance and the other related to all the altcoins retrieved from the "index" database.
+
+    Dynamic Correlations
+
+        The script computes dynamic correlations for different rolling time windows, specifically: 3 year, 1 year, 1 quarter and 1 month.
+        Once launched it will update the following collections on MongoDB:
+
+        - dyn_yahoo_correlation_3Y
+        - dyn_yahoo_correlation_1Y
+        - dyn_yahoo_correlation_1Q
+        - dyn_yahoo_correlation_1M
+
+        - dyn_alt_correlation_3Y
+        - dyn_alt_correlation_1Y
+        - dyn_alt_correlation_1Q
+        - dyn_alt_correlation_1M
+    
+
+    Static Correlations
+
+        The script computes static correlations, namely considering only the data releated to a specific time window and not a rolling time window, for all the available time series, 3 year, 1 year, 1 quarter and 1 month.
+        Once launched it will update the following collections on MongoDB:
+
+        - stat_yahoo_correlation_all
+        - stat_yahoo_correlation_3Y
+        - stat_yahoo_correlation_1Y
+        - stat_yahoo_correlation_1Q
+        - stat_yahoo_correlation_1M
+
+        - stat_alt_correlation_all
+        - stat_alt_correlation_3Y
+        - stat_alt_correlation_1Y
+        - stat_alt_correlation_1Q
+        - stat_alt_correlation_1M
+
+
+# excel creator
+
+
+
+
+# dashboard

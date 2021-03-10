@@ -1,12 +1,6 @@
-from btc_analysis.mongo_func import (
-    mongo_coll_drop, query_mongo
-)
-from btc_analysis.calc import (
-    usd_normalized_total
-)
-from btc_analysis.config import (
-    DB_NAME
-)
+from btc_analysis.calc import usd_normalized_total
+from btc_analysis.config import DB_NAME
+from btc_analysis.mongo_func import mongo_coll_drop, query_mongo
 
 mongo_coll_drop("norm")
 

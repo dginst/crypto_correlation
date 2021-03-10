@@ -1,19 +1,22 @@
-import pandas as pd
-import numpy as np
 from datetime import datetime, timezone
-from dateutil.relativedelta import relativedelta
-from btc_analysis.config import (
-    CRYPTO_LIST, REF_CRYPTO, REF_VARIOUS,
-    VARIOUS_LIST, DB_NAME, VAR_STATIC_LIST,
-    REF_SP500, VS_SP500_LIST, METAL_LIST,
-    INDEX_DB_NAME, VARIOUS_LIST_Y, VAR_STATIC_LIST_Y
-)
-from btc_analysis.mongo_func import (
-    mongo_correlation_drop, query_mongo,
-    mongo_upload, mongo_coll_drop
-)
 
-# ### TIME FUNCTION ###
+import numpy as np
+import pandas as pd
+from dateutil.relativedelta import relativedelta
+
+from btc_analysis.config import (CRYPTO_LIST, DB_NAME, INDEX_DB_NAME,
+                                 METAL_LIST, REF_CRYPTO, REF_SP500,
+                                 REF_VARIOUS, VAR_STATIC_LIST,
+                                 VAR_STATIC_LIST_Y, VARIOUS_LIST,
+                                 VARIOUS_LIST_Y, VS_SP500_LIST)
+from btc_analysis.mongo_func import (mongo_coll_drop, mongo_correlation_drop,
+                                     mongo_upload, query_mongo)
+
+
+# -----------------------
+# TIME FUNCTIONS
+# -----------------------
+
 # function that generate an array of date in timstamp format starting from
 # start_date to end_date given in mm-dd-yyyy format;
 # if not specified end_date = today()
@@ -21,7 +24,6 @@ from btc_analysis.mongo_func import (
 # day is in the exact 12:00 am UTC
 # function considers End of Day price series so, if not otherwise specified,
 # the returned array of date will be from start to today - 1 (EoD = 'Y')
-
 
 def date_gen_TS(start_date, end_date=None, timeST="Y", clss="array", EoD="Y"):
 
@@ -161,7 +163,9 @@ def window_period_back(date_df, time_window):
     return first_date, last_date
 
 
-# ### RETURN RETRIEVE AND SETUP OPERATION ###
+# ----------------------------------
+# RETURN RETRIEVE AND SETUP OPERATION
+# ----------------------------------
 
 def price_retrieve(collection, db_name=DB_NAME):
 
@@ -267,7 +271,7 @@ def static_return_adj(var_ret_df, alt_ret_df):
     merged_ltc = merged_ltc.drop(columns="Date")
     merged_xrp = merged_xrp.drop(columns="Date")
 
-    var_ret_df["BTC"] = merged_btc  # modified, check the logic
+    var_ret_df["BTC"] = merged_bt
     var_ret_df["ETH"] = merged_eth
     var_ret_df["LTC"] = merged_ltc
     var_ret_df["XRP"] = merged_xrp
@@ -277,7 +281,9 @@ def static_return_adj(var_ret_df, alt_ret_df):
     return adj_ret_df
 
 
-# ### DYNAMIC CORRELATION ###
+# --------------------------
+# DYNAMIC CORRELATIONS
+# --------------------------
 
 
 def dynamic_corr(first_df, second_df, time_window):
@@ -378,7 +384,9 @@ def dynamic_corr_op(return_df, corr_set):
     return corr_3Y, corr_1Y, corr_1Q, corr_1M
 
 
-# ### STATIC CORRELATION ###
+# ----------------------------
+# STATIC CORRELATION
+# --------------------------
 
 
 def static_corr(return_df, time_window=None):
@@ -413,7 +421,9 @@ def static_corr_op(return_df):
     return static_all, static_3Y, static_1Y, static_1Q, static_1M
 
 
-# ### CORRELATION WRAP FUNCTION ###
+# -----------------------------
+# CORRELATION WRAP FUNCTION
+# ---------------------------
 
 def correlation_op():
 
@@ -491,7 +501,9 @@ def metal_corr_op():
     mongo_upload(dyn_met_corr_1M, "collection_1M_dyn_met")
 
 
-# ##### PRICE DENOMINATED IN BTC COMPUTATION
+# ---------------------------------
+# BTC DENOMINATED PRICES
+# ---------------------------------
 
 def return_in_btc_comp(total_df, time_window):
     """
@@ -504,14 +516,11 @@ def return_in_btc_comp(total_df, time_window):
     date_df = total_df["Date"]
 
     first_date, last_date = window_period_back(date_df, time_window)
-    print(first_date)
-    print(last_date)
 
     total_df = total_df.loc[total_df.Date.between(
         first_date, last_date, inclusive=True)]
     total_df.reset_index(drop=True, inplace=True)
 
-    print(total_df)
     sub_date = pd.DataFrame(columns=["Date"])
     sub_date["Date"] = total_df["Date"]
     sub_date.reset_index(drop=True, inplace=True)
@@ -586,9 +595,10 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
     mongo_upload(yahoo_df_1M, "collection_yahoo_btc_den_1M")
     mongo_upload(alt_df_1M, "collection_alt_btc_den_1M")
 
-    return None
 
-# ######### NORMALIZED PRICES COMPUTATION
+# ---------------------------------
+# USD DENOMINATED PRICES
+# ---------------------------------
 
 
 def usd_normalized_calc(yahoo_returns, time_window):
@@ -670,5 +680,3 @@ def usd_normalized_total(yahoo_price_df):
     yahoo_df_1M = usd_normalized_calc(yahoo_price_df, "1M")
 
     mongo_upload(yahoo_df_1M, "collection_normalized_prices_1M")
-
-    return None
