@@ -1,23 +1,19 @@
-import xlsxwriter
-import pandas as pd
 from datetime import datetime
 
-from btc_analysis.config import (
-    DB_NAME, INDEX_DB_NAME
-)
-from btc_analysis.calc import (
-    return_retrieve, price_retrieve
-)
-from btc_analysis.config import (
-    VAR_GRAPH_LIST, GRAPH_COLOR, SP500_GRAPH_LIST,
-    FORMAT_DICT, VAR_STATIC_LIST, EQUITY, BOND,
-    CURRENCY, COMMODITY, CRYPTO, VARIOUS_LIST,
-    VS_SP500_LIST, ASSET_CATEGORY, TIME_WINDOW,
-    CRYPTO_STATIC_LIST, CRYPTO_LIST, CRYPTO_GRAPH_LIST,
-    CRYPTO_FOR_STATIC, METAL_GRAPH_LIST, METAL_LIST,
-    CRYPTO_FOR_STATIC_YAHOO, COMMODITY_YAHOO, EQUITY_YAHOO,
-    BOND_YAHOO, VAR_STATIC_LIST_Y
-)
+import pandas as pd
+import xlsxwriter
+
+from btc_analysis.calc import price_retrieve, return_retrieve
+from btc_analysis.config import (ASSET_CATEGORY, BOND, BOND_YAHOO, COMMODITY,
+                                 COMMODITY_YAHOO, CRYPTO, CRYPTO_FOR_STATIC,
+                                 CRYPTO_FOR_STATIC_YAHOO, CRYPTO_GRAPH_LIST,
+                                 CRYPTO_LIST, CRYPTO_STATIC_LIST, CURRENCY,
+                                 DB_NAME, EQUITY, EQUITY_YAHOO, FORMAT_DICT,
+                                 GRAPH_COLOR, INDEX_DB_NAME, METAL_GRAPH_LIST,
+                                 METAL_LIST, SP500_GRAPH_LIST, TIME_WINDOW,
+                                 VAR_GRAPH_LIST, VAR_STATIC_LIST,
+                                 VAR_STATIC_LIST_Y, VARIOUS_LIST,
+                                 VS_SP500_LIST)
 
 
 def date_reformat(return_df, writer_obj, sheet_name):
@@ -36,46 +32,46 @@ def date_reformat(return_df, writer_obj, sheet_name):
         worksheet.write(i + 1, 0, date, format_date)
 
 
-def metal_to_excel(file_name, dyn_ret_list,
-                   dyn_met_corr_3Y, dyn_met_corr_1Y,
-                   dyn_met_corr_1Q, dyn_met_corr_1M):
+# def metal_to_excel(file_name, dyn_ret_list,
+#                    dyn_met_corr_3Y, dyn_met_corr_1Y,
+#                    dyn_met_corr_1Q, dyn_met_corr_1M):
 
-    price_df = price_retrieve("metal_prices")
-    return_df = return_retrieve("metal_returns")
+#     price_df = price_retrieve("metal_prices")
+#     return_df = return_retrieve("metal_returns")
 
-    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+#     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
-        dyn_met_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
-        date_reformat(dyn_met_corr_3Y, writer, '3Y RW')
-        format_sheets(writer, '3Y RW')
-        format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
-        put_graph(writer, '3Y RW', dyn_met_corr_3Y,
-                  graph_name='Correlation with Bitcoin on a 3 years rolling window',
-                  graph_set=METAL_GRAPH_LIST)
+#         dyn_met_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
+#         date_reformat(dyn_met_corr_3Y, writer, '3Y RW')
+#         format_sheets(writer, '3Y RW')
+#         format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
+#         put_graph(writer, '3Y RW', dyn_met_corr_3Y,
+#                   graph_name='Correlation with Bitcoin on a 3 years rolling window',
+#                   graph_set=METAL_GRAPH_LIST)
 
-        dyn_met_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
-        date_reformat(dyn_met_corr_1Y, writer, '1Y RW')
-        format_sheets(writer, '1Y RW')
-        format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
-        put_graph(writer, '1Y RW', dyn_met_corr_1Y,
-                  graph_name='Correlation with Bitcoin on a 1 year rolling window',
-                  graph_set=METAL_GRAPH_LIST)
+#         dyn_met_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
+#         date_reformat(dyn_met_corr_1Y, writer, '1Y RW')
+#         format_sheets(writer, '1Y RW')
+#         format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
+#         put_graph(writer, '1Y RW', dyn_met_corr_1Y,
+#                   graph_name='Correlation with Bitcoin on a 1 year rolling window',
+#                   graph_set=METAL_GRAPH_LIST)
 
-        dyn_met_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
-        date_reformat(dyn_met_corr_1Q, writer, '1Q RW')
-        format_sheets(writer, '1Q RW')
-        format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
-        put_graph(writer, '1Q RW', dyn_met_corr_1Q,
-                  graph_name='Correlation with Bitcoin on a 1 quarter rolling window',
-                  graph_set=METAL_GRAPH_LIST)
+#         dyn_met_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
+#         date_reformat(dyn_met_corr_1Q, writer, '1Q RW')
+#         format_sheets(writer, '1Q RW')
+#         format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
+#         put_graph(writer, '1Q RW', dyn_met_corr_1Q,
+#                   graph_name='Correlation with Bitcoin on a 1 quarter rolling window',
+#                   graph_set=METAL_GRAPH_LIST)
 
-        dyn_met_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
-        date_reformat(dyn_met_corr_1M, writer, '1M RW')
-        format_sheets(writer, '1M RW')
-        format_header(writer, '1M RW', dyn_ret_list, 0, 1)
-        put_graph(writer, '1M RW', dyn_met_corr_1M,
-                  graph_name='Correlation with Bitcoin on a 1 month rolling window',
-                  graph_set=METAL_GRAPH_LIST)
+#         dyn_met_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
+#         date_reformat(dyn_met_corr_1M, writer, '1M RW')
+#         format_sheets(writer, '1M RW')
+#         format_header(writer, '1M RW', dyn_ret_list, 0, 1)
+#         put_graph(writer, '1M RW', dyn_met_corr_1M,
+#                   graph_name='Correlation with Bitcoin on a 1 month rolling window',
+#                   graph_set=METAL_GRAPH_LIST)
 
 
 def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,

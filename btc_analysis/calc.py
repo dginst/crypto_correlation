@@ -9,9 +9,7 @@ from btc_analysis.config import (CRYPTO_LIST, DB_NAME, INDEX_DB_NAME,
                                  REF_VARIOUS, VAR_STATIC_LIST,
                                  VAR_STATIC_LIST_Y, VARIOUS_LIST,
                                  VARIOUS_LIST_Y, VS_SP500_LIST)
-from btc_analysis.mongo_func import (mongo_coll_drop, mongo_correlation_drop,
-                                     mongo_upload, query_mongo)
-
+from btc_analysis.mongo_func import mongo_upload, query_mongo
 
 # -----------------------
 # TIME FUNCTIONS
@@ -24,6 +22,7 @@ from btc_analysis.mongo_func import (mongo_coll_drop, mongo_correlation_drop,
 # day is in the exact 12:00 am UTC
 # function considers End of Day price series so, if not otherwise specified,
 # the returned array of date will be from start to today - 1 (EoD = 'Y')
+
 
 def date_gen_TS(start_date, end_date=None, timeST="Y", clss="array", EoD="Y"):
 
@@ -271,7 +270,7 @@ def static_return_adj(var_ret_df, alt_ret_df):
     merged_ltc = merged_ltc.drop(columns="Date")
     merged_xrp = merged_xrp.drop(columns="Date")
 
-    var_ret_df["BTC"] = merged_bt
+    var_ret_df["BTC"] = merged_btc
     var_ret_df["ETH"] = merged_eth
     var_ret_df["LTC"] = merged_ltc
     var_ret_df["XRP"] = merged_xrp
@@ -419,86 +418,6 @@ def static_corr_op(return_df):
     static_1M = static_corr(return_df, "1M")
 
     return static_all, static_3Y, static_1Y, static_1Q, static_1M
-
-
-# -----------------------------
-# CORRELATION WRAP FUNCTION
-# ---------------------------
-
-def correlation_op():
-
-    mongo_correlation_drop()
-
-    alt_ret_df = return_retrieve("crypto_price_return", db_name=INDEX_DB_NAME)
-    # var_ret_df = return_retrieve("return_various")
-    # SP500_ret_df = return_retrieve("return_various", corr_type="SP500")
-
-    # var_ret_comp_df = static_return_adj(var_ret_df, alt_ret_df)
-
-    # dynamic correlations
-    (dyn_alt_corr_3Y, dyn_alt_corr_1Y,
-     dyn_alt_corr_1Q, dyn_alt_corr_1M) = dynamic_corr_op(
-        alt_ret_df, "altcoin")
-
-    # (dyn_var_corr_3Y, dyn_var_corr_1Y,
-    #  dyn_var_corr_1Q, dyn_var_corr_1M) = dynamic_corr_op(
-    #      var_ret_df, "various")
-
-    # (dyn_SP500_corr_3Y, dyn_SP500_corr_1Y,
-    #  dyn_SP500_corr_1Q, dyn_SP500_corr_1M) = dynamic_corr_op(
-    #     SP500_ret_df, "SP500")
-
-    # static correlations
-    (stat_alt_corr_all, stat_alt_corr_3Y, stat_alt_corr_1Y,
-     stat_alt_corr_1Q, stat_alt_corr_1M) = static_corr_op(alt_ret_df)
-
-    # (stat_var_corr_all, stat_var_corr_3Y, stat_var_corr_1Y,
-    #  stat_var_corr_1Q, stat_var_corr_1M) = static_corr_op(var_ret_comp_df)
-
-    # upload collections on MongoDB
-    mongo_upload(dyn_alt_corr_3Y, "collection_3Y_dyn_alt")
-    mongo_upload(dyn_alt_corr_1Y, "collection_1Y_dyn_alt")
-    mongo_upload(dyn_alt_corr_1Q, "collection_1Q_dyn_alt")
-    mongo_upload(dyn_alt_corr_1M, "collection_1M_dyn_alt")
-
-    # mongo_upload(dyn_var_corr_3Y, "collection_3Y_dyn_var")
-    # mongo_upload(dyn_var_corr_1Y, "collection_1Y_dyn_var")
-    # mongo_upload(dyn_var_corr_1Q, "collection_1Q_dyn_var")
-    # mongo_upload(dyn_var_corr_1M, "collection_1M_dyn_var")
-
-    # mongo_upload(dyn_SP500_corr_3Y, "collection_3Y_dyn_SP500")
-    # mongo_upload(dyn_SP500_corr_1Y, "collection_1Y_dyn_SP500")
-    # mongo_upload(dyn_SP500_corr_1Q, "collection_1Q_dyn_SP500")
-    # mongo_upload(dyn_SP500_corr_1M, "collection_1M_dyn_SP500")
-
-    mongo_upload(stat_alt_corr_all, "collection_all_stat_alt")
-    mongo_upload(stat_alt_corr_3Y, "collection_3Y_stat_alt")
-    mongo_upload(stat_alt_corr_1Y, "collection_1Y_stat_alt")
-    mongo_upload(stat_alt_corr_1Q, "collection_1Q_stat_alt")
-    mongo_upload(stat_alt_corr_1M, "collection_1M_stat_alt")
-
-    # mongo_upload(stat_var_corr_all, "collection_all_stat_var")
-    # mongo_upload(stat_var_corr_3Y, "collection_3Y_stat_var")
-    # mongo_upload(stat_var_corr_1Y, "collection_1Y_stat_var")
-    # mongo_upload(stat_var_corr_1Q, "collection_1Q_stat_var")
-    # mongo_upload(stat_var_corr_1M, "collection_1M_stat_var")
-
-
-def metal_corr_op():
-
-    mongo_coll_drop("metal")
-
-    metal_ret_df = return_retrieve("metal_returns")
-
-    # dynamic correlations
-    (dyn_met_corr_3Y, dyn_met_corr_1Y,
-     dyn_met_corr_1Q, dyn_met_corr_1M) = dynamic_corr_op(
-        metal_ret_df, "metal")
-
-    mongo_upload(dyn_met_corr_3Y, "collection_3Y_dyn_met")
-    mongo_upload(dyn_met_corr_1Y, "collection_1Y_dyn_met")
-    mongo_upload(dyn_met_corr_1Q, "collection_1Q_dyn_met")
-    mongo_upload(dyn_met_corr_1M, "collection_1M_dyn_met")
 
 
 # ---------------------------------
