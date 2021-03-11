@@ -40,7 +40,6 @@ df_yahoo = df_yahoo.rename(
 df_col_yahoo = list(df_yahoo.columns)
 df_col_yahoo.remove('Date')
 df_col_yahoo.remove('Window')
-df_col_yahoo.remove('Year')
 df_col_yahoo.remove('NATURAL_GAS')
 
 # ----------------
