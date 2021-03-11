@@ -1,7 +1,6 @@
 import pandas as pd
-from btc_analysis.mongo_func import (
-    query_mongo
-)
+
+from btc_analysis.mongo_func import query_mongo
 
 
 def btc_total_dfs(window_list, operation):

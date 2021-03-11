@@ -1,29 +1,17 @@
+import urllib.parse
 
-import plotly.express as px
-import pandas as pd
-import numpy as np
 import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_bootstrap_components as dbc
+import plotly.express as px
+from btc_analysis.config import (ASSET_ANALYSIS_LIST, ASSET_ANALYSIS_LIST_VOL,
+                                 COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
+                                 YAHOO_DASH_LIST)
+from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
+                                         vola_total_df)
+from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
-import urllib.parse
-from btc_analysis.dashboard_func import (
-    btc_total_dfs, usd_den_total_df,
-    vola_total_df
-)
-from btc_analysis.mongo_func import (
-    query_mongo
-)
-from btc_analysis.config import (
-    DB_NAME, CRYPTO_LIST,
-    YAHOO_DASH_LIST,
-    ASSET_ANALYSIS_LIST,
-    ASSET_ANALYSIS_LIST_VOL,
-    COMPLETE_MKT_CAP
-
-)
-
 
 # ------------------------------
 # start app
@@ -299,7 +287,8 @@ app.layout = dbc.Container([
 # btc denominated altcoin callback
 
 # dropdown can be unified putting the same ID into the Input of each callback,
-# NB: the dropdpwn display should be, at that point, disabled except for the first one
+# NB: the dropdpwn display should be, at that point, disabled except for the
+# first one
 # naming has to be commented in the layout part for the second and third graph
 
 @app.callback(

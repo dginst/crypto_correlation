@@ -1,14 +1,12 @@
-import plotly.express as px
+import urllib.parse
 
 import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_bootstrap_components as dbc
+import plotly.express as px
+from btc_analysis.dashboard_func import btc_total_dfs
 from dash.dependencies import Input, Output
-import urllib.parse
-from btc_analysis.dashboard_func import (
-    btc_total_dfs
-)
 
 # ------------------------------
 # start app
@@ -27,12 +25,6 @@ app.css.append_css(
 
 window_list = ["3Y", "1Y", "1Q", "1M"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "correlation")
-
-df_alt["Year"] = df_alt['Date'].str[:4]
-df_alt = df_alt.loc[df_alt.Year > "2017"]
-
-df_yahoo["Year"] = df_yahoo['Date'].str[:4]
-df_yahoo = df_yahoo.loc[df_yahoo.Year > "2016"]
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -150,6 +142,8 @@ app.layout = dbc.Container([
         ])
 
     ]),
+
+    dcc.Interval(id='all-update', interval=100000, n_intervals=0)
 ])
 
 # --------------------------
@@ -163,9 +157,14 @@ app.layout = dbc.Container([
     Output(component_id="my_multi_line", component_property="figure"),
     [Input(component_id="my_alt_dropdown", component_property="value"),
      Input(component_id="my_alt_check", component_property="value"),
+     Input(component_id="all-update", component_property="n_intervals")
      ]
 )
 def update_graph_alt(window_selection, asset_selection):
+
+    df_alt, _ = btc_total_dfs(window_list, "correlation")
+    df_alt["Year"] = df_alt['Date'].str[:4]
+    df_alt = df_alt.loc[df_alt.Year > "2017"]
 
     dff_alt = df_alt.copy()
     dff_w_alt = dff_alt.loc[dff_alt.Window == window_selection]
@@ -222,9 +221,22 @@ def update_download_link_alt(window_selection):
 @ app.callback(
     Output(component_id="my_multi_line_2", component_property="figure"),
     [Input(component_id="my_yahoo_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_check", component_property="value")]
+     Input(component_id="my_yahoo_check", component_property="value"),
+     Input(component_id="all-update", component_property="n_intervals")
+     ]
 )
 def update_graph_yahoo(window_selection, asset_selection):
+
+    _, df_yahoo = btc_total_dfs(window_list, "correlation")
+    df_yahoo["Year"] = df_yahoo['Date'].str[:4]
+    df_yahoo = df_yahoo.loc[df_yahoo.Year > "2016"]
+
+    df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+    df_yahoo = df_yahoo.rename(
+        columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
+                 'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
+                 'PETROL': 'CRUDE OIL',
+                 'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
 
     dff_yahoo = df_yahoo.copy()
     dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
