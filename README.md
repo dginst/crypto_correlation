@@ -20,7 +20,7 @@ CRYPTO_CORRELATION
 |
 |--- excel creator
 
-# analysis scripts
+# ---- analysis scripts ----
 
 In order to effectively run the scripts the order of running is relevant. More specifically:
 
@@ -128,9 +128,35 @@ In order to effectively run the scripts the order of running is relevant. More s
         - stat_alt_correlation_1M
 
 
-# excel creator
+# ---- excel creator ----
 
 
 
 
-# dashboard
+# ---- dashboard ----
+
+# 1) btc_analysis_dashboard.py
+
+    The script creates a dashboard app running on http://18.221.143.32:4000/ that displays:
+
+    - Altcoins performances denominated in BTC
+    - Stocks, bonds, commodity, currencies from Yahoo Finance performances denominated in BTC
+    - Apple, Netflix, Amazon, Tesla and Bitcoin peformances denominated in USD
+    - Historical Volatility of Apple, Netflix, Amazon, Tesla and Bitcoin
+    - Volumes of Apple, Netflix, Amazon, Tesla and Bitcoin and Bitcoin without stablecoins transactions' volumes
+
+    The Dashboard updates autonomously on daily basis and each graph gives the possibility to select differents time windows.
+
+
+# 2) btc_correlation_dashboard.py
+
+    The script creates a dashboard app running on http://18.221.143.32:4500/ that displays:
+
+    - Altcoins correlation with Bitcoin
+    - Stocks, bonds, commodity, currencies from Yahoo Finance correlations with Bitcoin
+
+    The Dashboard updates autonomously on daily basis and each graph gives the possibility to select differents time windows.
+
+# 3) btc_static_corr_dashboard.py
+
+    WIP
