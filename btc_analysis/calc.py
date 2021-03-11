@@ -113,14 +113,13 @@ def roll_single_time(date, time_window):
         ytd = curr_year + "-01-01"
         date_ytd = datetime.strptime(ytd, "%Y-%m-%d")
 
-    date_delta = date + delta
-
     if time_window == "YTD":
 
         date_delta = date_ytd
 
     else:
 
+        date_delta = date + delta
         date_delta = date_delta.strftime("%Y-%m-%d")
 
     return date_delta
