@@ -130,6 +130,8 @@ def mongo_indexing():
     db.altcoin_btc_denominated_3M.create_index([("id", -1)])
     db.yahoo_btc_denominated_1M.create_index([("id", -1)])
     db.altcoin_btc_denominated_1M.create_index([("id", -1)])
+    db.yahoo_btc_denominated_YTD.create_index([("id", -1)])
+    db.altcoin_btc_denominated_YTD.create_index([("id", -1)])
 
     # series USD prices
     db.normalized_prices_5Y.create_index([("id", -1)])
@@ -139,6 +141,7 @@ def mongo_indexing():
     db.normalized_prices_6M.create_index([("id", -1)])
     db.normalized_prices_3M.create_index([("id", -1)])
     db.normalized_prices_1M.create_index([("id", -1)])
+    db.normalized_prices_YTD.create_index([("id", -1)])
 
     # volatility
     db.volatility_30.create_index([("id", -1)])
@@ -214,6 +217,8 @@ def mongo_coll():
         "collection_alt_btc_den_3M": db.altcoin_btc_denominated_3M,
         "collection_yahoo_btc_den_1M": db.yahoo_btc_denominated_1M,
         "collection_alt_btc_den_1M": db.altcoin_btc_denominated_1M,
+        "collection_yahoo_btc_den_YTD": db.yahoo_btc_denominated_YTD,
+        "collection_alt_btc_den_YTD": db.altcoin_btc_denominated_YTD,
 
         # normalized prices
         "collection_normalized_prices_5Y": db.normalized_prices_5Y,
@@ -223,6 +228,7 @@ def mongo_coll():
         "collection_normalized_prices_6M": db.normalized_prices_6M,
         "collection_normalized_prices_3M": db.normalized_prices_3M,
         "collection_normalized_prices_1M": db.normalized_prices_1M,
+        "collection_normalized_prices_YTD": db.normalized_prices_YTD,
 
         # volatility
         "collection_volatility_252": db.volatility_252,
@@ -343,6 +349,8 @@ def mongo_coll_drop(corr_type):
         db.altcoin_btc_denominated_3M.drop()
         db.yahoo_btc_denominated_1M.drop()
         db.altcoin_btc_denominated_1M.drop()
+        db.yahoo_btc_denominated_YTD.drop()
+        db.altcoin_btc_denominated_YTD.drop()
 
     elif corr_type == "norm":
 
@@ -353,6 +361,7 @@ def mongo_coll_drop(corr_type):
         db.normalized_prices_6M.drop()
         db.normalized_prices_3M.drop()
         db.normalized_prices_1M.drop()
+        db.normalized_prices_YTD.drop()
 
     elif corr_type == "vola":
 

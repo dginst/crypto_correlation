@@ -106,9 +106,22 @@ def roll_single_time(date, time_window):
 
         delta = relativedelta(days=-1)
 
+    elif time_window == "YTD":
+
+        curr_year = str(date.year)
+        print(curr_year)
+        ytd = curr_year + "-01-01"
+        date_ytd = datetime.strptime(ytd, "%Y-%m-%d")
+
     date_delta = date + delta
 
-    date_delta = date_delta.strftime("%Y-%m-%d")
+    if time_window == "YTD":
+
+        date_delta = date_ytd
+
+    else:
+
+        date_delta = date_delta.strftime("%Y-%m-%d")
 
     return date_delta
 
@@ -426,7 +439,7 @@ def static_corr_op(return_df):
 
 def return_in_btc_comp(total_df, time_window):
     """
-    time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M"
+    time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "YTD"
     """
 
     # order values from oldest to newest
@@ -471,6 +484,12 @@ def return_in_btc_comp(total_df, time_window):
 
 
 def btc_denominated_total(yahoo_price_df, alt_price_df):
+
+    yahoo_df_YTD = return_in_btc_comp(yahoo_price_df, "YTD")
+    alt_df_YTD = return_in_btc_comp(alt_price_df, "YTD")
+
+    mongo_upload(yahoo_df_YTD, "collection_yahoo_btc_den_YTD")
+    mongo_upload(alt_df_YTD, "collection_alt_btc_den_YTD")
 
     yahoo_df_5Y = return_in_btc_comp(yahoo_price_df, "5Y")
     alt_df_5Y = return_in_btc_comp(alt_price_df, "5Y")
@@ -522,7 +541,7 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 
 def usd_normalized_calc(yahoo_returns, time_window):
     """
-    time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M"
+    time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M", "YTD"
     """
 
     yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
@@ -571,6 +590,10 @@ def usd_normalized_calc(yahoo_returns, time_window):
 
 
 def usd_normalized_total(yahoo_price_df):
+
+    yahoo_df_YTD = usd_normalized_calc(yahoo_price_df, "YTD")
+
+    mongo_upload(yahoo_df_YTD, "collection_normalized_prices_YTD")
 
     yahoo_df_5Y = usd_normalized_calc(yahoo_price_df, "5Y")
 
