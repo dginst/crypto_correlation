@@ -23,7 +23,7 @@ app.css.append_css(
 # -------------------
 # Data
 
-window_list = ["3Y", "1Y", "1Q", "1M"]
+window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 df_alt, df_yahoo = btc_total_dfs(window_list, "correlation")
 
 df_alt_col = list(df_alt.columns)

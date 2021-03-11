@@ -84,12 +84,14 @@ def mongo_indexing():
     db.return_crypto.create_index([("id", -1)])
 
     # dynamic altcoin correlation collections
+    db.dyn_alt_correlation_YTD.create_index([("id", -1)])
     db.dyn_alt_correlation_3Y.create_index([("id", -1)])
     db.dyn_alt_correlation_1Y.create_index([("id", -1)])
     db.dyn_alt_correlation_1Q.create_index([("id", -1)])
     db.dyn_alt_correlation_1M.create_index([("id", -1)])
 
     # dynamic "Yahoo" correlation collections
+    db.dyn_yahoo_correlation_YTD.create_index([("id", -1)])
     db.dyn_yahoo_correlation_3Y.create_index([("id", -1)])
     db.dyn_yahoo_correlation_1Y.create_index([("id", -1)])
     db.dyn_yahoo_correlation_1Q.create_index([("id", -1)])
@@ -171,12 +173,14 @@ def mongo_coll():
         "collection_ret_crypto": db.return_crypto,
 
         # dynamic altcoins correlation collections
+        "collection_YTD_dyn_alt": db.dyn_alt_correlation_YTD,
         "collection_3Y_dyn_alt": db.dyn_alt_correlation_3Y,
         "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
         "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
         "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
 
         # dynamic yahoo correlation collections
+        "collection_YTD_dyn_yahoo": db.dyn_yahoo_correlation_YTD,
         "collection_3Y_dyn_yahoo": db.dyn_yahoo_correlation_3Y,
         "collection_1Y_dyn_yahoo": db.dyn_yahoo_correlation_1Y,
         "collection_1Q_dyn_yahoo": db.dyn_yahoo_correlation_1Q,
@@ -281,6 +285,7 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "dynamic_yahoo":
 
+        db.dyn_yahoo_correlation_YTD.drop()
         db.dyn_yahoo_correlation_3Y.drop()
         db.dyn_yahoo_correlation_1Y.drop()
         db.dyn_yahoo_correlation_1Q.drop()
@@ -295,6 +300,7 @@ def mongo_coll_drop(corr_type):
 
     elif corr_type == "dynamic_alt":
 
+        db.dyn_alt_correlation_YTD.drop()
         db.dyn_alt_correlation_3Y.drop()
         db.dyn_alt_correlation_1Y.drop()
         db.dyn_alt_correlation_1Q.drop()

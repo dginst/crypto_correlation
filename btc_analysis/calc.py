@@ -109,7 +109,6 @@ def roll_single_time(date, time_window):
     elif time_window == "YTD":
 
         curr_year = str(date.year)
-        print(curr_year)
         ytd = curr_year + "-01-01"
         date_ytd = datetime.strptime(ytd, "%Y-%m-%d")
 
@@ -156,6 +155,12 @@ def roll_time_arr(date_arr, time_window):
     elif time_window == "1M":
 
         delta = relativedelta(months=-1)
+
+    # elif time_window == "YTD":
+
+    #     curr_year = str(date.year)
+    #     ytd = curr_year + "-01-01"
+    #     date_ytd = datetime.strptime(ytd, "%Y-%m-%d")
 
     date_delta["Delta Date"] = [x + delta for x in date_delta["Date"]]
 
@@ -356,11 +361,6 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
         ref_variable = REF_SP500
         others_comm = VS_SP500_LIST
 
-    elif corr_set == "metal":
-
-        ref_variable = REF_CRYPTO
-        others_comm = METAL_LIST
-
     ref_comm_df = tot_ret_df[["Date", ref_variable]]
 
     # try:
@@ -388,12 +388,13 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
 
 def dynamic_corr_op(return_df, corr_set):
 
+    corr_YTD = dynamic_total(return_df, "YTD", corr_set)
     corr_3Y = dynamic_total(return_df, "3Y", corr_set)
     corr_1Y = dynamic_total(return_df, "1Y", corr_set)
     corr_1Q = dynamic_total(return_df, "1Q", corr_set)
     corr_1M = dynamic_total(return_df, "1M", corr_set)
 
-    return corr_3Y, corr_1Y, corr_1Q, corr_1M
+    return corr_YTD, corr_3Y, corr_1Y, corr_1Q, corr_1M
 
 
 # ----------------------------
