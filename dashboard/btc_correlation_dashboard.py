@@ -159,7 +159,7 @@ app.layout = dbc.Container([
      Input(component_id="all-update", component_property="n_intervals")
      ]
 )
-def update_graph_alt(window_selection, asset_selection):
+def update_graph_alt(window_selection, asset_selection, n):
 
     df_alt, _ = btc_total_dfs(window_list, "correlation")
     df_alt["Year"] = df_alt['Date'].str[:4]
@@ -224,7 +224,7 @@ def update_download_link_alt(window_selection):
      Input(component_id="all-update", component_property="n_intervals")
      ]
 )
-def update_graph_yahoo(window_selection, asset_selection):
+def update_graph_yahoo(window_selection, asset_selection, n):
 
     _, df_yahoo = btc_total_dfs(window_list, "correlation")
     df_yahoo["Year"] = df_yahoo['Date'].str[:4]
