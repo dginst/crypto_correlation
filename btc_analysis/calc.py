@@ -116,6 +116,7 @@ def roll_single_time(date, time_window):
     if time_window == "YTD":
 
         date_delta = date_ytd
+        date_delta = date_delta.strftime("%Y-%m-%d")
 
     else:
 
