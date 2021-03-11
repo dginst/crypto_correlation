@@ -28,7 +28,7 @@ app.css.append_css(
 # -------------------
 # Data
 
-window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "YTD"]
+window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
 vola_days_list = ["252", "90", "30"]
 
 

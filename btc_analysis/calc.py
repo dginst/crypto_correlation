@@ -106,6 +106,10 @@ def roll_single_time(date, time_window):
 
         delta = relativedelta(days=-1)
 
+    elif time_window == "1W":
+
+        delta = relativedelta(days=-7)
+
     elif time_window == "YTD":
 
         curr_year = str(date.year)
@@ -155,12 +159,6 @@ def roll_time_arr(date_arr, time_window):
     elif time_window == "1M":
 
         delta = relativedelta(months=-1)
-
-    # elif time_window == "YTD":
-
-    #     curr_year = str(date.year)
-    #     ytd = curr_year + "-01-01"
-    #     date_ytd = datetime.strptime(ytd, "%Y-%m-%d")
 
     date_delta["Delta Date"] = [x + delta for x in date_delta["Date"]]
 
@@ -440,7 +438,7 @@ def static_corr_op(return_df):
 
 def return_in_btc_comp(total_df, time_window):
     """
-    time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "YTD"
+    time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"
     """
 
     # order values from oldest to newest
@@ -534,6 +532,12 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
     mongo_upload(yahoo_df_1M, "collection_yahoo_btc_den_1M")
     mongo_upload(alt_df_1M, "collection_alt_btc_den_1M")
 
+    yahoo_df_1W = return_in_btc_comp(yahoo_price_df, "1W")
+    alt_df_1W = return_in_btc_comp(alt_price_df, "1W")
+
+    mongo_upload(yahoo_df_1W, "collection_yahoo_btc_den_1W")
+    mongo_upload(alt_df_1W, "collection_alt_btc_den_1W")
+
 
 # ---------------------------------
 # USD DENOMINATED PRICES
@@ -542,7 +546,7 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
 
 def usd_normalized_calc(yahoo_returns, time_window):
     """
-    time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M", "YTD"
+    time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M", "1W", "YTD"
     """
 
     yahoo_returns = yahoo_returns.sort_values(by=["Date"], ascending=True)
@@ -623,3 +627,7 @@ def usd_normalized_total(yahoo_price_df):
     yahoo_df_1M = usd_normalized_calc(yahoo_price_df, "1M")
 
     mongo_upload(yahoo_df_1M, "collection_normalized_prices_1M")
+
+    yahoo_df_1W = usd_normalized_calc(yahoo_price_df, "1W")
+
+    mongo_upload(yahoo_df_1W, "collection_normalized_prices_1W")
