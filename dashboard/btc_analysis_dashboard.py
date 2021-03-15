@@ -702,8 +702,7 @@ def update_eff_frontier(n):
 
     fig.update_layout(
         title_text="Efficient Frontier",
-        yaxis_range=[-0.1, 0.7],
-        secondary_y=True
+        yaxis_range=[-0.1, 0.7]
     )
 
     # Set x-axis title
@@ -711,9 +710,10 @@ def update_eff_frontier(n):
 
     # Set y-axes titles
     fig.update_yaxes(title_text="Return",
-                     secondary_y=False)
+                     secondary_y=False,
+                     range=[-0.1, 0.7])
     fig.update_yaxes(
-        title_text="Return", secondary_y=True)
+        title_text="Return", secondary_y=True, range=[-0.1, 0.7])
 
     return fig
 
