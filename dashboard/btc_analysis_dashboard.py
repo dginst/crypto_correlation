@@ -687,7 +687,8 @@ def update_eff_frontier(n):
                    y=CAPM_dff_eff["Return"],
                    name="Efficient Frontier w BTC",
                    mode='lines',
-                   color='#ED7014'),
+                   line_color='#ED7014'
+                   ),
         secondary_y=False,
     )
 
@@ -696,7 +697,7 @@ def update_eff_frontier(n):
                    y=CAPM_no_dff_eff["Return"],
                    name="Efficient Frontier w/out BTC",
                    mode='lines',
-                   color='#028A0F'),
+                   line_color='#028A0F'),
         secondary_y=True,
     )
 
