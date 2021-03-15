@@ -14,8 +14,7 @@ YAHOO_TO_CAPM = ['S&P500',
                  'US index',
                  'TESLA',
                  'AMAZON',
-                 'APPLE',
-                 'NETFLIX']
+                 'APPLE']
 
 # retriving prices and logreturn from MongoDB
 all_price_df = query_mongo("btc_analysis", "all_prices_y")
@@ -29,4 +28,4 @@ tot_df, comp_tot_df = eff_front_op(
     prices, log_ret, stock_to_remove="BTC")
 
 mongo_upload(tot_df, "collection_CAPM")
-mongo_upload(tot_df, "collection_CAPM_no_BTC")
+mongo_upload(comp_tot_df, "collection_CAPM_no_BTC")
