@@ -32,11 +32,11 @@ df_alt_col.remove('Window')
 
 
 df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC"])
-df_yahoo = df_yahoo.rename(
-    columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
-             'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
-             'PETROL': 'CRUDE OIL',
-             'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
+# df_yahoo = df_yahoo.rename(
+#     columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
+#              'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
+#              'PETROL': 'CRUDE OIL',
+#              'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
 df_col_yahoo = list(df_yahoo.columns)
 df_col_yahoo.remove('Date')
 df_col_yahoo.remove('Window')
@@ -231,11 +231,11 @@ def update_graph_yahoo(window_selection, asset_selection, n):
     df_yahoo = df_yahoo.loc[df_yahoo.Year > "2016"]
 
     df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC"])
-    df_yahoo = df_yahoo.rename(
-        columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
-                 'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
-                 'PETROL': 'CRUDE OIL',
-                 'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
+    # df_yahoo = df_yahoo.rename(
+    #     columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
+    #              'BBG Barclays PAN US Aggregate': 'US Aggregate Bond',
+    #              'PETROL': 'CRUDE OIL',
+    #              'Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR': ' Euro Total Return'})
 
     dff_yahoo = df_yahoo.copy()
     dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]

@@ -394,9 +394,9 @@ def update_graph_yahoo(window_selection, asset_selection):
     _, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 
     df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC", "BCH"])
-    df_yahoo = df_yahoo.rename(
-        columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
-                 'PETROL': 'CRUDE OIL'})
+    # df_yahoo = df_yahoo.rename(
+    #     columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
+    #              'PETROL': 'CRUDE OIL'})
 
     dff_yahoo = df_yahoo.copy()
     dff_y_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
