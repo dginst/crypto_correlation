@@ -706,11 +706,11 @@ def update_eff_frontier(n):
                      secondary_y=False)
     fig.update_yaxes(
         title_text="<b>secondary</b> Return", secondary_y=True)
-    )
 
-        return fig
+    return fig
+
 
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug = True, port = 4000, host = '0.0.0.0')
+    app.run_server(debug=True, port=4000, host='0.0.0.0')
