@@ -683,13 +683,13 @@ def update_eff_frontier(n):
 
     # Add traces
     fig.add_trace(
-        go.Scatter(x=CAPM_dff_eff["Return"],
-                   y=CAPM_dff_eff["Volatility"], name="Efficient Frontier w BTC",  mode='lines'),
+        go.Scatter(x=CAPM_dff_eff["Volatility"],
+                   y=CAPM_dff_eff["Return"], name="Efficient Frontier w BTC",  mode='lines'),
         secondary_y=False,
     )
 
     fig.add_trace(
-        go.Scatter(x=CAPM_no_dff_eff["Return"],
+        go.Scatter(x=CAPM_no_dff_eff["Volatility"],
                    y=CAPM_no_dff_eff["Return"], name="Efficient Frontier w/out BTC"),
         secondary_y=True,
     )
