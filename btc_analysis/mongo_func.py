@@ -157,6 +157,10 @@ def mongo_indexing():
     db.market_cap.create_index([("id", -1)])
     db.btc_supply.create_index([("id", -1)])
 
+    # markovitz
+    db.CAPM.create_index([("id", -1)])
+    db.CAPM_no_BTC.create_index([("id", -1)])
+
 
 def mongo_coll():
 
@@ -248,6 +252,10 @@ def mongo_coll():
         # market cap
         "collection_market_cap": db.market_cap,
         "collection_btc_supply": db.btc_supply,
+
+        # markovitz
+        "collection_CAPM": db.CAPM,
+        "collection_CAPM_no_BTC": db.CAPM_no_BTC,
 
     }
 
@@ -388,6 +396,11 @@ def mongo_coll_drop(corr_type):
 
         db.market_cap.drop()
         db.btc_supply.drop()
+
+    elif corr_type == "markovitz":
+
+        db.CAPM.drop()
+        db.CAPM_no_BTC.drop()
 
 
 def mongo_correlation_drop():
