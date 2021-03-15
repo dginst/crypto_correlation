@@ -553,3 +553,22 @@ USD_SUPPLY = 19632088542000
 GOLD_OUNCES_SUPPLY = 2500000000
 
 SILVER_OUNCES_SUPPLY = 4000000000
+
+
+# --------------------------------
+# MARKOVITZ
+# ------------------------------
+
+YAHOO_TO_CAPM = ['S&P500',
+                 'BTC',
+                 'GOLD',
+                 'PETROL',
+                 'EUR',
+                 'GBP',
+                 'EUROSTOXX50',
+                 'US_TREASURY',
+                 'US index',
+                 'TESLA',
+                 'AMAZON',
+                 'APPLE',
+                 'NETFLIX']

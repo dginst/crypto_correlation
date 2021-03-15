@@ -7,7 +7,7 @@ import dash_html_components as html
 import plotly.express as px
 from btc_analysis.config import (ASSET_ANALYSIS_LIST, ASSET_ANALYSIS_LIST_VOL,
                                  COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
-                                 YAHOO_DASH_LIST)
+                                 YAHOO_DASH_LIST, YAHOO_TO_CAPM)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
                                          vola_total_df)
 from btc_analysis.mongo_func import query_mongo
@@ -274,6 +274,16 @@ app.layout = dbc.Container([
     #     ])
 
     # ]),
+
+    dbc.Row([
+        dbc.Col([
+
+
+            dcc.Graph(id='my_area_chart', figure={}),
+
+        ])
+
+    ]),
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
@@ -599,6 +609,39 @@ def update_graph_volume(asset_selection):
 #     )
 
 #     return fig_mkt_cap
+
+@ app.callback(
+    Output('my_area_chart', 'figure'),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def update_area_chart(n):
+
+    CAPM_df = query_mongo(DB_NAME, "CAPM")
+
+    CAPM_dff = CAPM_df.copy()
+    CAPM_dff = CAPM_dff.drop(columns=["Return"])
+
+    # fig = go.Figure()
+
+    fig = px.area(
+        data_frame=CAPM_dff,
+        x="Volatility",
+        y=YAHOO_TO_CAPM,
+        template='plotly_dark',
+        title='CAPM',
+        color="Var",
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "S&P500": "#511CFB",
+            "PETROL": "#222A2A",
+            "TESLA": "#86CE00",
+            "US index": "#FBE426",
+            "US_TREASURY": "#A777F1",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
+    return fig
 
 
 print("Done")
