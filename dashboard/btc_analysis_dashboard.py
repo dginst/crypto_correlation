@@ -5,6 +5,7 @@ import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
+import plotly.graph_objects as go
 from btc_analysis.config import (ASSET_ANALYSIS_LIST, ASSET_ANALYSIS_LIST_VOL,
                                  COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
                                  YAHOO_DASH_LIST, YAHOO_TO_CAPM)
