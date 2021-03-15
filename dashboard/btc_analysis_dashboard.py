@@ -611,7 +611,7 @@ def update_graph_volume(asset_selection):
 #     return fig_mkt_cap
 
 @ app.callback(
-    Output('my_area_chart', 'figure'),
+    Output(component_id='my_area_chart', component_property='figure'),
     Input(component_id="yahoo-update", component_property="n_intervals")
 )
 def update_area_chart(n):
@@ -623,7 +623,7 @@ def update_area_chart(n):
 
     # fig = go.Figure()
 
-    fig = px.area(
+    fig_area = px.area(
         data_frame=CAPM_dff,
         x="Volatility",
         y=YAHOO_TO_CAPM,
@@ -641,7 +641,8 @@ def update_area_chart(n):
             "APPLE": "#BAB0AC",
             "NETFLIX": "#FD3216",
         }
-    return fig
+
+    return fig_area
 
 
 print("Done")
