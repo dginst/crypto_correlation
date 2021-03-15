@@ -12,6 +12,7 @@ from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
                                          vola_total_df)
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
+from plotly.subplots import make_subplots
 
 # ------------------------------
 # start app
@@ -285,6 +286,17 @@ app.layout = dbc.Container([
         ])
 
     ]),
+
+    dbc.Row([
+            dbc.Col([
+
+
+                dcc.Graph(id='my_eff_frontier', figure={}),
+
+            ])
+
+            ]),
+
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
@@ -649,7 +661,56 @@ def update_area_chart(n):
     return fig_area
 
 
+@ app.callback(
+    Output(component_id='my_eff_frontier', component_property='figure'),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def update_eff_frontier(n):
+
+    CAPM_df = query_mongo(DB_NAME, "CAPM")
+    CAMP_no_df = query_mongo(DB_NAME, "CAPM_no_BTC")
+
+    CAPM_dff = CAPM_df.copy()
+    CPAM_no_dff = CAMP_no_df.copy()
+
+    CAPM_dff_eff = CAPM_dff[["Return", "Volatility"]]
+
+    CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
+
+    # Create figure with secondary y-axis
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Add traces
+    fig.add_trace(
+        go.Scatter(x=CAPM_dff_eff["Return"],
+                   y=CAPM_dff_eff["Volatility"], name="Efficient Frontier w BTC",  mode='lines'),
+        secondary_y=False,
+    )
+
+    fig.add_trace(
+        go.Scatter(x=CAPM_no_dff_eff["Return"],
+                   y=CAPM_no_dff_eff["Return"], name="Efficient Frontier w/out BTC"),
+        secondary_y=True,
+    )
+
+    # Add figure title
+    fig.update_layout(
+        title_text="Efficient Frontier"
+    )
+
+    # Set x-axis title
+    fig.update_xaxes(title_text="Volatility")
+
+    # Set y-axes titles
+    fig.update_yaxes(title_text="<b>primary</b> Return",
+                     secondary_y=False)
+    fig.update_yaxes(
+        title_text="<b>secondary</b> Return", secondary_y=True)
+    )
+
+        return fig
+
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000, host='0.0.0.0')
+    app.run_server(debug = True, port = 4000, host = '0.0.0.0')
