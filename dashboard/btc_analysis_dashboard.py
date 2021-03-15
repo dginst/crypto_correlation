@@ -523,7 +523,7 @@ def update_graph_vola(days_selection, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         title='Annualized Volatility',
-        labels={"value": "volatility"}
+        labels={"value": "volatility"},
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
@@ -561,7 +561,7 @@ def update_graph_volume(asset_selection):
         y=asset_selection,
         template='plotly_dark',
         title='Volume in USD',
-        labels={"value": "volume"}
+        labels={"value": "volume"},
         color_discrete_map={
             "BTC": "#FEAF16",
             "BTC no stable": "#8e16fe",
@@ -632,7 +632,7 @@ def update_area_chart(n):
         y=YAHOO_TO_CAPM,
         template='plotly_dark',
         title='CAPM',
-        labels={"value": "weights"}
+        labels={"value": "weights"},
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
