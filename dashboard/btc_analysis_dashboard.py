@@ -697,7 +697,13 @@ def update_eff_frontier(n):
     # Add figure title
     fig.update_layout(
         title_text="Efficient Frontier",
-        yaxis_range=[0, 0.7]
+        yaxis_range=[-0.1, 0.7]
+    )
+
+    fig.update_layout(
+        title_text="Efficient Frontier",
+        yaxis_range=[-0.1, 0.7],
+        secondary_y=True
     )
 
     # Set x-axis title
