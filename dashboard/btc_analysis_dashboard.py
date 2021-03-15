@@ -112,7 +112,8 @@ app.layout = dbc.Container([
                 options=[
                     {'label': x, 'value': x} for x in YAHOO_DASH_LIST
                 ],
-                value=["BTC", "GOLD", "AMAZON", "TESLA", "APPLE", "NETFLIX"],
+                value=["BTC", "GOLD", "S&P500",
+                       "US TREASURY", "US index", "VIX"],
                 labelStyle={'display': 'inline-block'},
                 inputStyle={"margin-right": "10px",
                             "margin-left": "10px"}
@@ -422,7 +423,7 @@ def update_graph_yahoo(window_selection, asset_selection):
             "NASDAQ": "#B68100",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
-            "US_TREASURY": "#A777F1",
+            "US TREASURY": "#A777F1",
             "AMAZON": "#F58518",
             "APPLE": "#BAB0AC",
             "NETFLIX": "#FD3216",

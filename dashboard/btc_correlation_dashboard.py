@@ -122,7 +122,7 @@ app.layout = dbc.Container([
                 options=[
                     {'label': x, 'value': x} for x in df_col_yahoo
                 ],
-                value=["GOLD", "S&P500", "CRUDE OIL", "US_TREASURY"],
+                value=["GOLD", "S&P500", "CRUDE OIL", "US TREASURY"],
                 labelStyle={'display': 'inline-block'},
                 inputStyle={"margin-right": "10px",
                             "margin-left": "10px"}
@@ -263,7 +263,7 @@ def update_graph_yahoo(window_selection, asset_selection, n):
             "NASDAQ": "black",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
-            "US_TREASURY": "#A777F1",
+            "US TREASURY": "#A777F1",
             "AMAZON": "#F58518",
             "GOLD": "#F6F926"
         }

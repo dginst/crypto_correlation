@@ -68,8 +68,8 @@ EQUITY_YAHOO = ['NASDAQ',
 BOND = ["Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
         "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
-BOND_YAHOO = ['US_TREASURY',
-              'BBG Barclays PAN EURO Aggregate',
+BOND_YAHOO = ['US TREASURY',
+              'EUR Aggregate Bond',
               'US Aggregate Bond']
 
 CURRENCY = ["EUR", "CHF", "GBP", "JPY"]
@@ -108,7 +108,7 @@ SP500_GRAPH_LIST = ["BITCOIN", "GOLD", "GRAIN", "EUR", "JPY",
 VAR_GRAPH_LIST = ['ETH', 'XRP', 'LTC', "GOLD", "GRAIN", "EUR", "JPY",
                   "EUROSTOXX50", "S&P500", "VIX Index", "NASDAQ", "PETROL"
                   "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate",
-                  "CORN", 'US_TREASURY', 'BBG Barclays PAN EURO Aggregate']
+                  "CORN", 'US TREASURY', 'BBG Barclays PAN EURO Aggregate']
 
 
 CRYPTO_GRAPH_LIST = ['ETH', 'XRP', 'LTC',
