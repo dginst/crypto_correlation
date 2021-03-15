@@ -568,5 +568,4 @@ YAHOO_TO_CAPM = ['S&P500',
                  'US index',
                  'TESLA',
                  'AMAZON',
-                 'APPLE',
-                 'NETFLIX']
+                 'APPLE']
