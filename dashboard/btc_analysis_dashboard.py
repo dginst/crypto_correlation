@@ -697,23 +697,19 @@ def update_eff_frontier(n):
     # Add figure title
     fig.update_layout(
         title_text="Efficient Frontier",
-        yaxis_range=[-0.1, 0.7]
-    )
-
-    fig.update_layout(
-        title_text="Efficient Frontier",
-        yaxis_range=[-0.1, 0.7]
+        template='plotly_dark'
     )
 
     # Set x-axis title
-    fig.update_xaxes(title_text="Volatility")
+    fig.update_xaxes(title_text="Volatility",
+                     range=[0, 0.3])
 
     # Set y-axes titles
     fig.update_yaxes(title_text="Return",
                      secondary_y=False,
-                     range=[-0.1, 0.7])
+                     range=[-0.1, 0.5])
     fig.update_yaxes(
-        title_text="Return", secondary_y=True, range=[-0.1, 0.7])
+        title_text="Return", secondary_y=True, range=[-0.1, 0.5])
 
     return fig
 
