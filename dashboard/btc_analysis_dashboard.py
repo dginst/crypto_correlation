@@ -641,6 +641,7 @@ def update_area_chart(n):
             "APPLE": "#BAB0AC",
             "NETFLIX": "#FD3216",
         }
+    )
 
     return fig_area
 
