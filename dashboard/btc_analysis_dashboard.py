@@ -629,7 +629,6 @@ def update_area_chart(n):
         y=YAHOO_TO_CAPM,
         template='plotly_dark',
         title='CAPM',
-        color="Var",
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
