@@ -6,7 +6,7 @@ mongo_coll_drop("markovitz")
 YAHOO_TO_CAPM = ['S&P500',
                  'BTC',
                  'GOLD',
-                 'PETROL',
+                 'CRUDE OIL',
                  'EUR',
                  'GBP',
                  'EUROSTOXX50',
