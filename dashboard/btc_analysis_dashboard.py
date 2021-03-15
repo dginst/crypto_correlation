@@ -415,7 +415,7 @@ def update_graph_yahoo(window_selection, asset_selection):
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
-            "CRUDE OIL": "#222A2A",
+            "CRUDE OIL": "#663300",
             "SILVER": "#E2E2E2",
             "TESLA": "#86CE00",
             "US index": "#FBE426",
@@ -636,7 +636,7 @@ def update_area_chart(n):
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
-            "PETROL": "#222A2A",
+            "CRUDE OIL": "#663300",
             "TESLA": "#86CE00",
             "US index": "#FBE426",
             "US_TREASURY": "#A777F1",
