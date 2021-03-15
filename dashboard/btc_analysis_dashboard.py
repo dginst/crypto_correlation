@@ -696,17 +696,18 @@ def update_eff_frontier(n):
 
     # Add figure title
     fig.update_layout(
-        title_text="Efficient Frontier"
+        title_text="Efficient Frontier",
+        yaxis_range=[0, 0.7]
     )
 
     # Set x-axis title
     fig.update_xaxes(title_text="Volatility")
 
     # Set y-axes titles
-    fig.update_yaxes(title_text="<b>primary</b> Return",
+    fig.update_yaxes(title_text="Return",
                      secondary_y=False)
     fig.update_yaxes(
-        title_text="<b>secondary</b> Return", secondary_y=True)
+        title_text="Return", secondary_y=True)
 
     return fig
 
