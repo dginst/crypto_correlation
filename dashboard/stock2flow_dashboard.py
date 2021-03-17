@@ -103,8 +103,8 @@ def update_S2F(n):
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
         tickprefix="$"
     )
-
-    model_price.update_layout(xaxis=dict(tickformat="%y"))
+    model_price.update_xaxes(nticks=10)
+    # model_price.update_layout(xaxis=dict(tickformat="%y"))
 
     return model_price
 
