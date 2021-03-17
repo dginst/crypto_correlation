@@ -87,7 +87,7 @@ def update_S2F(n):
 
     dff = df.copy()
 
-    dff = dff.tail(len(dff.index) - 720)
+    dff = dff.tail(len(dff.index) - 400)
 
     dff["Date"] = [datetime.strptime(
         x, "%d-%m-%Y") for x in dff["Date"]]
@@ -98,6 +98,7 @@ def update_S2F(n):
         y="S2F price 365d average",
         template='plotly_dark',
         title='Stock to Flow model',
+        labels={"S2F price 365d average": "BTC Price(USD)"}
         log_y=True,
     )
 
@@ -105,8 +106,8 @@ def update_S2F(n):
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
         tickprefix="$"
     )
-    # model_price.update_xaxes(nticks=10)
-    model_price.update_layout(xaxis=dict(tickformat="%Y"))
+    model_price.update_xaxes(nticks=20)
+    # model_price.update_layout(xaxis=dict(tickformat="%Y"))
 
     return model_price
 
