@@ -86,13 +86,27 @@ def update_S2F(n):
 
     dff = df.copy()
 
+    dff = dff.tail(len(dff.index) - 720)
+
+    dff["Year"] = dff["Date"].str.slice(start=-4)
+
     model_price = px.line(
         data_frame=dff,
-        x="Date",
+        x="Year",
         y="S2F price",
         template='plotly_dark',
         title='Stock to Flow model',
         log_y=True,
+    )
+
+    model_price.update_yaxes(
+        tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
+        tickprefix="$"
+    )
+
+    model_price.update_xaxes(
+        tickvals=[20],
+        tickprefix="$"
     )
     # index_area.update_layout(showlegend=False)
 
