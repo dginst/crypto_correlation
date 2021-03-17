@@ -92,7 +92,7 @@ def update_S2F(n):
 
     model_price = px.line(
         data_frame=dff,
-        x="Year",
+        x="Date",
         y="S2F price",
         template='plotly_dark',
         title='Stock to Flow model',
@@ -104,11 +104,7 @@ def update_S2F(n):
         tickprefix="$"
     )
 
-    # model_price.update_xaxes(
-    #     tickvals=[20],
-    #     tickprefix="$"
-    # )
-    # index_area.update_layout(showlegend=False)
+    model_price.update_layout(xaxis=dict(tickformat="%y"))
 
     return model_price
 
