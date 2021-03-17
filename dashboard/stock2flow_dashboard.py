@@ -104,10 +104,10 @@ def update_S2F(n):
         tickprefix="$"
     )
 
-    model_price.update_xaxes(
-        tickvals=[20],
-        tickprefix="$"
-    )
+    # model_price.update_xaxes(
+    #     tickvals=[20],
+    #     tickprefix="$"
+    # )
     # index_area.update_layout(showlegend=False)
 
     return model_price
