@@ -8,7 +8,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from btc_analysis.config import (ASSET_ANALYSIS_LIST, ASSET_ANALYSIS_LIST_VOL,
                                  COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
-                                 YAHOO_DASH_LIST, YAHOO_TO_CAPM)
+                                 YAHOO_DASH_LIST)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
                                          vola_total_df)
 from btc_analysis.mongo_func import query_mongo
@@ -277,27 +277,6 @@ app.layout = dbc.Container([
     #     ])
 
     # ]),
-
-    dbc.Row([
-        dbc.Col([
-
-
-            dcc.Graph(id='my_area_chart', figure={}),
-
-        ])
-
-    ]),
-
-    dbc.Row([
-            dbc.Col([
-
-
-                dcc.Graph(id='my_eff_frontier', figure={}),
-
-            ])
-
-            ]),
-
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
@@ -625,100 +604,6 @@ def update_graph_volume(asset_selection):
 #     )
 
 #     return fig_mkt_cap
-
-@ app.callback(
-    Output(component_id='my_area_chart', component_property='figure'),
-    Input(component_id="yahoo-update", component_property="n_intervals")
-)
-def update_area_chart(n):
-
-    CAPM_df = query_mongo(DB_NAME, "CAPM")
-
-    CAPM_dff = CAPM_df.copy()
-    CAPM_dff = CAPM_dff.drop(columns=["Return"])
-
-    # fig = go.Figure()
-
-    fig_area = px.area(
-        data_frame=CAPM_dff,
-        x="Volatility",
-        y=YAHOO_TO_CAPM,
-        template='plotly_dark',
-        title='CAPM',
-        labels={"value": "weights"},
-        color_discrete_map={
-            "BTC": "#FEAF16",
-            "S&P500": "#511CFB",
-            "CRUDE OIL": "#663300",
-            "TESLA": "#86CE00",
-            "US index": "#FBE426",
-            "US_TREASURY": "#A777F1",
-            "AMAZON": "#F58518",
-            "APPLE": "#BAB0AC",
-            "NETFLIX": "#FD3216",
-        }
-    )
-
-    return fig_area
-
-
-@ app.callback(
-    Output(component_id='my_eff_frontier', component_property='figure'),
-    Input(component_id="yahoo-update", component_property="n_intervals")
-)
-def update_eff_frontier(n):
-
-    CAPM_df = query_mongo(DB_NAME, "CAPM")
-    CAMP_no_df = query_mongo(DB_NAME, "CAPM_no_BTC")
-
-    CAPM_dff = CAPM_df.copy()
-    CPAM_no_dff = CAMP_no_df.copy()
-
-    CAPM_dff_eff = CAPM_dff[["Return", "Volatility"]]
-
-    CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
-
-    # Create figure with secondary y-axis
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    # Add traces
-    fig.add_trace(
-        go.Scatter(x=CAPM_dff_eff["Volatility"],
-                   y=CAPM_dff_eff["Return"],
-                   name="Efficient Frontier w BTC",
-                   mode='lines',
-                   line_color='#ED7014'
-                   ),
-        secondary_y=False,
-    )
-
-    fig.add_trace(
-        go.Scatter(x=CAPM_no_dff_eff["Volatility"],
-                   y=CAPM_no_dff_eff["Return"],
-                   name="Efficient Frontier w/out BTC",
-                   mode='lines',
-                   line_color='#028A0F'),
-        secondary_y=True,
-    )
-
-    # Add figure title
-    fig.update_layout(
-        title_text="Efficient Frontier",
-        template='plotly_dark'
-    )
-
-    # Set x-axis title
-    fig.update_xaxes(title_text="Volatility",
-                     range=[0, 0.3])
-
-    # Set y-axes titles
-    fig.update_yaxes(title_text="Return",
-                     secondary_y=False,
-                     range=[-0.1, 0.5])
-    fig.update_yaxes(
-        title_text="Return", secondary_y=True, range=[-0.1, 0.5])
-
-    return fig
 
 
 print("Done")
