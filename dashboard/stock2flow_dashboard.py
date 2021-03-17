@@ -84,27 +84,57 @@ app.layout = dbc.Container([
 def update_S2F(n):
 
     df = query_mongo("btc_analysis", "S2F_model")
+    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
 
     dff = df.copy()
+    price_dff = price_df.copy()
 
     dff = dff.tail(len(dff.index) - 400)
 
     dff["Date"] = [datetime.strptime(
         x, "%d-%m-%Y") for x in dff["Date"]]
 
-    model_price = px.line(
-        data_frame=dff,
-        x="Date",
-        y="S2F price 365d average",
-        template='plotly_dark',
-        title='Stock to Flow model',
-        labels={"S2F price 365d average": "BTC Price(USD)"},
-        log_y=True,
+    model_price = go.Figure()
+
+    model_price.add_trace(
+        go.Scatter(
+            x=dff["Date"],
+            y=dff["S2F price 365d average"],
+            name="S2F price 365d average",
+            mode='lines',
+            line_color='#028A0F',
+            log_y=True,
+        ))
+
+    model_price.add_trace(
+        go.Scatter(
+            x=dff["Date"],
+            y=price_dff["BTC Price"],
+            name="BTC Price",
+            mode='markers',
+            # line_color='#028A0F',
+            log_y=True,
+        ))
+
+    model_price.update_layout(
+        title_text="Stock to Flow model",
+        template='plotly_dark'
     )
+
+    # model_price = px.line(
+    #     data_frame=dff,
+    #     x="Date",
+    #     y="S2F price 365d average",
+    #     template='plotly_dark',
+    #     title='Stock to Flow model',
+    #     labels={"S2F price 365d average": "BTC Price(USD)"},
+    #     log_y=True,
+    # )
 
     model_price.update_yaxes(
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
-        tickprefix="$"
+        tickprefix="$",
+        title_text="BTC Price(USD)"
     )
     model_price.update_xaxes(nticks=20)
     # model_price.update_layout(xaxis=dict(tickformat="%Y"))

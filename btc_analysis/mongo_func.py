@@ -163,6 +163,7 @@ def mongo_indexing():
 
     # stock to flow
     db.S2F_model.create_index([("id", -1)])
+    db.S2F_BTC_price.create_index([("id", -1)])
 
 
 def mongo_coll():
@@ -262,6 +263,7 @@ def mongo_coll():
 
         # stock to flow
         "collection_S2F": db.S2F_model,
+        "collection_S2F_BTC": db.S2F_BTC_price,
 
     }
 
@@ -411,6 +413,7 @@ def mongo_coll_drop(corr_type):
     elif corr_type == "S2F":
 
         db.S2F_model.drop()
+        db.S2F_BTC_price.drop()
 
 
 def mongo_correlation_drop():

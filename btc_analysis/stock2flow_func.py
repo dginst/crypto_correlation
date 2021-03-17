@@ -153,3 +153,33 @@ def reward_to_time(initial_df):
     final_df = final_df.drop(columns=["Datetime"])
 
     return final_df
+
+
+def days_to_halving(initial_df, halving_days_list):
+
+    final_df = initial_df.copy()
+
+    final_df["Datetime"] = [datetime.strptime(
+        date, "%d-%m-%Y") for date in final_df["Date"]]
+
+    i = 0
+    days_to_halv = np.array([])
+
+    for date in final_df["Datetime"]:
+
+        next_halving = datetime.strptime(halving_days_list[i], "%d-%m-%Y")
+
+        if next_halving == date:
+
+            i = i + 1
+            day_count = 0
+
+        else:
+
+            day_count = (next_halving - date).days
+
+        days_to_halv = np.append(days_to_halv, day_count)
+
+    final_df["Days to Halving"] = days_to_halv
+
+    return final_df
