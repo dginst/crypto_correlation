@@ -103,7 +103,7 @@ def update_S2F(n):
             name="S2F price 365d average",
             mode='lines',
             line_color='#028A0F',
-            log_y=True,
+            # log_y=True,
         ))
 
     model_price.add_trace(
@@ -113,7 +113,7 @@ def update_S2F(n):
             name="BTC Price",
             mode='markers',
             # line_color='#028A0F',
-            log_y=True,
+            # log_y=True,
         ))
 
     model_price.update_layout(
@@ -134,7 +134,8 @@ def update_S2F(n):
     model_price.update_yaxes(
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
         tickprefix="$",
-        title_text="BTC Price(USD)"
+        title_text="BTC Price(USD)",
+        type="log",
     )
     model_price.update_xaxes(nticks=20)
     # model_price.update_layout(xaxis=dict(tickformat="%Y"))
