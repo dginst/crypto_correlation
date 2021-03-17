@@ -98,7 +98,7 @@ def update_S2F(n):
         y="S2F price 365d average",
         template='plotly_dark',
         title='Stock to Flow model',
-        labels={"S2F price 365d average": "BTC Price(USD)"}
+        labels={"S2F price 365d average": "BTC Price(USD)"},
         log_y=True,
     )
 
