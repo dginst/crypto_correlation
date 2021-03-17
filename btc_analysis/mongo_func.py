@@ -161,6 +161,9 @@ def mongo_indexing():
     db.CAPM.create_index([("id", -1)])
     db.CAPM_no_BTC.create_index([("id", -1)])
 
+    # stock to flow
+    db.S2F_model.create_index([("id", -1)])
+
 
 def mongo_coll():
 
@@ -256,6 +259,9 @@ def mongo_coll():
         # markovitz
         "collection_CAPM": db.CAPM,
         "collection_CAPM_no_BTC": db.CAPM_no_BTC,
+
+        # stock to flow
+        "collection_S2F": db.S2F_model,
 
     }
 
@@ -401,6 +407,10 @@ def mongo_coll_drop(corr_type):
 
         db.CAPM.drop()
         db.CAPM_no_BTC.drop()
+
+    elif corr_type == "S2F":
+
+        db.S2F_model.drop()
 
 
 def mongo_correlation_drop():
