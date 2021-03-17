@@ -126,6 +126,9 @@ def complete_model(slope, intercept):
 
     final_df["S2F price"] = final_df["S2F mkt cap"] / final_df["Stock"]
 
+    final_df["S2F price 365d average"] = final_df["S2F price"].rolling(
+        window=365).mean()
+
     return final_df
 
 

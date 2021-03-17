@@ -10,6 +10,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
+from datetime import datetime
 
 
 # start app
@@ -88,12 +89,13 @@ def update_S2F(n):
 
     dff = dff.tail(len(dff.index) - 720)
 
-    dff["Year"] = dff["Date"].str.slice(start=-4)
+    dff["Date"] = [datetime.strptime(
+        x, "%d-%m-%Y") for x in dff["Date"]]
 
     model_price = px.line(
         data_frame=dff,
         x="Date",
-        y="S2F price",
+        y="S2F price 365d average",
         template='plotly_dark',
         title='Stock to Flow model',
         log_y=True,
@@ -103,8 +105,8 @@ def update_S2F(n):
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
         tickprefix="$"
     )
-    model_price.update_xaxes(nticks=10)
-    # model_price.update_layout(xaxis=dict(tickformat="%y"))
+    # model_price.update_xaxes(nticks=10)
+    model_price.update_layout(xaxis=dict(tickformat="%Y"))
 
     return model_price
 
