@@ -244,6 +244,8 @@ def halving_return_df(halving_df):
 
 def halving_normalize(return_df, start_price):
 
+    return_df["Datetime"] = [datetime.strftime(
+        date, "%d-%m-%Y") for date in return_df["Datetime"]]
     norm_matrix = np.array(return_df["Datetime"])
 
     halv_col_tot = list(return_df.columns)
@@ -268,5 +270,8 @@ def halving_normalize(return_df, start_price):
 
     header = halv_col_tot
     norm_df = pd.DataFrame(norm_matrix, columns=header)
+
+    norm_df["Datetime"] = [datetime.strptime(
+        date, "%d-%m-%Y") for date in norm_df["Datetime"]]
 
     return norm_df
