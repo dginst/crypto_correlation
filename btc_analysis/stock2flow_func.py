@@ -183,3 +183,90 @@ def days_to_halving(initial_df, halving_days_list):
     final_df["Days to Halving"] = days_to_halv
 
     return final_df
+
+
+# -----------------------------------
+# POST HALVING PERFORMANCES COMPARISON
+# ------------------------------------
+
+def halving_performace(halving_df):
+
+    price_only = halving_df["BTC Price"]
+    return_only = np.array(price_only.pct_change())
+
+    halving_df["BTC Return"] = return_only
+
+    start_price = np.array(
+        halving_df.loc[halving_df["Date"] == "11-05-2020", "BTC Price"])[0]
+
+    return_df = halving_return_df(halving_df)
+
+    perf_df = halving_normalize(return_df, start_price)
+
+    return perf_df
+
+
+def halving_return(halving_df, start_date, stop_date):
+
+    start = datetime.strptime(start_date, "%d-%m-%Y")
+    stop = datetime.strptime(stop_date, "%d-%m-%Y")
+
+    period_ret_df = halving_df.loc[halving_df.Datetime.between(
+        start, stop, inclusive=True), "BTC Return"]
+
+    return period_ret_df
+
+
+def halving_return_df(halving_df):
+
+    last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
+
+    halving_2012_ret = halving_return(halving_df, "28-11-2012", "08-07-2016")
+    halving_2016_ret = halving_return(halving_df, "09-07-2016", "10-05-2020")
+
+    date_len = min(int(len(halving_2012_ret.index)),
+                   int(len(halving_2016_ret.index)))
+
+    date_arr = halving_df.loc[halving_df.Datetime >= last_h_date, "Datetime"]
+
+    halving_2012_ret = halving_2012_ret.head(date_len)
+    halving_2016_ret = halving_2016_ret.head(date_len)
+    date_arr = date_arr.head(date_len)
+
+    header = ["Datetime", "halving 2012", "halving 2016"]
+    final_df = pd.DataFrame(columns=header)
+    final_df["Datetime"] = date_arr
+    final_df["halving 2012"] = halving_2012_ret
+    final_df["halving 2016"] = halving_2016_ret
+
+    return final_df
+
+
+def halving_normalize(return_df, start_price):
+
+    norm_matrix = np.array(return_df["Datetime"])
+
+    halv_col_tot = list(return_df.columns)
+    halv_col = halv_col_tot.copy()
+    halv_col.remove("Datetime")
+
+    for halving in halv_col:
+
+        single_h_ret = np.array(return_df[halving])
+        single_h_ret = single_h_ret[1:len(single_h_ret)]
+        norm_arr = np.array([start_price])
+        current_value = start_price
+
+        for ret in single_h_ret:
+
+            next_value = current_value * (1 + ret)
+            norm_arr = np.append(norm_arr, next_value)
+
+            current_value = next_value
+
+        norm_matrix = np.column_stack((norm_matrix, norm_arr))
+
+    header = halv_col_tot
+    norm_df = pd.DataFrame(norm_matrix, columns=header)
+
+    return norm_df

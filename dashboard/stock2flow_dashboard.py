@@ -25,6 +25,8 @@ app.css.append_css(
 server = app.server
 
 
+last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
+
 # ----------------
 # app layout: bootstrap
 
@@ -51,6 +53,36 @@ app.layout = dbc.Container([
 
                                         dcc.Graph(id="S2F_model", figure={},
                                                   config={'displayModeBar': False}),
+
+
+                                    ])
+                                ]),
+
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
+
+        ]),
+
+    ], justify='center'),
+
+
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+                            dbc.Row(
+                                [
+                                    dbc.Col([
+
+
+                                        dcc.Graph(id="S2F_performance", figure={},
+                                                  config={'displayModeBar': True}),
 
 
                                     ])
@@ -163,6 +195,73 @@ def update_S2F(n):
     # model_price.update_layout(xaxis=dict(tickformat="%Y"))
 
     return model_price
+
+
+@app.callback(
+    Output('S2F_performance', 'figure'),
+    Input('df-update', 'n_intervals')
+)
+def update_S2F_perf(n):
+
+    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
+    perf_df = query_mongo("btc_analysis", "S2F_halving_performance")
+
+    perf_dff = perf_df.copy()
+    price_dff = price_df.copy()
+
+    price_dff = price_dff.loc[price_dff.Datetime >= last_h_date]
+
+    performance = go.Figure()
+
+    performance.add_trace(
+        go.Scatter(
+            x=perf_dff["Datetime"],
+            y=perf_dff["halving 2012"],
+            name="Halving 2012-2016 performance",
+            mode='lines',
+            line_color='#FFFFFF',
+        ))
+
+    performance.add_trace(
+        go.Scatter(
+            x=perf_dff["Datetime"],
+            y=perf_dff["halving 2016"],
+            name="Halving 2016-2020 performance",
+            mode='lines',
+            line_color='#028A0F',
+        ))
+
+    performance.add_trace(
+        go.Scatter(
+            x=price_dff["Datetime"],
+            y=price_dff["BTC Price"],
+            name="Current Halving performance",
+            mode='lines',
+            line_color='#E56717',
+        ))
+
+    performance.update_layout(
+        title_text="Post Halving Performances",
+        template='plotly_dark'
+    )
+
+    performance.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    performance.update_yaxes(
+        tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
+        tickprefix="$",
+        title_text="BTC Price(USD)",
+        type="log",
+    )
+    performance.update_xaxes(nticks=20)
+
+    return performance
 
 
 print("Done")
