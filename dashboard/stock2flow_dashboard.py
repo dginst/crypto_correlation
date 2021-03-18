@@ -103,7 +103,6 @@ def update_S2F(n):
             name="S2F price 365d average",
             mode='lines',
             line_color='#028A0F',
-            # log_y=True,
         ))
 
     model_price.add_trace(
@@ -114,10 +113,9 @@ def update_S2F(n):
             mode='markers',
             marker=dict(color=price_dff["Days to Halving"],
                         colorscale='Viridis',
-                        size=14,
-                        colorbar=dict(thickness=20))
-            # line_color='#028A0F',
-            # log_y=True,
+                        size=1,
+                        colorbar=dict(thickness=20)),
+            colorbar=dict(title='Days until next halving')
         ))
 
     model_price.update_layout(
@@ -125,15 +123,29 @@ def update_S2F(n):
         template='plotly_dark'
     )
 
-    # model_price = px.line(
-    #     data_frame=dff,
-    #     x="Date",
-    #     y="S2F price 365d average",
-    #     template='plotly_dark',
-    #     title='Stock to Flow model',
-    #     labels={"S2F price 365d average": "BTC Price(USD)"},
-    #     log_y=True,
-    # )
+    model_price.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    model_price.update_layout(
+        annotations=[dict(
+            x=1.12,
+            y=1.05,
+            align="right",
+            valign="top",
+            text='Days until next halving',
+            showarrow=False,
+            xref="paper",
+            yref="paper",
+            xanchor="center",
+            yanchor="top"
+        )
+        ]
+    )
 
     model_price.update_yaxes(
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
