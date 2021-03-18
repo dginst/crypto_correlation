@@ -102,7 +102,7 @@ def update_S2F(n):
             y=dff["S2F price 365d average"],
             name="S2F price 365d average",
             mode='lines',
-            line_color='#028A0F',
+            line_color='#FFFFFF',
         ))
 
     model_price.add_trace(
@@ -112,7 +112,8 @@ def update_S2F(n):
             name="BTC Price",
             mode='markers',
             marker=dict(color=price_dff["Days to Halving"],
-                        colorscale='Viridis',
+                        # colorscale='Viridis',
+                        colorscale='RdBu',
                         size=5,
                         colorbar=dict(thickness=20,
                                       # title='Days until next halving'
