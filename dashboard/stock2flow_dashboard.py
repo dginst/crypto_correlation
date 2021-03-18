@@ -114,8 +114,10 @@ def update_S2F(n):
             marker=dict(color=price_dff["Days to Halving"],
                         colorscale='Viridis',
                         size=1,
-                        colorbar=dict(thickness=20)),
-            colorbar=dict(title='Days until next halving')
+                        colorbar=dict(thickness=20),
+                        colorbar=dict(title='Days until next halving')
+                        ),
+
         ))
 
     model_price.update_layout(
