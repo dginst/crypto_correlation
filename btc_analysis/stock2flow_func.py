@@ -189,7 +189,7 @@ def days_to_halving(initial_df, halving_days_list):
 # POST HALVING PERFORMANCES COMPARISON
 # ------------------------------------
 
-def halving_performace(halving_df):
+def halving_performace(halving_df, date_df):
 
     price_only = halving_df["BTC Price"]
     return_only = np.array(price_only.pct_change())
@@ -199,7 +199,8 @@ def halving_performace(halving_df):
     start_price = np.array(
         halving_df.loc[halving_df["Date"] == "11-05-2020", "BTC Price"])[0]
 
-    return_df = halving_return_df(halving_df)
+    return_df = halving_return_df(halving_df, date_df)
+    print(return_df)
 
     perf_df = halving_normalize(return_df, start_price)
 
@@ -217,7 +218,7 @@ def halving_return(halving_df, start_date, stop_date):
     return period_ret_df
 
 
-def halving_return_df(halving_df):
+def halving_return_df(halving_df, date_df):
 
     last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
 
@@ -226,18 +227,23 @@ def halving_return_df(halving_df):
 
     date_len = min(int(len(halving_2012_ret.index)),
                    int(len(halving_2016_ret.index)))
+    date_df["Date"] = [datetime.strptime(
+        date, "%d-%m-%Y") for date in date_df["Date"]]
+    date_arr = date_df.loc[date_df.Date >= last_h_date, "Date"]
 
-    date_arr = halving_df.loc[halving_df.Datetime >= last_h_date, "Datetime"]
-
-    halving_2012_ret = halving_2012_ret.head(date_len)
-    halving_2016_ret = halving_2016_ret.head(date_len)
+    halving_2012_ret = np.array(halving_2012_ret.head(date_len))
+    halving_2016_ret = np.array(halving_2016_ret.head(date_len))
     date_arr = date_arr.head(date_len)
+    print(halving_2012_ret)
+    print(halving_2016_ret)
 
     header = ["Datetime", "halving 2012", "halving 2016"]
     final_df = pd.DataFrame(columns=header)
     final_df["Datetime"] = date_arr
     final_df["halving 2012"] = halving_2012_ret
     final_df["halving 2016"] = halving_2016_ret
+
+    final_df.reset_index(drop=True, inplace=True)
 
     return final_df
 

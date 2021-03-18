@@ -25,7 +25,7 @@ slope, intercept = S2F_definition(initial_data)
 
 final_df = complete_model(slope, intercept)
 price_df = days_to_halving(BTC_prices, HALVING_DATE)
-halving_perf_df = halving_performace(price_df)
+halving_perf_df = halving_performace(price_df, final_df)
 
 mongo_upload(final_df, "collection_S2F")
 mongo_upload(price_df, "collection_S2F_BTC")
