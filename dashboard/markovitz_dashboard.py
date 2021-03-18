@@ -64,33 +64,36 @@ app.layout = dbc.Container([
 
             ]),
 
-            dbc.Row([
-                dbc.Col([
+            ]),
 
-                    dbc.Card(
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
                         [
-                            dbc.CardBody(
-                                [
 
-                                    dbc.Row([
+                            dbc.Row([
 
-                                        dbc.Col([
+                                dbc.Col([
 
 
-                                            dcc.Graph(
-                                                id='my_eff_frontier', figure={}),
+                                    dcc.Graph(
+                                        id='my_eff_frontier', figure={}),
 
-                                        ])
+                                ])
 
-                                    ]),
+                            ]),
 
-                                ]),
-                        ],
-                        style={"width": "70rem"},
-                        className="mt-3"
-                    )
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
 
-                ]),
+        ]),
+    ]),
 
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
@@ -108,12 +111,12 @@ app.layout = dbc.Container([
 )
 def update_area_chart(n):
 
-    CAPM_df=query_mongo(DB_NAME, "CAPM")
+    CAPM_df = query_mongo(DB_NAME, "CAPM")
 
-    CAPM_dff=CAPM_df.copy()
-    CAPM_dff=CAPM_dff.drop(columns=["Return"])
+    CAPM_dff = CAPM_df.copy()
+    CAPM_dff = CAPM_dff.drop(columns=["Return"])
 
-    fig_area=px.area(
+    fig_area = px.area(
         data_frame=CAPM_dff,
         x="Volatility",
         y=YAHOO_TO_CAPM,
@@ -142,18 +145,18 @@ def update_area_chart(n):
 )
 def update_eff_frontier(n):
 
-    CAPM_df=query_mongo(DB_NAME, "CAPM")
-    CAMP_no_df=query_mongo(DB_NAME, "CAPM_no_BTC")
+    CAPM_df = query_mongo(DB_NAME, "CAPM")
+    CAMP_no_df = query_mongo(DB_NAME, "CAPM_no_BTC")
 
-    CAPM_dff=CAPM_df.copy()
-    CPAM_no_dff=CAMP_no_df.copy()
+    CAPM_dff = CAPM_df.copy()
+    CPAM_no_dff = CAMP_no_df.copy()
 
-    CAPM_dff_eff=CAPM_dff[["Return", "Volatility"]]
+    CAPM_dff_eff = CAPM_dff[["Return", "Volatility"]]
 
-    CAPM_no_dff_eff=CPAM_no_dff[["Return", "Volatility"]]
+    CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
 
     # Create figure with secondary y-axis
-    fig=make_subplots(specs=[[{"secondary_y": True}]])
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     # Add traces
     fig.add_trace(
