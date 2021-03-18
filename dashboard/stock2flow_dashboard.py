@@ -113,9 +113,9 @@ def update_S2F(n):
             mode='markers',
             marker=dict(color=price_dff["Days to Halving"],
                         colorscale='Viridis',
-                        size=1,
+                        size=5,
                         colorbar=dict(thickness=20,
-                                      title='Days until next halving'
+                                      # title='Days until next halving'
                                       ),
                         ),
 
@@ -136,16 +136,18 @@ def update_S2F(n):
 
     model_price.update_layout(
         annotations=[dict(
-            x=1.12,
-            y=1.05,
+            # Don't specify y position, because yanchor="middle" should do it
+            x=1.22,
             align="right",
             valign="top",
             text='Days until next halving',
             showarrow=False,
             xref="paper",
             yref="paper",
-            xanchor="center",
-            yanchor="top"
+            xanchor="left",
+            yanchor="middle",
+            # Parameter textangle allow you to rotate annotation how you want
+            textangle=-90
         )
         ]
     )
