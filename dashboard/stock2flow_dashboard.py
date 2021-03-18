@@ -145,7 +145,7 @@ def update_S2F(n):
             showarrow=False,
             xref="paper",
             yref="paper",
-            xanchor="left",
+            xanchor="right",
             yanchor="middle",
             # Parameter textangle allow you to rotate annotation how you want
             textangle=-90
