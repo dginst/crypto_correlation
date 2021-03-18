@@ -108,10 +108,14 @@ def update_S2F(n):
 
     model_price.add_trace(
         go.Scatter(
-            x=dff["Date"],
+            x=price_dff["Datetime"],
             y=price_dff["BTC Price"],
             name="BTC Price",
             mode='markers',
+            marker=dict(color=price_dff["Days to Halving"],
+                        colorscale='Viridis',
+                        size=14,
+                        colorbar=dict(thickness=20))
             # line_color='#028A0F',
             # log_y=True,
         ))
