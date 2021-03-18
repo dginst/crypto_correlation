@@ -123,8 +123,8 @@ def update_S2F(n):
 
     dff = dff.tail(len(dff.index) - 400)
 
-    dff["Date"] = [datetime.strptime(
-        x, "%d-%m-%Y") for x in dff["Date"]]
+    # dff["Date"] = [datetime.strptime(
+    #     x, "%d-%m-%Y") for x in dff["Date"]]
 
     model_price = go.Figure()
 
