@@ -201,8 +201,6 @@ def double_ef_chart(f_x_1, f_y_1, f_x_2, f_y_2,
     plt.savefig('markovitz\\file\\Efficient_Frontier_comp.png')
     plt.show()
 
-    return fig
-
 
 # python chart used to display CAPM allocation
 

@@ -1,20 +1,8 @@
 from btc_analysis.efficient_frontier import eff_front_op
 from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload, query_mongo
+from btc_analysis.config import (YAHOO_TO_CAPM)
 
 mongo_coll_drop("markovitz")
-
-YAHOO_TO_CAPM = ['S&P500',
-                 'BTC',
-                 'GOLD',
-                 'CRUDE OIL',
-                 'EUR',
-                 'GBP',
-                 'EUROSTOXX50',
-                 'US TREASURY',
-                 'US index',
-                 'TESLA',
-                 'AMAZON',
-                 'APPLE']
 
 # retriving prices and logreturn from MongoDB
 all_price_df = query_mongo("btc_analysis", "all_prices_y")

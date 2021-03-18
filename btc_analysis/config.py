@@ -561,14 +561,11 @@ YAHOO_TO_CAPM = ['S&P500',
                  'BTC',
                  'GOLD',
                  'CRUDE OIL',
-                 'EUR',
-                 'GBP',
                  'EUROSTOXX50',
                  'US TREASURY',
                  'US index',
-                 'TESLA',
-                 'AMAZON',
-                 'APPLE']
+                 'VIX',
+                 ]
 
 
 # -------------------
