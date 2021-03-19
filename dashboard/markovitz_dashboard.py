@@ -153,15 +153,17 @@ def update_eff_frontier(n):
     CPAM_no_dff = CAMP_no_df.copy()
 
     CAPM_dff_eff = CAPM_dff[["Return", "Volatility"]]
-
     CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
 
+    # deleting negative returns
+    CAPM_dff_eff = CAPM_dff_eff.loc[CAPM_dff_eff.Return >= 0]
+    CAPM_no_dff_eff = CAPM_no_dff_eff.loc[CAPM_no_dff_eff.Return >= 0]
+
+    # finding max return and volatility for graph ranges
     max_ret = np.array(
         max(max(CAPM_dff_eff["Return"]), max(CAPM_no_dff_eff["Return"])))
-    print(max_ret)
     max_vola = np.array(max(max(CAPM_dff_eff["Volatility"]), max(
         CAPM_no_dff_eff["Volatility"])))
-    print(max_vola)
 
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
