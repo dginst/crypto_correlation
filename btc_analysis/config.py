@@ -564,7 +564,10 @@ YAHOO_TO_CAPM = ['S&P500',
                  'EUROSTOXX50',
                  'US TREASURY',
                  'US index',
+                 'EUR',
                  'VIX',
+                 'EUR Aggregate Bond',
+                 'APPLE',
                  ]
 
 
