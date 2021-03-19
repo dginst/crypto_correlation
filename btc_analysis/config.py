@@ -558,13 +558,14 @@ SILVER_OUNCES_SUPPLY = 4000000000
 # ------------------------------
 
 YAHOO_TO_CAPM = ['S&P500',
+                 'DOWJONES',
                  'BTC',
                  'GOLD',
                  'CRUDE OIL',
                  'EUROSTOXX50',
                  'US TREASURY',
-                 'US index',
                  'EUR',
+                 'GBP'
                  'VIX',
                  'EUR Aggregate Bond',
                  'APPLE',
