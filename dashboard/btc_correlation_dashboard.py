@@ -327,4 +327,4 @@ def update_download_link_yahoo(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4500, host='0.0.0.0')
+    app.run_server(debug=False, port=4500, host='0.0.0.0')

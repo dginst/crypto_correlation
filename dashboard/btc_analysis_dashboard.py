@@ -708,4 +708,4 @@ def update_graph_volume(asset_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000, host='0.0.0.0')
+    app.run_server(debug=False, port=4000, host='0.0.0.0')
