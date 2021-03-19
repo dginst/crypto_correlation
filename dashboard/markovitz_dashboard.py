@@ -191,7 +191,14 @@ def update_eff_frontier(n):
     # Add figure title
     fig.update_layout(
         title_text="Efficient Frontier",
-        template='plotly_dark'
+        template='plotly_dark',
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
+        )
     )
 
     # Set x-axis title
