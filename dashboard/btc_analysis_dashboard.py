@@ -47,48 +47,66 @@ app.layout = dbc.Container([
 
     ]),
 
-
     dbc.Row([
-        dbc.Col([
+            dbc.Col([
 
-            html.Label(['Time Window']),
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
 
-            dcc.Dropdown(
-                id='my_alt_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in window_list
-                ],
-                multi=False,
-                value="3Y",
-                style={"width": "50%"},
-                clearable=False
-            ),
+                                        html.Label(['Time Window']),
 
-            html.Label(['Crypto Assets']),
-            dcc.Checklist(
-                id='my_alt_check',
-                options=[
-                    {'label': x, 'value': x} for x in CRYPTO_LIST
-                ],
-                value=["BTC", "ETH", "XRP", "LTC", "BCH"],
-                labelStyle={'display': 'inline-block'},
-                inputStyle={"margin-right": "10px",
-                            "margin-left": "10px"}
-            ),
+                                        dcc.Dropdown(
+                                            id='my_alt_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="3Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Label(['Crypto Assets']),
+                                        dcc.Checklist(
+                                            id='my_alt_check',
+                                            options=[
+                                                {'label': x, 'value': x} for x in CRYPTO_LIST
+                                            ],
+                                            value=["BTC", "ETH",
+                                                   "XRP", "LTC", "BCH"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
 
 
-            dcc.Graph(id='my_multi_line', figure={}),
+                                        dcc.Graph(
+                                            id='my_multi_line', figure={}),
 
-            html.A(
-                'Download Data',
-                id='download-link_alt',
-                download="altcoin_rawdata.csv",
-                href="",
-                target="_blank"
-            )
-        ])
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_alt',
+                                            download="altcoin_rawdata.csv",
+                                            href="",
+                                            target="_blank"
+                                        )
+                                    ])
 
-    ]),
+                                ]),
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
     dbc.Row([
         dbc.Col([
@@ -138,135 +156,258 @@ app.layout = dbc.Container([
     dbc.Row([
             dbc.Col([
 
-                html.Label(['Time Window']),
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
 
-                dcc.Dropdown(
-                    id='my_norm_dropdown',
-                    options=[
-                        {'label': w, 'value': w} for w in window_list
+                                        html.Label(['Time Window']),
+
+                                        dcc.Dropdown(
+                                            id='my_alt_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="3Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Label(['Crypto Assets']),
+                                        dcc.Checklist(
+                                            id='my_alt_check',
+                                            options=[
+                                                {'label': x, 'value': x} for x in CRYPTO_LIST
+                                            ],
+                                            value=["BTC", "ETH",
+                                                   "XRP", "LTC", "BCH"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+
+                                        dcc.Graph(
+                                            id='my_multi_line', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_alt',
+                                            download="altcoin_rawdata.csv",
+                                            href="",
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+                            ]),
                     ],
-                    multi=False,
-                    value="3Y",
-                    style={"width": "50%"},
-                    clearable=False
-                ),
-
-                html.Label(['Assets']),
-
-                dcc.Checklist(
-                    id='my_yahoo_norm',
-                    options=[
-                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
-                    ],
-                    value=["BTC", "AMAZON",
-                           "TESLA", "APPLE", "NETFLIX"],
-                    labelStyle={'display': 'inline-block'},
-                    inputStyle={"margin-right": "10px",
-                                "margin-left": "10px"}
-                ),
-
-                dcc.Graph(id='my_multi_line_3', figure={}),
-
-                html.A(
-                    'Download Data',
-                    id='download-link_yahoo_norm',
-                    download="yahoo_normalized.csv",
-                    href='',
-                    target="_blank"
+                    style={"width": "70rem"},
+                    className="mt-3"
                 )
-            ])
 
             ]),
 
-    dbc.Row([
-        dbc.Col([
-
-            html.Label(['Days']),
-
-            dcc.Dropdown(
-                id='my_vola_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in vola_days_list
-                ],
-                multi=False,
-                value="252",
-                style={"width": "50%"},
-                clearable=False
-            ),
-
-            html.Label(['Assets']),
-
-            dcc.Checklist(
-                id='my_yahoo_vola',
-                options=[
-                    {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
-                ],
-                value=["BTC", "AMAZON",
-                       "TESLA", "APPLE", "NETFLIX"],
-                labelStyle={'display': 'inline-block'},
-                inputStyle={"margin-right": "10px",
-                            "margin-left": "10px"}
-            ),
-
-            dcc.Graph(id='my_multi_line_4', figure={}),
-
-            html.A(
-                'Download Data',
-                id='download-link_yahoo_vola',
-                download="yahoo_vola.csv",
-                href='',
-                target="_blank"
-            )
-        ])
-
-    ]),
-
-    dbc.Row([
-        dbc.Col([
-
-            html.Label(['Yahoo Price Data: ']),
-
-            html.A(
-                'Download Data',
-                id='download-link_yahoo_price',
-                download="yahoo_price.csv",
-                href='',
-                target="_blank"
-            )
-        ])
-
-    ]),
+            ], justify='center'),
 
     dbc.Row([
             dbc.Col([
 
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
 
-                html.Label(['Assets']),
+                                dbc.Row([
+                                    dbc.Col([
 
-                dcc.Checklist(
-                    id='my_yahoo_volume',
-                    options=[
-                        {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST_VOL
+                                        html.Label(['Time Window']),
+
+                                        dcc.Dropdown(
+                                            id='my_norm_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="3Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Label(['Assets']),
+
+                                        dcc.Checklist(
+                                            id='my_yahoo_norm',
+                                            options=[
+                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                                            ],
+                                            value=["BTC", "AMAZON",
+                                                   "TESLA", "APPLE", "NETFLIX"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='my_multi_line_3', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_norm',
+                                            download="yahoo_normalized.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+
+                            ]),
                     ],
-                    value=["BTC", "BTC no stable", "AMAZON",
-                           "TESLA", "APPLE", "NETFLIX"],
-                    labelStyle={'display': 'inline-block'},
-                    inputStyle={"margin-right": "10px",
-                                "margin-left": "10px"}
-                ),
-
-                dcc.Graph(id='my_multi_line_5', figure={}),
-
-                html.A(
-                    'Download Data',
-                    id='download-link_yahoo_volume',
-                    download="yahoo_volume.csv",
-                    href='',
-                    target="_blank"
+                    style={"width": "70rem"},
+                    className="mt-3"
                 )
-            ])
 
             ]),
+
+            ], justify='center'),
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+                                    dbc.Col([
+
+                                        html.Label(['Days']),
+
+                                        dcc.Dropdown(
+                                            id='my_vola_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in vola_days_list
+                                            ],
+                                            multi=False,
+                                            value="252",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Label(['Assets']),
+
+                                        dcc.Checklist(
+                                            id='my_yahoo_vola',
+                                            options=[
+                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                                            ],
+                                            value=["BTC", "AMAZON",
+                                                   "TESLA", "APPLE", "NETFLIX"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='my_multi_line_4', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_vola',
+                                            download="yahoo_vola.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+                                    dbc.Col([
+
+                                        html.Label(['Yahoo Price Data: ']),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_price',
+                                            download="yahoo_price.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                                dbc.Row([
+                                    dbc.Col([
+
+
+                                        html.Label(['Assets']),
+
+                                        dcc.Checklist(
+                                            id='my_yahoo_volume',
+                                            options=[
+                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST_VOL
+                                            ],
+                                            value=["BTC", "BTC no stable", "AMAZON",
+                                                   "TESLA", "APPLE", "NETFLIX"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='my_multi_line_5', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_volume',
+                                            download="yahoo_volume.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
 
     # dbc.Row([
     #     dbc.Col([
