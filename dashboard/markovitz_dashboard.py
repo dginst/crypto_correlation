@@ -4,6 +4,7 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from btc_analysis.config import DB_NAME, YAHOO_TO_CAPM
@@ -155,6 +156,11 @@ def update_eff_frontier(n):
 
     CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
 
+    max_ret = np.array(
+        max(max(CAPM_dff_eff["Return"]), max(CAPM_no_dff_eff["Return"])))[0]
+    max_vola = np.array(max(max(CAPM_dff_eff["Volatility"]), max(
+        CAPM_no_dff_eff["Volatility"])))[0]
+
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -186,14 +192,18 @@ def update_eff_frontier(n):
 
     # Set x-axis title
     fig.update_xaxes(title_text="Volatility",
-                     range=[0, 0.3])
+                     range=[0, max_vola + 0.1],
+                     fixedrange=True)
 
     # Set y-axes titles
     fig.update_yaxes(title_text="Return",
                      secondary_y=False,
-                     range=[-0.1, 0.5])
+                     range=[-0.1, max_ret + 0.1])
     fig.update_yaxes(
-        title_text="Return", secondary_y=True, range=[-0.1, 0.5])
+        title_text="Return",
+        secondary_y=True,
+        range=[-0.1, max_ret + 0.1],
+        visible=False,)
 
     return fig
 
