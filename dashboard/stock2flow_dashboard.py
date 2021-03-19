@@ -50,6 +50,20 @@ app.layout = dbc.Container([
                                 [
                                     dbc.Col([
 
+                                        html.Label(['S2F Typology']),
+
+                                        dcc.Dropdown(
+                                            id='my_S2F_dropdown',
+                                            options=[
+                                                "S2F price 365d average",
+                                                "S2F price",
+                                            ],
+                                            multi=False,
+                                            value="S2F price",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
 
                                         dcc.Graph(id="S2F_model", figure={},
                                                   config={'displayModeBar': False}),
@@ -110,10 +124,12 @@ app.layout = dbc.Container([
 
 
 @app.callback(
-    Output('S2F_model', 'figure'),
-    Input('df-update', 'n_intervals')
+    Output(component_id='S2F_model', component_property='figure'),
+    [Input(component_id="my_S2F_dropdown", component_property="value"),
+     Input(component_id='df-update', component_property='n_intervals')
+     ]
 )
-def update_S2F(n):
+def update_S2F(typology, n):
 
     df = query_mongo("btc_analysis", "S2F_model")
     price_df = query_mongo("btc_analysis", "S2F_BTC_price")
@@ -123,6 +139,8 @@ def update_S2F(n):
 
     dff = dff.tail(len(dff.index) - 400)
 
+    dff_selection = dff[typology]
+
     # dff["Date"] = [datetime.strptime(
     #     x, "%d-%m-%Y") for x in dff["Date"]]
 
@@ -131,8 +149,8 @@ def update_S2F(n):
     model_price.add_trace(
         go.Scatter(
             x=dff["Date"],
-            y=dff["S2F price 365d average"],
-            name="S2F price 365d average",
+            y=dff_selection,
+            name=typology,
             mode='lines',
             line_color='#FFFFFF',
         ))
@@ -144,8 +162,8 @@ def update_S2F(n):
             name="BTC Price",
             mode='markers',
             marker=dict(color=price_dff["Days to Halving"],
-                        # colorscale='Viridis',
-                        colorscale='RdBu',
+                        colorscale='Viridis',
+                        # colorscale='RdBu',
                         size=5,
                         colorbar=dict(thickness=20,
                                       # title='Days until next halving'
@@ -170,7 +188,7 @@ def update_S2F(n):
     model_price.update_layout(
         annotations=[dict(
             # Don't specify y position, because yanchor="middle" should do it
-            x=1.22,
+            x=1.10,
             align="right",
             valign="top",
             text='Days until next halving',
@@ -192,7 +210,6 @@ def update_S2F(n):
         type="log",
     )
     model_price.update_xaxes(nticks=20)
-    # model_price.update_layout(xaxis=dict(tickformat="%Y"))
 
     return model_price
 
