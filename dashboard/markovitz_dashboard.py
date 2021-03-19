@@ -157,9 +157,11 @@ def update_eff_frontier(n):
     CAPM_no_dff_eff = CPAM_no_dff[["Return", "Volatility"]]
 
     max_ret = np.array(
-        max(max(CAPM_dff_eff["Return"]), max(CAPM_no_dff_eff["Return"])))[0]
+        max(max(CAPM_dff_eff["Return"]), max(CAPM_no_dff_eff["Return"])))
+    print(max_ret)
     max_vola = np.array(max(max(CAPM_dff_eff["Volatility"]), max(
-        CAPM_no_dff_eff["Volatility"])))[0]
+        CAPM_no_dff_eff["Volatility"])))
+    print(max_vola)
 
     # Create figure with secondary y-axis
     fig = make_subplots(specs=[[{"secondary_y": True}]])
