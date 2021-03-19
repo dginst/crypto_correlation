@@ -12,7 +12,7 @@ from dash.dependencies import Input, Output
 # start app
 
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR],
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}])
 
@@ -116,48 +116,67 @@ app.layout = dbc.Container([
             ], justify='center'),
 
     dbc.Row([
-        dbc.Col([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
 
 
-            html.Label(['Time Window']),
+                                        html.Label(['Time Window']),
 
-            dcc.Dropdown(
-                id='my_yahoo_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in window_list
-                ],
-                multi=False,
-                value="1Y",
-                style={"width": "50%"},
-                clearable=False
-            ),
+                                        dcc.Dropdown(
+                                            id='my_yahoo_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="1Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
 
-            html.Label(['Assets']),
+                                        html.Label(['Assets']),
 
-            dcc.Checklist(
-                id='my_yahoo_check',
-                options=[
-                    {'label': x, 'value': x} for x in df_col_yahoo
-                ],
-                value=["GOLD", "S&P500", "CRUDE OIL", "US TREASURY"],
-                labelStyle={'display': 'inline-block'},
-                inputStyle={"margin-right": "10px",
-                            "margin-left": "10px"}
-            ),
+                                        dcc.Checklist(
+                                            id='my_yahoo_check',
+                                            options=[
+                                                {'label': x, 'value': x} for x in df_col_yahoo
+                                            ],
+                                            value=["GOLD", "S&P500",
+                                                   "CRUDE OIL", "US TREASURY"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
 
 
-            dcc.Graph(id='my_multi_line_2', figure={}),
+                                        dcc.Graph(
+                                            id='my_multi_line_2', figure={}),
 
-            html.A(
-                'Download Data',
-                id='download-link_yahoo',
-                download="yahoo_rawdata.csv",
-                href="",
-                target="_blank"
-            )
-        ])
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo',
+                                            download="yahoo_rawdata.csv",
+                                            href="",
+                                            target="_blank"
+                                        )
+                                    ])
 
-    ]),
+                                ]),
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
     dcc.Interval(id='all-update', interval=100000, n_intervals=0)
 ])
