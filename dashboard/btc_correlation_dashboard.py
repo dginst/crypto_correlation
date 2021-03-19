@@ -55,48 +55,65 @@ app.layout = dbc.Container([
 
     ]),
 
-
     dbc.Row([
-        dbc.Col([
+            dbc.Col([
 
-            html.Label(['Time Window']),
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
 
-            dcc.Dropdown(
-                id='my_alt_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in window_list
-                ],
-                multi=False,
-                value="1Y",
-                style={"width": "50%"},
-                clearable=False
-            ),
+                                        html.Label(['Time Window']),
 
-            html.Label(['Crypto Assets']),
-            dcc.Checklist(
-                id='my_alt_check',
-                options=[
-                    {'label': x, 'value': x} for x in df_alt_col
-                ],
-                value=["ETH", "XRP", "LTC", "BCH"],
-                labelStyle={'display': 'inline-block'},
-                inputStyle={"margin-right": "10px",
-                            "margin-left": "10px"}
-            ),
+                                        dcc.Dropdown(
+                                            id='my_alt_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="1Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Label(['Crypto Assets']),
+                                        dcc.Checklist(
+                                            id='my_alt_check',
+                                            options=[
+                                                {'label': x, 'value': x} for x in df_alt_col
+                                            ],
+                                            value=["ETH", "XRP", "LTC", "BCH"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
 
 
-            dcc.Graph(id='my_multi_line', figure={}),
+                                        dcc.Graph(
+                                            id='my_multi_line', figure={}),
 
-            html.A(
-                'Download Data',
-                id='download-link_alt',
-                download="altcoin_rawdata.csv",
-                href="",
-                target="_blank"
-            )
-        ])
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_alt',
+                                            download="altcoin_rawdata.csv",
+                                            href="",
+                                            target="_blank"
+                                        )
+                                    ])
 
-    ]),
+                                ]),
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
     dbc.Row([
         dbc.Col([
