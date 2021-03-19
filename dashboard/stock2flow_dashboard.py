@@ -188,7 +188,7 @@ def update_S2F(typology, n):
     model_price.update_layout(
         annotations=[dict(
             # Don't specify y position, because yanchor="middle" should do it
-            x=1.01,
+            x=1.05,
             align="right",
             valign="top",
             text='Days until next halving',
