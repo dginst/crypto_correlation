@@ -26,7 +26,7 @@ server = app.server
 
 
 last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
-
+S2F_list = ["S2F price 365d average", "S2F price"]
 # ----------------
 # app layout: bootstrap
 
@@ -55,8 +55,8 @@ app.layout = dbc.Container([
                                         dcc.Dropdown(
                                             id='my_S2F_dropdown',
                                             options=[
-                                                "S2F price 365d average",
-                                                "S2F price",
+                                                {'label': w, 'value': w} for w in S2F_list
+
                                             ],
                                             multi=False,
                                             value="S2F price",
@@ -188,7 +188,7 @@ def update_S2F(typology, n):
     model_price.update_layout(
         annotations=[dict(
             # Don't specify y position, because yanchor="middle" should do it
-            x=1.10,
+            x=1.01,
             align="right",
             valign="top",
             text='Days until next halving',
