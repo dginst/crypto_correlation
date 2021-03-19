@@ -109,51 +109,6 @@ app.layout = dbc.Container([
             ], justify='center'),
 
     dbc.Row([
-        dbc.Col([
-
-
-            html.Label(['Time Window']),
-
-            dcc.Dropdown(
-                id='my_yahoo_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in window_list
-                ],
-                multi=False,
-                value="3Y",
-                style={"width": "50%"},
-                clearable=False
-            ),
-
-            html.Label(['Assets']),
-
-            dcc.Checklist(
-                id='my_yahoo_check',
-                options=[
-                    {'label': x, 'value': x} for x in YAHOO_DASH_LIST
-                ],
-                value=["BTC", "GOLD", "S&P500",
-                       "US TREASURY", "US index", "VIX"],
-                labelStyle={'display': 'inline-block'},
-                inputStyle={"margin-right": "10px",
-                            "margin-left": "10px"}
-            ),
-
-
-            dcc.Graph(id='my_multi_line_2', figure={}),
-
-            html.A(
-                'Download Data',
-                id='download-link_yahoo',
-                download="yahoo_rawdata.csv",
-                href="",
-                target="_blank"
-            )
-        ])
-
-    ]),
-
-    dbc.Row([
             dbc.Col([
 
                 dbc.Card(
@@ -163,10 +118,11 @@ app.layout = dbc.Container([
                                 dbc.Row([
                                     dbc.Col([
 
+
                                         html.Label(['Time Window']),
 
                                         dcc.Dropdown(
-                                            id='my_alt_dropdown',
+                                            id='my_yahoo_dropdown',
                                             options=[
                                                 {'label': w, 'value': w} for w in window_list
                                             ],
@@ -176,14 +132,15 @@ app.layout = dbc.Container([
                                             clearable=False
                                         ),
 
-                                        html.Label(['Crypto Assets']),
+                                        html.Label(['Assets']),
+
                                         dcc.Checklist(
-                                            id='my_alt_check',
+                                            id='my_yahoo_check',
                                             options=[
-                                                {'label': x, 'value': x} for x in CRYPTO_LIST
+                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST
                                             ],
-                                            value=["BTC", "ETH",
-                                                   "XRP", "LTC", "BCH"],
+                                            value=["BTC", "GOLD", "S&P500",
+                                                   "US TREASURY", "US index", "VIX"],
                                             labelStyle={
                                                 'display': 'inline-block'},
                                             inputStyle={"margin-right": "10px",
@@ -192,12 +149,12 @@ app.layout = dbc.Container([
 
 
                                         dcc.Graph(
-                                            id='my_multi_line', figure={}),
+                                            id='my_multi_line_2', figure={}),
 
                                         html.A(
                                             'Download Data',
-                                            id='download-link_alt',
-                                            download="altcoin_rawdata.csv",
+                                            id='download-link_yahoo',
+                                            download="yahoo_rawdata.csv",
                                             href="",
                                             target="_blank"
                                         )
@@ -213,6 +170,7 @@ app.layout = dbc.Container([
             ]),
 
             ], justify='center'),
+
 
     dbc.Row([
             dbc.Col([
