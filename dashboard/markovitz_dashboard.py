@@ -200,12 +200,14 @@ def update_eff_frontier(n):
     # Set y-axes titles
     fig.update_yaxes(title_text="Return",
                      secondary_y=False,
-                     range=[-0.1, max_ret + 0.1])
+                     range=[-0.1, max_ret + 0.1],
+                     fixedrange=True)
     fig.update_yaxes(
         title_text="Return",
         secondary_y=True,
         range=[-0.1, max_ret + 0.1],
-        visible=False,)
+        visible=False,
+        fixedrange=True)
 
     return fig
 
