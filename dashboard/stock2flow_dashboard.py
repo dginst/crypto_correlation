@@ -150,37 +150,37 @@ app.layout = dbc.Container([
 
     dcc.Interval(id='df-update', interval=100000, n_intervals=0)
 
-])
+]
 
 # --------------------------
 # Callbacks part
 
 
-@app.callback(
+@ app.callback(
     Output(component_id='S2F_regression', component_property='figure'),
     Input(component_id='df-update', component_property='n_intervals')
 
 )
 def update_S2F_regression(n):
 
-    reg_df = query_mongo("btc_analysis", "S2F_source")
-    reg_var_df = query_mongo("btc_analysis", "S2F_regression")
+    reg_df=query_mongo("btc_analysis", "S2F_source")
+    reg_var_df=query_mongo("btc_analysis", "S2F_regression")
 
-    reg_dff = reg_df.copy()
-    reg_var_dff = reg_var_df.copy()
-    slope = np.array(reg_var_dff["Slope"])[0]
-    intercept = np.array(reg_var_dff["Intercept"])[0]
+    reg_dff=reg_df.copy()
+    reg_var_dff=reg_var_df.copy()
+    slope=np.array(reg_var_dff["Slope"])[0]
+    intercept=np.array(reg_var_dff["Intercept"])[0]
 
-    sample_regression_df = pd.DataFrame(
+    sample_regression_df=pd.DataFrame(
         np.array(MKT_CAP_LOG_VAL), columns=["Mkt Cap"])
-    sample_regression_df["S2F"] = [
+    sample_regression_df["S2F"]=[
         (math.exp(np.log(y) - intercept) / slope) for y in sample_regression_df["Mkt Cap"]]
 
-    gold_S2F = GOLD_STOCK_TONS / GOLD_FLOW_TONS
-    silver_S2F = SILVER_STOCK_TONS / SIVER_FLOW_TONS
-    gold_mkt_cap, silver_mkt_cap = commodities_mkt_cap()
+    gold_S2F=GOLD_STOCK_TONS / GOLD_FLOW_TONS
+    silver_S2F=SILVER_STOCK_TONS / SIVER_FLOW_TONS
+    gold_mkt_cap, silver_mkt_cap=commodities_mkt_cap()
 
-    model_cap = go.Figure()
+    model_cap=go.Figure()
 
     model_cap.add_trace(
         go.Scatter(
@@ -253,7 +253,7 @@ def update_S2F_regression(n):
     return model_cap
 
 
-@app.callback(
+@ app.callback(
     Output(component_id='S2F_model', component_property='figure'),
     [Input(component_id="my_S2F_dropdown", component_property="value"),
      Input(component_id='df-update', component_property='n_intervals')
@@ -261,20 +261,20 @@ def update_S2F_regression(n):
 )
 def update_S2F(typology, n):
 
-    df = query_mongo("btc_analysis", "S2F_model")
-    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
+    df=query_mongo("btc_analysis", "S2F_model")
+    price_df=query_mongo("btc_analysis", "S2F_BTC_price")
 
-    dff = df.copy()
-    price_dff = price_df.copy()
+    dff=df.copy()
+    price_dff=price_df.copy()
 
-    dff = dff.tail(len(dff.index) - 400)
+    dff=dff.tail(len(dff.index) - 400)
 
-    dff_selection = dff[typology]
+    dff_selection=dff[typology]
 
     # dff["Date"] = [datetime.strptime(
     #     x, "%d-%m-%Y") for x in dff["Date"]]
 
-    model_price = go.Figure()
+    model_price=go.Figure()
 
     model_price.add_trace(
         go.Scatter(
@@ -344,21 +344,21 @@ def update_S2F(typology, n):
     return model_price
 
 
-@app.callback(
+@ app.callback(
     Output('S2F_performance', 'figure'),
     Input('df-update', 'n_intervals')
 )
 def update_S2F_perf(n):
 
-    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
-    perf_df = query_mongo("btc_analysis", "S2F_halving_performance")
+    price_df=query_mongo("btc_analysis", "S2F_BTC_price")
+    perf_df=query_mongo("btc_analysis", "S2F_halving_performance")
 
-    perf_dff = perf_df.copy()
-    price_dff = price_df.copy()
+    perf_dff=perf_df.copy()
+    price_dff=price_df.copy()
 
-    price_dff = price_dff.loc[price_dff.Datetime >= last_h_date]
+    price_dff=price_dff.loc[price_dff.Datetime >= last_h_date]
 
-    performance = go.Figure()
+    performance=go.Figure()
 
     performance.add_trace(
         go.Scatter(
