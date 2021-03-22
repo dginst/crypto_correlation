@@ -4,8 +4,10 @@ from datetime import datetime
 from scipy import stats
 import math
 
-from btc_analysis.config import HALVING_DATE, MINING_REWARD
-from btc_analysis.mongo_func import mongo_upload
+from btc_analysis.config import (HALVING_DATE, MINING_REWARD,
+                                 GOLD_STOCK_TONS, SILVER_STOCK_TONS
+                                 )
+from btc_analysis.mongo_func import mongo_upload, query_mongo
 
 
 # -----------------------
@@ -293,3 +295,21 @@ def halving_normalize(return_df, start_price):
         date, "%d-%m-%Y") for date in norm_df["Datetime"]]
 
     return norm_df
+
+# --------------------
+# OTHER FUNCTIONS
+# --------------------
+
+
+def commodities_mkt_cap():
+
+    yahoo_prices = query_mongo("btc_analysis", "all_prices_y")
+    yahoo_last_day = yahoo_prices.tail(1)
+
+    gold_price = np.array(yahoo_last_day["GOLD"])[0]
+    silver_price = np.array(yahoo_last_day["SILVER"])[0]
+
+    gold_mkt_cap = GOLD_STOCK_TONS * 32000 * gold_price
+    silver_mkt_cap = SILVER_STOCK_TONS * 32000 * silver_price
+
+    return gold_mkt_cap, silver_mkt_cap

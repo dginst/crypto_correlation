@@ -1,4 +1,6 @@
+import math
 import urllib.parse
+from datetime import datetime
 
 import dash
 import dash_bootstrap_components as dbc
@@ -8,12 +10,12 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from btc_analysis.config import (GOLD_FLOW_TONS, GOLD_STOCK_TONS,
+                                 MKT_CAP_LOG_VAL, SILVER_STOCK_TONS,
+                                 SIVER_FLOW_TONS)
 from btc_analysis.mongo_func import query_mongo
+from btc_analysis.stock2flow_func import commodities_mkt_cap
 from dash.dependencies import Input, Output
-from datetime import datetime
-
-from btc_analysis.config import MKT_CAP_LOG_VAL
-
 
 # start app
 
@@ -168,10 +170,15 @@ def update_S2F_regression(n):
     reg_var_dff = reg_var_df.copy()
     slope = np.array(reg_var_dff["Slope"])[0]
     intercept = np.array(reg_var_dff["Intercept"])[0]
+
     sample_regression_df = pd.DataFrame(
         np.array(MKT_CAP_LOG_VAL), columns=["Mkt Cap"])
     sample_regression_df["S2F"] = [
-        (y-intercept)/slope for y in sample_regression_df["Mkt Cap"]]
+        (math.exp(np.log(y) - intercept) / slope) for y in sample_regression_df["Mkt Cap"]]
+
+    gold_S2F = GOLD_STOCK_TONS / GOLD_FLOW_TONS
+    silver_S2F = SILVER_STOCK_TONS / SIVER_FLOW_TONS
+    gold_mkt_cap, silver_mkt_cap = commodities_mkt_cap()
 
     model_cap = go.Figure()
 
@@ -188,12 +195,33 @@ def update_S2F_regression(n):
 
     model_cap.add_trace(
         go.Scatter(
-            x=sample_regression_df["S2F"],
-            y=sample_regression_df["Mkt Cap"],
-            name="Linear Regression Function",
-            mode='lines',
-            line_color='#FFFFFF',
+            x=gold_S2F,
+            y=gold_mkt_cap,
+            name="Gold",
+            mode='markers',
+            marker=dict(color="#FFD700",
+                        size=15
+                        ),
         ))
+
+    model_cap.add_trace(
+        go.Scatter(
+            x=silver_S2F,
+            y=silver_mkt_cap,
+            name="Silver",
+            mode='markers',
+            marker=dict(color="#C0C0C0",
+                        size=15
+                        ),
+        ))
+    # model_cap.add_trace(
+    #     go.Scatter(
+    #         x=sample_regression_df["S2F"],
+    #         y=sample_regression_df["Mkt Cap"],
+    #         name="Linear Regression Function",
+    #         mode='lines',
+    #         line_color='#FFFFFF',
+    #     ))
 
     model_cap.update_layout(
         title_text="Stock to Flow vs Market Cap",
@@ -211,12 +239,15 @@ def update_S2F_regression(n):
     model_cap.update_yaxes(
         tickvals=MKT_CAP_LOG_VAL,
         tickprefix="$",
-        title_text="BTC Price(USD)",
+        title_text="BTC Market Value(USD)",
         type="log",
+        fixedrange=True
     )
-    model_cap.update_xaxes(nticks=20,
-                           type="log",
-
+    model_cap.update_xaxes(type="log",
+                           tickvals=[0.1, 1, 10, 100, 1000],
+                           title_text="Stock to Flow ratio",
+                           nticks=0,
+                           fixedrange=True
                            )
 
     return model_cap
@@ -383,4 +414,4 @@ def update_S2F_perf(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=7000, host='0.0.0.0')
+    app.run_server(debug=False)  # , port=7000, host='0.0.0.0')
