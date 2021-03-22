@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload
 from btc_analysis.stock2flow_func import (S2F_definition, complete_model,
-                                          days_to_halving, halving_performace)
+                                          days_to_halving, halving_performace,
+                                          check_and_add)
 from btc_analysis.config import HALVING_DATE
 
 mongo_coll_drop("S2F")
@@ -12,6 +13,7 @@ mongo_coll_drop("S2F")
 # ----------
 # data gathering
 # ---------
+check_and_add()
 initial_data = pd.read_csv(
     Path("source_data", "initial_data_S2F.csv"), sep="|")
 

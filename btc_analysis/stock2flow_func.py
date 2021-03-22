@@ -1,14 +1,15 @@
-import pandas as pd
-import numpy as np
-from datetime import datetime
-from scipy import stats
 import math
+from datetime import datetime
+from pathlib import Path
 
-from btc_analysis.config import (HALVING_DATE, MINING_REWARD,
-                                 GOLD_STOCK_TONS, SILVER_STOCK_TONS
-                                 )
+import numpy as np
+import pandas as pd
+from scipy import stats
+
+from btc_analysis.config import (GOLD_STOCK_TONS, HALVING_DATE, MINING_REWARD,
+                                 SILVER_STOCK_TONS)
+from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import mongo_upload, query_mongo
-
 
 # -----------------------
 # TIME FUNCTIONS
@@ -313,3 +314,28 @@ def commodities_mkt_cap():
     silver_mkt_cap = SILVER_STOCK_TONS * 32000 * silver_price
 
     return gold_mkt_cap, silver_mkt_cap
+
+
+def check_and_add():
+
+    yesterday = yesterday_str("%d-%m-%Y")
+
+    df_from_csv = pd.read_csv(
+        Path("source_data", "initial_data_S2F.csv"), sep="|")
+    last_day = df_from_csv.tail(1)
+    last_date = np.array(last_day["Date"])[0]
+
+    if last_date == yesterday:
+
+        pass
+
+    else:
+
+        crypto_price = query_mongo("index", "crypto_price")
+        last_day_price = crypto_price.tail(1)
+        btc_price = np.array(last_day_price["BTC"])[0]
+        array_to_add = np.column_stack((yesterday, btc_price))
+        df_to_add = pd.DataFrame(array_to_add, columns=["Date", "BTC Price"])
+
+        df_to_add.to_csv(Path("source_data", "initial_data_S2F.csv"),
+                         mode='a', header=False, sep='|')

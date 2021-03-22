@@ -18,14 +18,14 @@ from btc_analysis.statistics import hist_std_dev
 # -----------------------
 
 
-def yesterday_str():
+def yesterday_str(format="%Y-%m-%d"):
 
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    today = datetime.strptime(today_str, "%Y-%m-%d")
+    today_str = datetime.now().strftime(format)
+    today = datetime.strptime(today_str, format)
     today_TS = int(today.replace(tzinfo=timezone.utc).timestamp())
     yesterday_TS = today_TS - 86400
     yesterday_date = datetime.fromtimestamp(int(yesterday_TS))
-    yesterday = yesterday_date.strftime("%Y-%m-%d")
+    yesterday = yesterday_date.strftime(format)
 
     return yesterday
 
