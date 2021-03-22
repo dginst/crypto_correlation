@@ -5,6 +5,7 @@ from scipy import stats
 import math
 
 from btc_analysis.config import HALVING_DATE, MINING_REWARD
+from btc_analysis.mongo_func import mongo_upload
 
 
 # -----------------------
@@ -57,6 +58,9 @@ def data_setup(initial_df):
     return final_df
 
 
+# the function computes the Stock to Flow ratio values for
+# the passed array containing the supply
+
 def stock2flow_ratio(supply_df):
 
     x_1_to_n = np.array(supply_df.tail(len(supply_df.index) - 1))
@@ -84,14 +88,22 @@ def stock2flow_regression(data_df):
         intercept) * final_df["S2F ratio"] ** slope
     final_df["S2F price"] = final_df["S2F model"] / final_df["Supply"]
 
-    return final_df, slope, intercept
+    return final_df, slope, intercept, r_value
 
 
 def S2F_definition(source_data):
 
     data_df = data_setup(source_data)
 
-    _, slope, intercept = stock2flow_regression(data_df)
+    _, slope, intercept, r_value = stock2flow_regression(data_df)
+
+    np_regression = np.column_stack((slope, intercept, r_value))
+
+    regression_df = pd.DataFrame(np_regression, columns=[
+                                 "Slope", "Intercept", "R Value"])
+
+    mongo_upload(data_df, "collection_S2F_source_data")
+    mongo_upload(regression_df, "collection_S2F_regression")
 
     return slope, intercept
 

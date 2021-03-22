@@ -12,6 +12,8 @@ from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
 from datetime import datetime
 
+from btc_analysis.config import MKT_CAP_LOG_VAL
+
 
 # start app
 
@@ -38,6 +40,35 @@ app.layout = dbc.Container([
                         className='text-center text-primary, mb-4'),
                 width=12)
     ]),
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row(
+                                    [
+                                        dbc.Col([
+
+
+                                            dcc.Graph(id="S2F_regression", figure={},
+                                                      config={'displayModeBar': True}),
+
+
+                                        ])
+                                    ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
     dbc.Row([
         dbc.Col([
@@ -121,6 +152,74 @@ app.layout = dbc.Container([
 
 # --------------------------
 # Callbacks part
+
+
+@app.callback(
+    Output(component_id='S2F_regression', component_property='figure'),
+    Input(component_id='df-update', component_property='n_intervals')
+
+)
+def update_S2F_regression(n):
+
+    reg_df = query_mongo("btc_analysis", "S2F_source")
+    reg_var_df = query_mongo("btc_analysis", "S2F_regression")
+
+    reg_dff = reg_df.copy()
+    reg_var_dff = reg_var_df.copy()
+    slope = np.array(reg_var_dff["Slope"])[0]
+    intercept = np.array(reg_var_dff["Intercept"])[0]
+    sample_regression_df = pd.DataFrame(
+        np.array(MKT_CAP_LOG_VAL), columns=["Mkt Cap"])
+    sample_regression_df["S2F"] = [
+        (y-intercept)/slope for y in sample_regression_df["Mkt Cap"]]
+
+    model_cap = go.Figure()
+
+    model_cap.add_trace(
+        go.Scatter(
+            x=reg_dff["S2F ratio"],
+            y=reg_dff["Market Cap"],
+            name="Real Data Point",
+            mode='markers',
+            marker=dict(color="#FF6700",
+                        size=5
+                        ),
+        ))
+
+    model_cap.add_trace(
+        go.Scatter(
+            x=sample_regression_df["S2F"],
+            y=sample_regression_df["Mkt Cap"],
+            name="Linear Regression Function",
+            mode='lines',
+            line_color='#FFFFFF',
+        ))
+
+    model_cap.update_layout(
+        title_text="Stock to Flow vs Market Cap",
+        template='plotly_dark'
+    )
+
+    model_cap.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    model_cap.update_yaxes(
+        tickvals=MKT_CAP_LOG_VAL,
+        tickprefix="$",
+        title_text="BTC Price(USD)",
+        type="log",
+    )
+    model_cap.update_xaxes(nticks=20,
+                           type="log",
+
+                           )
+
+    return model_cap
 
 
 @app.callback(

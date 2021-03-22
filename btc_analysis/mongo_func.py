@@ -165,6 +165,8 @@ def mongo_indexing():
     db.S2F_model.create_index([("id", -1)])
     db.S2F_BTC_price.create_index([("id", -1)])
     db.S2F_halving_performance.create_index([("id", -1)])
+    db.S2F_regression.create_index([("id", -1)])
+    db.S2F_source.create_index([("id", -1)])
 
 
 def mongo_coll():
@@ -266,6 +268,8 @@ def mongo_coll():
         "collection_S2F": db.S2F_model,
         "collection_S2F_BTC": db.S2F_BTC_price,
         "collection_S2F_performance": db.S2F_halving_performance,
+        "collection_S2F_regression": db.S2F_regression,
+        "collection_S2F_source_data": db.S2F_source,
 
     }
 
@@ -417,6 +421,8 @@ def mongo_coll_drop(corr_type):
         db.S2F_model.drop()
         db.S2F_BTC_price.drop()
         db.S2F_halving_performance.drop()
+        db.S2F_regression.drop()
+        db.S2F_source.drop()
 
 
 def mongo_correlation_drop():
