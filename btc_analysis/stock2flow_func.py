@@ -321,7 +321,7 @@ def check_and_add():
     yesterday = yesterday_str("%d-%m-%Y")
 
     df_from_csv = pd.read_csv(
-        Path("source_data", "initial_data_S2F.csv"), sep="|")
+        Path("source_data", "BTC_price.csv"), sep="|")
     last_day = df_from_csv.tail(1)
     last_date = np.array(last_day["Date"])[0]
 
