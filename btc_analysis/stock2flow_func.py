@@ -6,8 +6,9 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from btc_analysis.config import (GOLD_STOCK_TONS, HALVING_DATE, MINING_REWARD,
-                                 SILVER_STOCK_TONS)
+from btc_analysis.config import (GOLD_FLOW_TONS, GOLD_STOCK_TONS, HALVING_DATE,
+                                 MINING_REWARD, SILVER_STOCK_TONS,
+                                 SIVER_FLOW_TONS)
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import mongo_upload, query_mongo
 
@@ -314,6 +315,20 @@ def commodities_mkt_cap():
     silver_mkt_cap = SILVER_STOCK_TONS * 32000 * silver_price
 
     return gold_mkt_cap, silver_mkt_cap
+
+
+def commodities_df():
+
+    gold_S2F = GOLD_STOCK_TONS / GOLD_FLOW_TONS
+    silver_S2F = SILVER_STOCK_TONS / SIVER_FLOW_TONS
+    gold_mkt_cap, silver_mkt_cap = commodities_mkt_cap()
+
+    comm_arr = np.column_stack(
+        (gold_S2F, gold_mkt_cap, silver_S2F, silver_mkt_cap))
+    col_list = ["Gold S2F", "Gold mkt", "Silver S2F", "Silver mkt"]
+    comm_df = pd.DataFrame(comm_arr, columns=col_list)
+
+    return comm_df
 
 
 def check_and_add():

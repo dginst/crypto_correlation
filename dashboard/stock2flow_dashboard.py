@@ -10,11 +10,9 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from btc_analysis.config import (GOLD_FLOW_TONS, GOLD_STOCK_TONS,
-                                 MKT_CAP_LOG_VAL, SILVER_STOCK_TONS,
-                                 SIVER_FLOW_TONS)
+from btc_analysis.config import MKT_CAP_LOG_VAL
 from btc_analysis.mongo_func import query_mongo
-from btc_analysis.stock2flow_func import commodities_mkt_cap
+from btc_analysis.stock2flow_func import commodities_df
 from dash.dependencies import Input, Output
 
 # start app
@@ -176,9 +174,7 @@ def update_S2F_regression(n):
     sample_regression_df["S2F"] = [
         (math.exp(np.log(y) - intercept) / slope) for y in sample_regression_df["Mkt Cap"]]
 
-    gold_S2F = GOLD_STOCK_TONS / GOLD_FLOW_TONS
-    silver_S2F = SILVER_STOCK_TONS / SIVER_FLOW_TONS
-    gold_mkt_cap, silver_mkt_cap = commodities_mkt_cap()
+    comm_df = commodities_df()
 
     model_cap = go.Figure()
 
@@ -195,8 +191,8 @@ def update_S2F_regression(n):
 
     model_cap.add_trace(
         go.Scatter(
-            x=gold_S2F,
-            y=gold_mkt_cap,
+            x=comm_df["Gold S2F"],
+            y=comm_df["Gold mkt"],
             name="Gold",
             mode='markers',
             marker=dict(color="#FFD700",
@@ -206,8 +202,8 @@ def update_S2F_regression(n):
 
     model_cap.add_trace(
         go.Scatter(
-            x=silver_S2F,
-            y=silver_mkt_cap,
+            x=comm_df["Silver S2F"],
+            y=comm_df["Silver mkt"],
             name="Silver",
             mode='markers',
             marker=dict(color="#C0C0C0",
@@ -414,4 +410,4 @@ def update_S2F_perf(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=7000, host='0.0.0.0')
+    app.run_server(debug=False)#, port=7000, host='0.0.0.0')
