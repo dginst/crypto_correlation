@@ -338,4 +338,4 @@ def check_and_add():
         df_to_add = pd.DataFrame(array_to_add, columns=["Date", "BTC Price"])
 
         df_to_add.to_csv(Path("source_data", "BTC_price.csv"),
-                         mode='a', header=False, sep='|')
+                         mode='a', index=False, header=False, sep='|')
