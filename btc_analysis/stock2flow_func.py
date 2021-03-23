@@ -337,5 +337,5 @@ def check_and_add():
         array_to_add = np.column_stack((yesterday, btc_price))
         df_to_add = pd.DataFrame(array_to_add, columns=["Date", "BTC Price"])
 
-        df_to_add.to_csv(Path("source_data", "initial_data_S2F.csv"),
+        df_to_add.to_csv(Path("source_data", "BTC_price.csv"),
                          mode='a', header=False, sep='|')
