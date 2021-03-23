@@ -166,14 +166,16 @@ def update_S2F_regression(n):
 
     reg_dff = reg_df.copy()
     reg_var_dff = reg_var_df.copy()
+
+    # computations for the linear regression plot
     slope = np.array(reg_var_dff["Slope"])[0]
     intercept = np.array(reg_var_dff["Intercept"])[0]
-
     sample_regression_df = pd.DataFrame(
         np.array(MKT_CAP_LOG_VAL), columns=["Mkt Cap"])
     sample_regression_df["S2F"] = [
-        (math.exp(np.log(y) - intercept) / slope) for y in sample_regression_df["Mkt Cap"]]
+        ((y/math.exp(intercept)) ** (1/slope)) for y in sample_regression_df["Mkt Cap"]]
 
+    # function for gold and silver plot
     comm_df = commodities_df()
 
     model_cap = go.Figure()
@@ -182,7 +184,7 @@ def update_S2F_regression(n):
         go.Scatter(
             x=reg_dff["S2F ratio"],
             y=reg_dff["Market Cap"],
-            name="Real Data Point",
+            name="BTC/USD",
             mode='markers',
             marker=dict(color="#FF6700",
                         size=5
@@ -210,14 +212,15 @@ def update_S2F_regression(n):
                         size=15
                         ),
         ))
-    # model_cap.add_trace(
-    #     go.Scatter(
-    #         x=sample_regression_df["S2F"],
-    #         y=sample_regression_df["Mkt Cap"],
-    #         name="Linear Regression Function",
-    #         mode='lines',
-    #         line_color='#FFFFFF',
-    #     ))
+
+    model_cap.add_trace(
+        go.Scatter(
+            x=sample_regression_df["S2F"],
+            y=sample_regression_df["Mkt Cap"],
+            name="Linear Regression Function",
+            mode='lines',
+            line_color='#FFFFFF',
+        ))
 
     model_cap.update_layout(
         title_text="Stock to Flow vs Market Cap",
@@ -254,6 +257,8 @@ def update_S2F_regression(n):
     [Input(component_id="my_S2F_dropdown", component_property="value"),
      Input(component_id='df-update', component_property='n_intervals')
      ]
+
+
 )
 def update_S2F(typology, n):
 
@@ -410,4 +415,4 @@ def update_S2F_perf(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False)#, port=7000, host='0.0.0.0')
+    app.run_server(debug=False)  # , port=7000, host='0.0.0.0')

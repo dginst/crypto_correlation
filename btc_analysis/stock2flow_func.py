@@ -64,6 +64,11 @@ def data_setup(initial_df):
 
 # the function computes the Stock to Flow ratio values for
 # the passed array containing the supply
+# S2F = 1/Yearly Supply growth Rate
+# Supply grpwth rate with monthly observation:
+# GR = (Supply_t - Supply_t-1)/Supply_t-1
+# That on year basis becomes:
+# SF = Supply_t-1 / ((Supply_t - Supply_t-1) * 12)
 
 def stock2flow_ratio(supply_df):
 
