@@ -127,6 +127,39 @@ In order to effectively run the scripts the order of running is relevant. More s
         - stat_alt_correlation_1Q
         - stat_alt_correlation_1M
 
+# 6) markovitz_launcher.py
+
+    Startimg from a given set of assets, chosen in the list YAHOO_TO_CAPM in config.py file, the script computes:
+    - the efficient frontier with and without bitcoin in the portfolio
+    - the and the optimal weights, using the Capital Asset Pricing Model, of each assets at different   level of risk
+
+# 7) stock2flow_launcher.py
+
+    This script aims to reproduce the Stock to Flow model and applying it to the Bitcoin Market Capitalization in order to reverse enginering the BTC price for the future.
+    Two CSV files, contained in the folder "source_data" are used for the initial information:
+    - BTC_price.csv that contains the entire price history of BTC and is updated evry day
+    - initial_data_S2F.csv that contains BTC price and Supply for each 1st of the months starting from 2009 until now. Each row is an observation point used to define the S2F model.
+
+    There are two different typologies of S2F implemented:
+
+    7.1) Standard Stock to Flow
+
+        Firstly is computed the Stock to Flow ratio at each observation point leveraging on the known Market Capitalization and the inferable Flow, then a linear regression is applied in order to find the value of slope and intercept of the function:
+        ln(Market Cap) = slope * ln(S2F ratio) + intercept
+
+        Knowing slope and intercept is thus possible to built the model price series using the inferable future S2F ratios and computing the Market Cap using the previously found slope and intecept.
+
+
+    7.2) Stock to Flow Cross Asset Model
+
+        This model uses a different approach from the above one. The main difference is that now the observation points are not used to compute slope and intecept through a linear regression but they are used to find k clusters of aggregation for the observation points themselves.
+        The chosen methodology to find the cluster in the "k-mean clustering".
+
+        Once the cluster has been defined and the points (S2F ratio, Market Cap) for Gold and Silver computed, they are all used for a linear regression in order to find slope and intecept using the above mentioned: ln(Market Cap) = slope * ln(S2F ratio) + intercept
+
+        Knowing slope and intercept is thus possible to built the model price series using the inferable future S2F ratios and computing the Market Cap using the previously found slope and intecept.
+        
+
 
 # ---- excel creator ----
 
@@ -160,3 +193,8 @@ In order to effectively run the scripts the order of running is relevant. More s
 # 3) btc_static_corr_dashboard.py
 
     WIP
+
+# 4) markovitz_dashboard
+
+# 5) stock2flow_dashboard
+
