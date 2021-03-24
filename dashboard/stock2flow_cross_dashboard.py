@@ -28,7 +28,7 @@ server = app.server
 
 
 last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
-S2F_list = ["S2F price 365d average", "S2F price"]
+S2F_list = ["S2FX price 365d average", "S2FX price"]
 # ----------------
 # app layout: bootstrap
 
@@ -36,7 +36,7 @@ app.layout = dbc.Container([
 
     # create as much rows and columns as needed foe the dashboard
     dbc.Row([
-        dbc.Col(html.H1("Stock to Flow Model",
+        dbc.Col(html.H1("Stock to Flow Cross Asset Model",
                         className='text-center text-primary, mb-4'),
                 width=12)
     ]),
@@ -53,7 +53,7 @@ app.layout = dbc.Container([
                                         dbc.Col([
 
 
-                                            dcc.Graph(id="S2F_regression", figure={},
+                                            dcc.Graph(id="S2FX_regression", figure={},
                                                       config={'displayModeBar': True}),
 
 
@@ -81,22 +81,22 @@ app.layout = dbc.Container([
                                 [
                                     dbc.Col([
 
-                                        html.Label(['S2F Typology']),
+                                        html.Label(['S2FX Typology']),
 
                                         dcc.Dropdown(
-                                            id='my_S2F_dropdown',
+                                            id='my_S2FX_dropdown',
                                             options=[
                                                 {'label': w, 'value': w} for w in S2F_list
 
                                             ],
                                             multi=False,
-                                            value="S2F price",
+                                            value="S2FX price",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
 
 
-                                        dcc.Graph(id="S2F_model", figure={},
+                                        dcc.Graph(id="S2FX_model", figure={},
                                                   config={'displayModeBar': False}),
 
 
@@ -126,7 +126,7 @@ app.layout = dbc.Container([
                                     dbc.Col([
 
 
-                                        dcc.Graph(id="S2F_performance", figure={},
+                                        dcc.Graph(id="S2FX_performance", figure={},
                                                   config={'displayModeBar': True}),
 
 
@@ -155,17 +155,19 @@ app.layout = dbc.Container([
 
 
 @ app.callback(
-    Output(component_id='S2F_regression', component_property='figure'),
+    Output(component_id='S2FX_regression', component_property='figure'),
     Input(component_id='df-update', component_property='n_intervals')
 
 )
 def update_S2F_regression(n):
 
     reg_df = query_mongo("btc_analysis", "S2F_source")
-    reg_var_df = query_mongo("btc_analysis", "S2F_regression")
+    reg_var_df = query_mongo("btc_analysis", "S2FX_regression")
+    cluster_df = query_mongo("btc_analysis", "S2FX_cluster")
 
     reg_dff = reg_df.copy()
     reg_var_dff = reg_var_df.copy()
+    cluster_dff = cluster_df.copy()
 
     # computations for the linear regression plot
     sample_regression_df = S2F_reg_value(reg_var_dff)
@@ -176,13 +178,25 @@ def update_S2F_regression(n):
     model_cap = go.Figure()
 
     model_cap.add_trace(
+
+        go.Scatter(
+            x=cluster_dff["S2F ratio"],
+            y=cluster_dff["Market Cap"],
+            name="k-mean Cluster",
+            mode='markers',
+            marker=dict(color="#00FF00",
+                        size=10
+                        ),
+        ))
+
+    model_cap.add_trace(
         go.Scatter(
             x=reg_dff["S2F ratio"],
             y=reg_dff["Market Cap"],
             name="BTC/USD",
             mode='markers',
             marker=dict(color="#FF6700",
-                        size=5
+                        size=2
                         ),
         ))
 
@@ -248,8 +262,8 @@ def update_S2F_regression(n):
 
 
 @ app.callback(
-    Output(component_id='S2F_model', component_property='figure'),
-    [Input(component_id="my_S2F_dropdown", component_property="value"),
+    Output(component_id='S2FX_model', component_property='figure'),
+    [Input(component_id="my_S2FX_dropdown", component_property="value"),
      Input(component_id='df-update', component_property='n_intervals')
      ]
 
@@ -257,7 +271,7 @@ def update_S2F_regression(n):
 )
 def update_S2F(typology, n):
 
-    df = query_mongo("btc_analysis", "S2F_model")
+    df = query_mongo("btc_analysis", "S2FX_model")
     price_df = query_mongo("btc_analysis", "S2F_BTC_price")
 
     dff = df.copy()
@@ -267,8 +281,7 @@ def update_S2F(typology, n):
 
     dff_selection = dff[typology]
 
-    dff["Date"] = [datetime.strptime(
-        x, "%d-%m-%Y") for x in dff["Date"]]
+    dff["Date"] = [datetime.strptime(x, "%d-%m-%Y") for x in dff["Date"]]
 
     model_price = go.Figure()
 
@@ -292,14 +305,13 @@ def update_S2F(typology, n):
                         # colorscale='RdBu',
                         size=5,
                         colorbar=dict(thickness=20,
-                                      # title='Days until next halving'
                                       ),
                         ),
 
         ))
 
     model_price.update_layout(
-        title_text="Stock to Flow model",
+        title_text="Stock to Flow Cross Asset model",
         template='plotly_dark'
     )
 

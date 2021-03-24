@@ -167,6 +167,9 @@ def mongo_indexing():
     db.S2F_halving_performance.create_index([("id", -1)])
     db.S2F_regression.create_index([("id", -1)])
     db.S2F_source.create_index([("id", -1)])
+    db.S2FX_cluster.create_index([("id", -1)])
+    db.S2FX_regression.create_index([("id", -1)])
+    db.S2FX_model.create_index([("id", -1)])
 
 
 def mongo_coll():
@@ -270,6 +273,9 @@ def mongo_coll():
         "collection_S2F_performance": db.S2F_halving_performance,
         "collection_S2F_regression": db.S2F_regression,
         "collection_S2F_source_data": db.S2F_source,
+        "collection_S2FX_cluster": db.S2FX_cluster,
+        "collection_S2FX_regression": db.S2FX_regression,
+        "collection_S2FX": db.S2FX_model
 
     }
 
@@ -423,6 +429,9 @@ def mongo_coll_drop(corr_type):
         db.S2F_halving_performance.drop()
         db.S2F_regression.drop()
         db.S2F_source.drop()
+        db.S2FX_cluster.drop()
+        db.S2FX_regression.drop()
+        db.S2FX_model.drop()
 
 
 def mongo_correlation_drop():

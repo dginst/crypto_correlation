@@ -4,11 +4,12 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.cluster import KMeans
 from scipy import stats
 
 from btc_analysis.config import (GOLD_FLOW_TONS, GOLD_STOCK_TONS, HALVING_DATE,
                                  MINING_REWARD, SILVER_STOCK_TONS,
-                                 SIVER_FLOW_TONS)
+                                 SIVER_FLOW_TONS, MKT_CAP_LOG_VAL)
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import mongo_upload, query_mongo
 
@@ -93,9 +94,9 @@ def stock2flow_regression(data_df):
     (slope, intercept, r_value, p_value, std_err) = stats.linregress(
         final_df["ln(S2F ratio)"], final_df["ln(mkt_cap)"])
 
-    final_df["S2F model"] = math.exp(
-        intercept) * final_df["S2F ratio"] ** slope
-    final_df["S2F price"] = final_df["S2F model"] / final_df["Supply"]
+    # final_df["S2F model"] = math.exp(
+    #     intercept) * final_df["S2F ratio"] ** slope
+    # final_df["S2F price"] = final_df["S2F model"] / final_df["Supply"]
 
     return final_df, slope, intercept, r_value
 
@@ -125,7 +126,7 @@ def S2F_definition(source_data):
 # (Theoretical Flow=Block Reward * 6 * 24 * 365, corr. fact.: 1.04)
 
 
-def complete_model(slope, intercept):
+def S2F_complete_model(slope, intercept):
 
     date_arr = date_gen("01-03-2009", "01-01-2030")
 
@@ -221,8 +222,6 @@ def halving_performace(halving_df, date_df):
         halving_df.loc[halving_df["Date"] == "11-05-2020", "BTC Price"])[0]
 
     return_df = halving_return_df(halving_df, date_df)
-    print(return_df)
-
     perf_df = halving_normalize(return_df, start_price)
 
     return perf_df
@@ -359,3 +358,113 @@ def check_and_add():
 
         df_to_add.to_csv(Path("source_data", "BTC_price.csv"),
                          mode='a', index=False, header=False, sep='|')
+
+
+# function that camputes S2F values starting from mkt cap values
+# and knowing slope and intercept of the regression function
+# S2F = (mkt_cap / e ^ (intercept)) ^ (1/slope)
+
+def S2F_reg_value(regression_df):
+
+    slope = np.array(regression_df["Slope"])[0]
+    intercept = np.array(regression_df["Intercept"])[0]
+
+    regression_value_df = pd.DataFrame(
+        np.array(MKT_CAP_LOG_VAL), columns=["Mkt Cap"])
+
+    regression_value_df["S2F"] = [
+        ((y/math.exp(intercept)) ** (1/slope)) for y in regression_value_df["Mkt Cap"]]
+
+    return regression_value_df
+
+
+# ----------------------
+# STOCK TO FLOW CROSS MODEL
+# -----------------------
+
+def S2FX_complete_model(slope, intercept):
+
+    date_arr = date_gen("01-03-2009", "01-01-2030")
+
+    date_df = pd.DataFrame(columns=["Date"])
+    date_df["Date"] = date_arr
+
+    final_df = reward_to_time(date_df)
+
+    final_df["Daily Reward"] = final_df["Reward"] * 6 * 24
+    final_df["Stock"] = final_df["Daily Reward"].cumsum()
+    final_df["Flow"] = final_df["Daily Reward"] * 365
+
+    final_df["S2FX ratio"] = final_df["Stock"] / final_df["Flow"]
+
+    final_df["S2FX mkt cap"] = math.exp(
+        intercept)*final_df["S2FX ratio"] ** slope
+
+    final_df["S2FX price"] = final_df["S2FX mkt cap"] / final_df["Stock"]
+
+    final_df["S2FX price 365d average"] = final_df["S2FX price"].rolling(
+        window=365).mean()
+
+    return final_df
+
+
+def add_commodity(cluster_df):
+
+    commodity_df = commodities_df()
+
+    gold_S2F = np.array(commodity_df["Gold S2F"])[0]
+    gold_mkt = np.array(commodity_df["Gold mkt"])[0]
+    ln_gold_S2F = np.log(gold_S2F)
+    ln_gold_mkt = np.log(gold_mkt)
+    gold_arr = np.column_stack((gold_S2F, gold_mkt, ln_gold_S2F, ln_gold_mkt))
+
+    silver_S2F = np.array(commodity_df["Silver S2F"])[0]
+    silver_mkt = np.array(commodity_df["Silver mkt"])[0]
+    ln_silver_S2F = np.log(silver_S2F)
+    ln_silver_mkt = np.log(silver_mkt)
+    silver_arr = np.column_stack(
+        (silver_S2F, silver_mkt, ln_silver_S2F, ln_silver_mkt))
+
+    total_arr = np.row_stack((gold_arr, silver_arr))
+    new_df = pd.DataFrame(total_arr, columns=list(cluster_df.columns))
+
+    final_cluster_df = cluster_df.append(new_df)
+    final_cluster_df.reset_index(drop=True, inplace=True)
+
+    return final_cluster_df
+
+
+def S2FX_definition(source_data, cluster_number):
+
+    data_df = data_setup(source_data)
+
+    cluster_df = cluster_finder(data_df, cluster_number)
+    cluster_df = add_commodity(cluster_df)
+
+    _, slope, intercept, r_value = stock2flow_regression(cluster_df)
+
+    np_regression = np.column_stack((slope, intercept, r_value))
+
+    regression_df = pd.DataFrame(np_regression, columns=[
+                                 "Slope", "Intercept", "R Value"])
+
+    mongo_upload(cluster_df, "collection_S2FX_cluster")
+    mongo_upload(regression_df, "collection_S2FX_regression")
+
+    return slope, intercept
+
+
+def cluster_finder(initial_df, cluster_number):
+
+    initial_df = initial_df[["S2F ratio", "Market Cap"]]
+    initial_array = np.array(initial_df)
+    kmeans = KMeans(n_clusters=cluster_number)
+    kmeans.fit(initial_array)
+
+    cluster_arr = kmeans.cluster_centers_
+
+    cluster_df = pd.DataFrame(cluster_arr, columns=["S2F ratio", "Market Cap"])
+    cluster_df["ln(S2F ratio)"] = np.log(cluster_df["S2F ratio"])
+    cluster_df["ln(mkt_cap)"] = np.log(cluster_df["Market Cap"])
+
+    return cluster_df
