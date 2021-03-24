@@ -310,10 +310,20 @@ def halving_normalize(return_df, start_price):
 def commodities_mkt_cap():
 
     yahoo_prices = query_mongo("btc_analysis", "all_prices_y")
-    yahoo_last_day = yahoo_prices.tail(1)
 
+    yahoo_last_day = yahoo_prices.tail(1)
     gold_price = np.array(yahoo_last_day["GOLD"])[0]
     silver_price = np.array(yahoo_last_day["SILVER"])[0]
+
+    if math.isnan(gold_price) is False:
+        pass
+
+    else:
+
+        yahoo_last_day = yahoo_prices.tail(2)
+        yahoo_last = yahoo_last_day.head(1)
+        gold_price = np.array(yahoo_last["GOLD"])[0]
+        silver_price = np.array(yahoo_last["SILVER"])[0]
 
     gold_mkt_cap = GOLD_STOCK_TONS * 32000 * gold_price
     silver_mkt_cap = SILVER_STOCK_TONS * 32000 * silver_price
