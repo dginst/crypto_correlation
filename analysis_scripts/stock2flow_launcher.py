@@ -36,7 +36,7 @@ mongo_upload(halving_perf_df, "collection_S2F_performance")
 
 # S2F CROSS ASSET MODEL DEFINITION
 
-slope_, intercept_ = S2FX_definition(initial_data, 2)
+slope_, intercept_ = S2FX_definition(initial_data, 4)
 final_df_ = S2FX_complete_model(slope_, intercept_)
 
 mongo_upload(final_df_, "collection_S2FX")
