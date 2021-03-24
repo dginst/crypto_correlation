@@ -167,6 +167,7 @@ def update_S2F_regression(n):
 
     # function for gold and silver plot
     comm_df = commodities_df()
+    print(comm_df)
 
     model_cap = go.Figure()
 
@@ -405,4 +406,4 @@ def update_S2F_perf(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=7000, host='0.0.0.0')
+    app.run_server(debug=False)  # , port=7000, host='0.0.0.0')
