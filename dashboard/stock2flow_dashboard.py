@@ -441,6 +441,9 @@ def update_supply(n):
     supply_df = query_mongo("btc_analysis", "btc_total_supply")
     supply_dff = supply_df.copy()
 
+    supply_dff["Date"] = [datetime.strptime(
+        date, "%d-%m-%Y") for date in supply_dff["Date"]]
+
     supply_graph = go.Figure()
 
     supply_graph.add_trace(
@@ -487,4 +490,4 @@ def update_supply(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=7000, host='0.0.0.0')
+    app.run_server(debug=False)  # , port=7000, host='0.0.0.0')
