@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -449,9 +450,15 @@ def blockchain_stats_api():
         r = response
         sats_for_btc = 100000000
         total_supply = r["totalbc"] / sats_for_btc
+        total_blocks = r["n_blocks_total"]
+        daily_btc = r["n_btc_mined"] / sats_for_btc
+        daily_block = r["n_blocks_mined"]
 
         rawdata = {
             "Supply": total_supply,
+            "Block Number": total_blocks,
+            "Daily BTC": daily_btc,
+            "Daily Block": daily_block,
         }
 
         return rawdata
@@ -480,9 +487,90 @@ def blockchain_stats_op():
     mongo_upload(raw_data_df, "collection_btc_supply")
 
 
+def check_and_add_supply():
+
+    yesterday = yesterday_str("%d-%m-%Y")
+
+    df_from_csv = pd.read_csv(
+        Path("source_data", "BTC_issuance.csv"), sep="|")
+    last_day = df_from_csv.tail(1)
+    last_date = np.array(last_day["Date"])[0]
+
+    if last_date == yesterday:
+
+        pass
+
+    else:
+
+        supply_df = query_mongo("btc_analysis", "btc_supply")
+        day_issuance = np.array(supply_df["Daily BTC"])[0]
+        day_block = np.array(supply_df["Daily Block"])[0]
+        array_to_add = np.column_stack((yesterday, day_issuance, day_block))
+        df_to_add = pd.DataFrame(array_to_add, columns=[
+                                 "Date", "BTC Issuance", "BTC Blocks"])
+
+        df_to_add.to_csv(Path("source_data", "BTC_issuance.csv"),
+                         mode='a', index=False, header=False, sep='|')
+
+
+def to_cumulative(issuance_df):
+
+    complete_df = issuance_df.copy()
+    complete_df["Supply"] = complete_df["BTC Issuance"].cumsum()
+    complete_df["Total Blocks"] = complete_df["BTC Blocks"].cumsum()
+
+    return complete_df
+
+
+def theoretical_supply(df):
+
+    final_df = df.copy()
+    supply_array = np.array([])
+
+    reward = 50
+    block_threshold = 210000
+
+    i = 0
+
+    for daily_block in final_df["BTC Blocks"]:
+
+        cum_to_check = final_df["Total Blocks"].iloc[i]
+
+        if cum_to_check >= block_threshold:
+
+            new_reward = cum_to_check - block_threshold
+            old_reward = daily_block - new_reward
+
+            daily_btc = old_reward * reward + new_reward * (reward / 2)
+
+            block_threshold = block_threshold + 210000
+            reward = reward / 2
+
+        else:
+
+            daily_btc = daily_block * reward
+
+        supply_array = np.append(supply_array, daily_btc)
+        # supply_array = np.row_stack((supply_array, daily_btc))
+        i = i + 1
+
+    final_df["Theoretical Issuance"] = supply_array
+    final_df["Theoretical Issuance"] = final_df["Theoretical Issuance"].cumsum()
+
+    return final_df
+
+
+def btc_supply_op(issuance_df):
+
+    complete_df = to_cumulative(issuance_df)
+    final_df = theoretical_supply(complete_df)
+
+    return final_df
+
 # ----------------------
 # HISTORICAL VOLATILITY
 # ----------------------
+
 
 def historical_vola(return_df, logret_df, window_days):
 

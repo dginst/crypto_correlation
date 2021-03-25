@@ -171,6 +171,9 @@ def mongo_indexing():
     db.S2FX_regression.create_index([("id", -1)])
     db.S2FX_model.create_index([("id", -1)])
 
+    # supply
+    db.btc_total_supply.create_index([("id", -1)])
+
 
 def mongo_coll():
 
@@ -275,7 +278,10 @@ def mongo_coll():
         "collection_S2F_source_data": db.S2F_source,
         "collection_S2FX_cluster": db.S2FX_cluster,
         "collection_S2FX_regression": db.S2FX_regression,
-        "collection_S2FX": db.S2FX_model
+        "collection_S2FX": db.S2FX_model,
+
+        # supply
+        "collection_total_supply": db.btc_total_supply,
 
     }
 
@@ -432,6 +438,11 @@ def mongo_coll_drop(corr_type):
         db.S2FX_cluster.drop()
         db.S2FX_regression.drop()
         db.S2FX_model.drop()
+
+    elif corr_type == "supply":
+
+        db.btc_total_supply.drop()
+        db.btc_supply.drop()
 
 
 def mongo_correlation_drop():
