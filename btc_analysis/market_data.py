@@ -555,7 +555,7 @@ def theoretical_supply(df):
         i = i + 1
 
     final_df["Theoretical Issuance"] = supply_array
-    final_df["Theoretical Issuance"] = final_df["Theoretical Issuance"].cumsum()
+    final_df["Theoretical Supply"] = final_df["Theoretical Issuance"].cumsum()
 
     return final_df
 
