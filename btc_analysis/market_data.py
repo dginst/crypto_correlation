@@ -11,7 +11,7 @@ from pandas_datareader import data
 from btc_analysis.calc import date_gen, date_gen_TS
 from btc_analysis.config import (GOLD_OUNCES_SUPPLY, INDEX_DB_NAME,
                                  SILVER_OUNCES_SUPPLY, START_DATE, USD_SUPPLY)
-from btc_analysis.mongo_func import mongo_upload, query_mongo
+from btc_analysis.mongo_func import mongo_upload, query_mongo, mongo_coll_drop
 from btc_analysis.statistics import hist_std_dev
 
 # -----------------------
@@ -19,16 +19,51 @@ from btc_analysis.statistics import hist_std_dev
 # -----------------------
 
 
-def yesterday_str(format="%Y-%m-%d"):
+def yesterday_str(format_="%Y-%m-%d"):
 
-    today_str = datetime.now().strftime(format)
-    today = datetime.strptime(today_str, format)
+    today_str = datetime.now().strftime(format_)
+    today = datetime.strptime(today_str, format_)
     today_TS = int(today.replace(tzinfo=timezone.utc).timestamp())
     yesterday_TS = today_TS - 86400
     yesterday_date = datetime.fromtimestamp(int(yesterday_TS))
-    yesterday = yesterday_date.strftime(format)
+    yesterday = yesterday_date.strftime(format_)
 
     return yesterday
+
+
+# ----------------------------
+# INDEX COLLECTIONS CHECKING
+# ---------------------------
+
+def index_coll_check(collection_name):
+
+    yesterday = yesterday_str()
+
+    crypto_price = query_mongo("index", collection_name)
+    last_row = crypto_price.tail(1)
+    last_date = np.array(last_row["Date"])[0]
+
+    file_name = collection_name + ".csv"
+    upload_name = "collection_" + collection_name
+
+    if crypto_price == []:
+
+        crypto_df = pd.read_csv(
+            Path("source_data", "index_collections", file_name))
+        mongo_upload(crypto_df, upload_name, db_name="index")
+
+    else:
+
+        if yesterday != last_date:
+
+            mongo_coll_drop("index", db_name="index")
+            crypto_df = pd.read_csv(
+                Path("source_data", "index_collections", file_name))
+            mongo_upload(crypto_df, upload_name, db_name="index")
+
+        else:
+
+            print("collection from index database are up to date")
 
 
 # ----------------------------

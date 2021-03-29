@@ -57,13 +57,13 @@ def query_mongo(database, collection, query_dict=None):
     return df
 
 
-def mongo_index_conn():
+def mongo_index_conn(db_name="btc_analysis"):
 
     # connecting to mongo in local
     # connection = MongoClient("3.138.244.245", 27017)
     connection = MongoClient("localhost", 27017)
 
-    db = connection.btc_analysis
+    db = connection.db_name
 
     return db
 
@@ -175,122 +175,132 @@ def mongo_indexing():
     db.btc_total_supply.create_index([("id", -1)])
 
 
-def mongo_coll():
+def mongo_coll(db_name="btc_analysis"):
 
-    db = mongo_index_conn()
+    db = mongo_index_conn(db_name)
 
-    dict_of_coll = {
+    if db_name == "btc_analysis":
 
-        # yahoo collections
-        "collection_prices_y": db.all_prices_y,
-        "collection_returns_y": db.all_returns_y,
-        "collection_logreturns_y": db.all_logreturns_y,
-        "collection_volume_y": db.all_volume_y,
+        dict_of_coll = {
 
+            # yahoo collections
+            "collection_prices_y": db.all_prices_y,
+            "collection_returns_y": db.all_returns_y,
+            "collection_logreturns_y": db.all_logreturns_y,
+            "collection_volume_y": db.all_volume_y,
 
-        # return collections
-        "collection_ret_var": db.return_various,
-        "collection_ret_crypto": db.return_crypto,
+            # return collections
+            "collection_ret_var": db.return_various,
+            "collection_ret_crypto": db.return_crypto,
 
-        # dynamic altcoins correlation collections
-        "collection_YTD_dyn_alt": db.dyn_alt_correlation_YTD,
-        "collection_3Y_dyn_alt": db.dyn_alt_correlation_3Y,
-        "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
-        "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
-        "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
+            # dynamic altcoins correlation collections
+            "collection_YTD_dyn_alt": db.dyn_alt_correlation_YTD,
+            "collection_3Y_dyn_alt": db.dyn_alt_correlation_3Y,
+            "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
+            "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
+            "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
 
-        # dynamic yahoo correlation collections
-        "collection_YTD_dyn_yahoo": db.dyn_yahoo_correlation_YTD,
-        "collection_3Y_dyn_yahoo": db.dyn_yahoo_correlation_3Y,
-        "collection_1Y_dyn_yahoo": db.dyn_yahoo_correlation_1Y,
-        "collection_1Q_dyn_yahoo": db.dyn_yahoo_correlation_1Q,
-        "collection_1M_dyn_yahoo": db.dyn_yahoo_correlation_1M,
+            # dynamic yahoo correlation collections
+            "collection_YTD_dyn_yahoo": db.dyn_yahoo_correlation_YTD,
+            "collection_3Y_dyn_yahoo": db.dyn_yahoo_correlation_3Y,
+            "collection_1Y_dyn_yahoo": db.dyn_yahoo_correlation_1Y,
+            "collection_1Q_dyn_yahoo": db.dyn_yahoo_correlation_1Q,
+            "collection_1M_dyn_yahoo": db.dyn_yahoo_correlation_1M,
 
-        # static yahoo correlation collections
-        "collection_all_stat_yahoo": db.stat_yahoo_correlation_all,
-        "collection_3Y_stat_yahoo": db.stat_yahoo_correlation_3Y,
-        "collection_1Y_stat_yahoo": db.stat_yahoo_correlation_1Y,
-        "collection_1Q_stat_yahoo": db.stat_yahoo_correlation_1Q,
-        "collection_1M_stat_yahoo": db.stat_yahoo_correlation_1M,
+            # static yahoo correlation collections
+            "collection_all_stat_yahoo": db.stat_yahoo_correlation_all,
+            "collection_3Y_stat_yahoo": db.stat_yahoo_correlation_3Y,
+            "collection_1Y_stat_yahoo": db.stat_yahoo_correlation_1Y,
+            "collection_1Q_stat_yahoo": db.stat_yahoo_correlation_1Q,
+            "collection_1M_stat_yahoo": db.stat_yahoo_correlation_1M,
 
-        # static altcoins correlation collections
-        "collection_all_stat_alt": db.stat_alt_correlation_all,
-        "collection_3Y_stat_alt": db.stat_alt_correlation_3Y,
-        "collection_1Y_stat_alt": db.stat_alt_correlation_1Y,
-        "collection_1Q_stat_alt": db.stat_alt_correlation_1Q,
-        "collection_1M_stat_alt": db.stat_alt_correlation_1M,
+            # static altcoins correlation collections
+            "collection_all_stat_alt": db.stat_alt_correlation_all,
+            "collection_3Y_stat_alt": db.stat_alt_correlation_3Y,
+            "collection_1Y_stat_alt": db.stat_alt_correlation_1Y,
+            "collection_1Q_stat_alt": db.stat_alt_correlation_1Q,
+            "collection_1M_stat_alt": db.stat_alt_correlation_1M,
 
-        # dynamic SP500 correlation collections
-        "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
-        "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
-        "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
-        "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
+            # dynamic SP500 correlation collections
+            "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
+            "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
+            "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
+            "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
 
-        # priced denominated in BTC collections
-        "collection_yahoo_btc_den_5Y": db.yahoo_btc_denominated_5Y,
-        "collection_alt_btc_den_5Y": db.altcoin_btc_denominated_5Y,
-        "collection_yahoo_btc_den_3Y": db.yahoo_btc_denominated_3Y,
-        "collection_alt_btc_den_2Y": db.altcoin_btc_denominated_2Y,
-        "collection_yahoo_btc_den_2Y": db.yahoo_btc_denominated_2Y,
-        "collection_alt_btc_den_3Y": db.altcoin_btc_denominated_3Y,
-        "collection_yahoo_btc_den_1Y": db.yahoo_btc_denominated_1Y,
-        "collection_alt_btc_den_1Y": db.altcoin_btc_denominated_1Y,
-        "collection_yahoo_btc_den_6M": db.yahoo_btc_denominated_6M,
-        "collection_alt_btc_den_6M": db.altcoin_btc_denominated_6M,
-        "collection_yahoo_btc_den_3M": db.yahoo_btc_denominated_3M,
-        "collection_alt_btc_den_3M": db.altcoin_btc_denominated_3M,
-        "collection_yahoo_btc_den_1M": db.yahoo_btc_denominated_1M,
-        "collection_alt_btc_den_1M": db.altcoin_btc_denominated_1M,
-        "collection_yahoo_btc_den_1W": db.yahoo_btc_denominated_1W,
-        "collection_alt_btc_den_1W": db.altcoin_btc_denominated_1W,
-        "collection_yahoo_btc_den_YTD": db.yahoo_btc_denominated_YTD,
-        "collection_alt_btc_den_YTD": db.altcoin_btc_denominated_YTD,
+            # priced denominated in BTC collections
+            "collection_yahoo_btc_den_5Y": db.yahoo_btc_denominated_5Y,
+            "collection_alt_btc_den_5Y": db.altcoin_btc_denominated_5Y,
+            "collection_yahoo_btc_den_3Y": db.yahoo_btc_denominated_3Y,
+            "collection_alt_btc_den_2Y": db.altcoin_btc_denominated_2Y,
+            "collection_yahoo_btc_den_2Y": db.yahoo_btc_denominated_2Y,
+            "collection_alt_btc_den_3Y": db.altcoin_btc_denominated_3Y,
+            "collection_yahoo_btc_den_1Y": db.yahoo_btc_denominated_1Y,
+            "collection_alt_btc_den_1Y": db.altcoin_btc_denominated_1Y,
+            "collection_yahoo_btc_den_6M": db.yahoo_btc_denominated_6M,
+            "collection_alt_btc_den_6M": db.altcoin_btc_denominated_6M,
+            "collection_yahoo_btc_den_3M": db.yahoo_btc_denominated_3M,
+            "collection_alt_btc_den_3M": db.altcoin_btc_denominated_3M,
+            "collection_yahoo_btc_den_1M": db.yahoo_btc_denominated_1M,
+            "collection_alt_btc_den_1M": db.altcoin_btc_denominated_1M,
+            "collection_yahoo_btc_den_1W": db.yahoo_btc_denominated_1W,
+            "collection_alt_btc_den_1W": db.altcoin_btc_denominated_1W,
+            "collection_yahoo_btc_den_YTD": db.yahoo_btc_denominated_YTD,
+            "collection_alt_btc_den_YTD": db.altcoin_btc_denominated_YTD,
 
-        # normalized prices
-        "collection_normalized_prices_5Y": db.normalized_prices_5Y,
-        "collection_normalized_prices_3Y": db.normalized_prices_3Y,
-        "collection_normalized_prices_2Y": db.normalized_prices_2Y,
-        "collection_normalized_prices_1Y": db.normalized_prices_1Y,
-        "collection_normalized_prices_6M": db.normalized_prices_6M,
-        "collection_normalized_prices_3M": db.normalized_prices_3M,
-        "collection_normalized_prices_1M": db.normalized_prices_1M,
-        "collection_normalized_prices_1W": db.normalized_prices_1W,
-        "collection_normalized_prices_YTD": db.normalized_prices_YTD,
+            # normalized prices
+            "collection_normalized_prices_5Y": db.normalized_prices_5Y,
+            "collection_normalized_prices_3Y": db.normalized_prices_3Y,
+            "collection_normalized_prices_2Y": db.normalized_prices_2Y,
+            "collection_normalized_prices_1Y": db.normalized_prices_1Y,
+            "collection_normalized_prices_6M": db.normalized_prices_6M,
+            "collection_normalized_prices_3M": db.normalized_prices_3M,
+            "collection_normalized_prices_1M": db.normalized_prices_1M,
+            "collection_normalized_prices_1W": db.normalized_prices_1W,
+            "collection_normalized_prices_YTD": db.normalized_prices_YTD,
 
-        # volatility
-        "collection_volatility_252": db.volatility_252,
-        "collection_volatility_90": db.volatility_90,
-        "collection_volatility_30": db.volatility_30,
+            # volatility
+            "collection_volatility_252": db.volatility_252,
+            "collection_volatility_90": db.volatility_90,
+            "collection_volatility_30": db.volatility_30,
 
-        # market cap
-        "collection_market_cap": db.market_cap,
-        "collection_btc_supply": db.btc_supply,
+            # market cap
+            "collection_market_cap": db.market_cap,
+            "collection_btc_supply": db.btc_supply,
 
-        # markovitz
-        "collection_CAPM": db.CAPM,
-        "collection_CAPM_no_BTC": db.CAPM_no_BTC,
+            # markovitz
+            "collection_CAPM": db.CAPM,
+            "collection_CAPM_no_BTC": db.CAPM_no_BTC,
 
-        # stock to flow
-        "collection_S2F": db.S2F_model,
-        "collection_S2F_BTC": db.S2F_BTC_price,
-        "collection_S2F_performance": db.S2F_halving_performance,
-        "collection_S2F_regression": db.S2F_regression,
-        "collection_S2F_source_data": db.S2F_source,
-        "collection_S2FX_cluster": db.S2FX_cluster,
-        "collection_S2FX_regression": db.S2FX_regression,
-        "collection_S2FX": db.S2FX_model,
+            # stock to flow
+            "collection_S2F": db.S2F_model,
+            "collection_S2F_BTC": db.S2F_BTC_price,
+            "collection_S2F_performance": db.S2F_halving_performance,
+            "collection_S2F_regression": db.S2F_regression,
+            "collection_S2F_source_data": db.S2F_source,
+            "collection_S2FX_cluster": db.S2FX_cluster,
+            "collection_S2FX_regression": db.S2FX_regression,
+            "collection_S2FX": db.S2FX_model,
 
-        # supply
-        "collection_total_supply": db.btc_total_supply,
+            # supply
+            "collection_total_supply": db.btc_total_supply,
 
-    }
+        }
+
+    else:
+
+        dict_of_coll = {
+
+            # index collections
+            "collection_crypto_price": db.crypto_price,
+            "collection_crypto_volume": db.crypto_volume,
+        }
 
     return dict_of_coll
 
 
-def mongo_coll_drop(corr_type):
+def mongo_coll_drop(corr_type, db_name="btc_analysis"):
 
-    db = mongo_index_conn()
+    db = mongo_index_conn(db_name)
 
     if corr_type == "static_alt":
 
@@ -444,6 +454,11 @@ def mongo_coll_drop(corr_type):
         db.btc_total_supply.drop()
         db.btc_supply.drop()
 
+    elif corr_type == "index":
+
+        db.crypto_price.drop()
+        db.crypto_volume.drop()
+
 
 def mongo_correlation_drop():
 
@@ -455,9 +470,9 @@ def mongo_correlation_drop():
 
 
 def mongo_upload(data_to_upload, where_to_upload,
-                 column_set_val=None):
+                 column_set_val=None, db_name="btc_analysis"):
 
-    collection_dict = mongo_coll()
+    collection_dict = mongo_coll(db_name)
 
     data_to_dict = data_to_upload.to_dict(orient="records")
     collection_dict.get(where_to_upload).insert_many(data_to_dict)
