@@ -12,7 +12,7 @@ from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
 mongo_indexing()
 
 
-index_coll_check()
+# index_coll_check()
 # ---------------------------------------------
 # yahoo series update
 
