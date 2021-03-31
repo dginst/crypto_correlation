@@ -3,7 +3,8 @@ import pandas as pd
 from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload
 from btc_analysis.stock2flow_func import (S2F_definition, S2F_complete_model,
                                           days_to_halving, halving_performace,
-                                          check_and_add, S2FX_definition, S2FX_complete_model)
+                                          check_and_add, S2FX_definition,
+                                          S2FX_complete_model)
 from btc_analysis.config import HALVING_DATE
 
 mongo_coll_drop("S2F")
@@ -17,7 +18,7 @@ initial_data = pd.read_csv(
 
 BTC_prices = pd.read_csv(
     Path("source_data", "BTC_price.csv"), sep="|")
-
+print(BTC_prices)
 
 # adding the day to halving in each days
 
