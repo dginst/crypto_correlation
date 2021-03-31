@@ -57,13 +57,13 @@ def query_mongo(database, collection, query_dict=None):
     return df
 
 
-def mongo_index_conn(db_name="btc_analysis"):
+def mongo_index_conn():
 
     # connecting to mongo in local
     # connection = MongoClient("3.138.244.245", 27017)
     connection = MongoClient("localhost", 27017)
 
-    db = connection.db_name
+    db = connection.btc_analysis
 
     return db
 
@@ -177,9 +177,9 @@ def mongo_indexing():
 
 def mongo_coll(db_name="btc_analysis"):
 
-    db = mongo_index_conn(db_name)
-
     if db_name == "btc_analysis":
+
+        db = mongo_index_conn()
 
         dict_of_coll = {
 
@@ -288,6 +288,8 @@ def mongo_coll(db_name="btc_analysis"):
 
     else:
 
+        db = mongo_index_conn()
+
         dict_of_coll = {
 
             # index collections
@@ -298,9 +300,9 @@ def mongo_coll(db_name="btc_analysis"):
     return dict_of_coll
 
 
-def mongo_coll_drop(corr_type, db_name="btc_analysis"):
+def mongo_coll_drop(corr_type):
 
-    db = mongo_index_conn(db_name)
+    db = mongo_index_conn()
 
     if corr_type == "static_alt":
 
@@ -472,7 +474,6 @@ def mongo_correlation_drop():
 def mongo_upload(data_to_upload, where_to_upload,
                  column_set_val=None, db_name="btc_analysis"):
 
-    collection_dict = mongo_coll(db_name)
-
+    collection_dict = mongo_coll("btc_analysis")
     data_to_dict = data_to_upload.to_dict(orient="records")
     collection_dict.get(where_to_upload).insert_many(data_to_dict)
