@@ -287,6 +287,7 @@ def update_S2F(typology, n):
 
     dff = df.copy()
     price_dff = price_df.copy()
+    print(price_dff)
 
     dff = dff.tail(len(dff.index) - 400)
 
