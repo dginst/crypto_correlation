@@ -183,6 +183,7 @@ def days_to_halving(initial_df, halving_days_list):
 
     final_df["Datetime"] = [datetime.strptime(
         date, "%d-%m-%Y") for date in final_df["Date"]]
+    print(final_df["Datetime"])
 
     i = 0
     days_to_halv = np.array([])

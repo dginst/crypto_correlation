@@ -18,11 +18,11 @@ initial_data = pd.read_csv(
 
 BTC_prices = pd.read_csv(
     Path("source_data", "BTC_price.csv"), sep="|")
-print(BTC_prices)
 
 # adding the day to halving in each days
 
 price_df = days_to_halving(BTC_prices, HALVING_DATE)
+print(price_df)
 mongo_upload(price_df, "collection_S2F_BTC")
 # -----------------------
 # S2F stadard model definition
