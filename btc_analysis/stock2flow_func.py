@@ -371,6 +371,8 @@ def check_and_add():
         df_to_add.to_csv(Path("source_data", "BTC_price.csv"),
                          mode='a', index=False, header=False, sep='|')
 
+    df_from_csv.close()
+
 
 # function that camputes S2F values starting from mkt cap values
 # and knowing slope and intercept of the regression function
