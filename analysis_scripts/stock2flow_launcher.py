@@ -1,11 +1,13 @@
 from pathlib import Path
+
 import pandas as pd
-from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload, query_mongo, mongo_indexing
-from btc_analysis.stock2flow_func import (S2F_definition, S2F_complete_model,
-                                          days_to_halving, halving_performace,
-                                          check_and_add, S2FX_definition,
-                                          S2FX_complete_model)
 from btc_analysis.config import HALVING_DATE
+from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
+                                     mongo_upload, query_mongo)
+from btc_analysis.stock2flow_func import (S2F_complete_model, S2F_definition,
+                                          S2FX_complete_model, S2FX_definition,
+                                          check_and_add, days_to_halving,
+                                          halving_performace)
 
 mongo_coll_drop("S2F")
 
@@ -14,7 +16,7 @@ mongo_indexing()
 # ----------
 # data gathering
 # ---------
-# check_and_add()
+check_and_add()
 initial_data = pd.read_csv(
     Path("source_data", "initial_data_S2F.csv"), sep="|")
 
@@ -24,10 +26,9 @@ BTC_prices = pd.read_csv(
 # adding the day to halving in each days
 
 price_df = days_to_halving(BTC_prices, HALVING_DATE)
-print(price_df)
 mongo_upload(price_df, "collection_S2F_BTC")
 d = query_mongo("btc_analysis", "S2F_BTC_price")
-print(d.tail(20))
+
 # -----------------------
 # S2F stadard model definition
 
