@@ -196,7 +196,6 @@ def update_S2F_regression(n):
 
     # function for gold and silver plot
     comm_df = commodities_df()
-    print(comm_df)
 
     model_cap = go.Figure()
 
@@ -442,8 +441,13 @@ def update_supply(n):
     supply_df = query_mongo("btc_analysis", "btc_total_supply")
     supply_dff = supply_df.copy()
 
-    supply_dff["Date"] = [datetime.strptime(
-        date, "%d-%m-%Y") for date in supply_dff["Date"]]
+    try:
+
+        supply_dff["Date"] = [datetime.strptime(
+            date, "%d-%m-%Y") for date in supply_dff["Date"]]
+
+    except TypeError:
+        pass
 
     supply_graph = go.Figure()
 

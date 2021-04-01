@@ -183,7 +183,6 @@ def days_to_halving(initial_df, halving_days_list):
 
     final_df["Datetime"] = [datetime.strptime(
         date, "%d-%m-%Y") for date in final_df["Date"]]
-    print(final_df["Datetime"])
 
     i = 0
     days_to_halv = np.array([])
@@ -255,8 +254,6 @@ def halving_return_df(halving_df, date_df):
     halving_2012_ret = np.array(halving_2012_ret.head(date_len))
     halving_2016_ret = np.array(halving_2016_ret.head(date_len))
     date_arr = date_arr.head(date_len)
-    print(halving_2012_ret)
-    print(halving_2016_ret)
 
     header = ["Datetime", "halving 2012", "halving 2016"]
     final_df = pd.DataFrame(columns=header)
@@ -315,13 +312,12 @@ def commodities_mkt_cap():
     yahoo_last_day = yahoo_prices.tail(1)
     gold_price = np.array(yahoo_last_day["GOLD"])[0]
     silver_price = np.array(yahoo_last_day["SILVER"])[0]
-    print(gold_price)
 
     if math.isnan(gold_price) is False:
         pass
 
     else:
-        print("here")
+
         yahoo_last_day = yahoo_prices.tail(2)
         yahoo_last = yahoo_last_day.head(1)
         gold_price = np.array(yahoo_last["GOLD"])[0]
