@@ -138,36 +138,6 @@ app.layout = dbc.Container([
 
     ], justify='center'),
 
-
-    dbc.Row([
-        dbc.Col([
-
-            dbc.Card(
-                [
-                    dbc.CardBody(
-                        [
-                            dbc.Row(
-                                [
-                                    dbc.Col([
-
-
-                                        dcc.Graph(id="supply", figure={},
-                                                  config={'displayModeBar': True}),
-
-
-                                    ])
-                                ]),
-
-                        ]),
-                ],
-                style={"width": "70rem"},
-                className="mt-3"
-            )
-
-        ]),
-
-    ], justify='center'),
-
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
     dcc.Interval(id='df-update', interval=100000, n_intervals=0)
@@ -430,66 +400,6 @@ def update_S2F_perf(n):
     performance.update_xaxes(nticks=20)
 
     return performance
-
-
-@ app.callback(
-    Output('supply', 'figure'),
-    Input('df-update', 'n_intervals')
-)
-def update_supply(n):
-
-    supply_df = query_mongo("btc_analysis", "btc_total_supply")
-    supply_dff = supply_df.copy()
-
-    try:
-
-        supply_dff["Date"] = [datetime.strptime(
-            date, "%d-%m-%Y") for date in supply_dff["Date"]]
-
-    except TypeError:
-        pass
-
-    supply_graph = go.Figure()
-
-    supply_graph.add_trace(
-        go.Scatter(
-            x=supply_dff["Date"],
-            y=supply_dff["Supply"],
-            name="BTC Effective Supply",
-            mode='lines',
-            line_color='#FFFFFF',
-        ))
-
-    supply_graph.add_trace(
-        go.Scatter(
-            x=supply_dff["Date"],
-            y=supply_dff["Theoretical Supply"],
-            name="BTC Theoretical Supply",
-            mode='lines',
-            line_color='#028A0F',
-        ))
-
-    supply_graph.update_layout(
-        title_text="Bitcoin Supply",
-        template='plotly_dark'
-    )
-
-    supply_graph.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1
-    ))
-
-    supply_graph.update_yaxes(
-        title_text="Number of Bitcoin",
-    )
-    supply_graph.update_xaxes(nticks=20,
-                              title_text="Date"
-                              )
-
-    return supply_graph
 
 
 print("Done")
