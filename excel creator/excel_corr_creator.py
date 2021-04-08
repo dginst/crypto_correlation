@@ -5,6 +5,15 @@ from btc_analysis.config import (CRYPTO_LIST, CRYPTO_STATIC_LIST, DB_NAME,
 from btc_analysis.excel_func import alt_to_excel, yahoo_to_excel
 from btc_analysis.mongo_func import query_mongo
 
+
+# ----------------------
+# define the current end of quarter date
+
+date = "31_03_2021"
+
+# -------------------------------------
+# downloading from MongoDB
+
 # mongo download for Altcoin Correlation
 dyn_alt_corr_3Y = query_mongo(DB_NAME, "dyn_alt_correlation_3Y")
 dyn_alt_corr_1Y = query_mongo(DB_NAME, "dyn_alt_correlation_1Y")
@@ -29,6 +38,7 @@ stat_yahoo_corr_1Y = query_mongo(DB_NAME, "stat_yahoo_correlation_1Y")
 stat_yahoo_corr_1Q = query_mongo(DB_NAME, "stat_yahoo_correlation_1Q")
 stat_yahoo_corr_1M = query_mongo(DB_NAME, "stat_yahoo_correlation_1M")
 
+# dropping some dataframe columns out of scope
 list_to_drop = ["AMAZON", "SILVER", "US index", "APPLE", "TESLA", "NETFLIX"]
 index_to_drop = [7, 22, 23, 24, 25, 26]
 
@@ -44,8 +54,7 @@ stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(
     index=index_to_drop, columns=list_to_drop)
 
 # --------------------
-
-date = "27_01_2021"
+# excel creation
 
 file_name = "yahoo_correlation_" + date + ".xlsx"
 spec_path = Path("excel creator", "output", file_name)

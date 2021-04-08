@@ -26,6 +26,6 @@ mkt_data_op(YAHOO_TO_DOWNLOAD_CODE, YAHOO_TO_DOWNLOAD_NAME,
 # -----------------------
 # market cap update
 
-mongo_coll_drop("market_cap")
+# mongo_coll_drop("market_cap")
 
-mkt_cap_op(TICKERS_FOR_MKT_CAP, NAME_FOR_MKT_CAP, yesterday_str)
+# mkt_cap_op(TICKERS_FOR_MKT_CAP, NAME_FOR_MKT_CAP, yesterday_str)

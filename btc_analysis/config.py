@@ -481,26 +481,24 @@ YAHOO_TO_RETURN = ["BTC",
 
 # ##############
 
-ASSET_ANALYSIS_LIST = ["BTC",
-                       "APPLE",
-                       "NETFLIX",
-                       "TESLA",
-                       "AMAZON"]
+BEST_PERFORMING_LIST = ["BTC",
+                        "APPLE",
+                        "NETFLIX",
+                        "TESLA",
+                        "AMAZON"]
 
 
-ASSET_ANALYSIS_LIST_VOL = ["BTC",
-                           "BTC no stable",
-                           "APPLE",
-                           "NETFLIX",
-                           "TESLA",
-                           "AMAZON"]
+BEST_PERFORMING_LIST_VOL = ["BTC",
+                            "APPLE",
+                            "NETFLIX",
+                            "TESLA",
+                            "AMAZON"]
 
 YAHOO_DASH_LIST = ['S&P500',
                    'DOWJONES',
                    'GOLD',
                    'SILVER',
                    'COPPER',
-                   # 'NATURAL_GAS',
                    'CRUDE OIL',
                    'CORN',
                    'EUR',
@@ -514,10 +512,7 @@ YAHOO_DASH_LIST = ['S&P500',
                    'EUR Aggregate Bond',
                    'US Aggregate Bond',
                    'US index',
-                   'TESLA',
-                   'AMAZON',
-                   'APPLE',
-                   'NETFLIX']
+                   ]
 
 
 STATIC_COLORSCALE = [[0.0, "rgb(49,54,149)"],

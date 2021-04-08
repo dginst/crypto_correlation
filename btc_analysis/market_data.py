@@ -190,8 +190,20 @@ def mkt_data_op(series_code_list, all_el_list_d,
                                                  start_period,
                                                  end_period)
 
+    # price and returns operation
+
     complete_series_df_price = add_crypto(all_series_df_price)
     mongo_upload(complete_series_df_price, "collection_prices_y")
+
+    all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
+
+    mongo_upload(all_ret_df, "collection_returns_y")
+
+    all_logret_df = all_series_to_logret(complete_series_df_price)
+
+    mongo_upload(all_logret_df, "collection_logreturns_y")
+
+    # volume operation
 
     complete_series_df_volume = add_crypto(
         all_series_df_volume, collection="crypto_volume")
@@ -207,14 +219,6 @@ def mkt_data_op(series_code_list, all_el_list_d,
     complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
     complete_series_df_vol_rolling["Date"] = date_arr
     mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
-
-    all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
-
-    mongo_upload(all_ret_df, "collection_returns_y")
-
-    all_logret_df = all_series_to_logret(complete_series_df_price)
-
-    mongo_upload(all_logret_df, "collection_logreturns_y")
 
 # -----------------------------
 # ADDING CRYPTOCURRENCIES DATA TO DATAFRAME

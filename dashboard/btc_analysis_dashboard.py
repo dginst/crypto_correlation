@@ -6,7 +6,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px
 import plotly.graph_objects as go
-from btc_analysis.config import (ASSET_ANALYSIS_LIST, ASSET_ANALYSIS_LIST_VOL,
+from btc_analysis.config import (BEST_PERFORMING_LIST, BEST_PERFORMING_LIST_VOL,
                                  COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
                                  YAHOO_DASH_LIST)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
@@ -201,7 +201,7 @@ app.layout = dbc.Container([
                                         dcc.Checklist(
                                             id='my_yahoo_norm',
                                             options=[
-                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                                                {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
                                             ],
                                             value=["BTC", "AMAZON",
                                                    "TESLA", "APPLE", "NETFLIX"],
@@ -265,7 +265,7 @@ app.layout = dbc.Container([
                                         dcc.Checklist(
                                             id='my_yahoo_vola',
                                             options=[
-                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST
+                                                {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
                                             ],
                                             value=["BTC", "AMAZON",
                                                    "TESLA", "APPLE", "NETFLIX"],
@@ -332,7 +332,7 @@ app.layout = dbc.Container([
                                         dcc.Checklist(
                                             id='my_yahoo_volume',
                                             options=[
-                                                {'label': x, 'value': x} for x in ASSET_ANALYSIS_LIST_VOL
+                                                {'label': x, 'value': x} for x in BEST_PERFORMING_LIST_VOL
                                             ],
                                             value=["BTC", "BTC no stable", "AMAZON",
                                                    "TESLA", "APPLE", "NETFLIX"],

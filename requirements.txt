@@ -12,3 +12,4 @@ pandas_datareader
 pathlib
 scikit-learn
 kneed
+coinmetrics

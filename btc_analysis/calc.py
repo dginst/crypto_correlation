@@ -72,7 +72,13 @@ def date_gen(start_date, end_date, holiday="Y"):
 
 def roll_single_time(date, time_window):
 
-    date = datetime.strptime(date, "%Y-%m-%d")
+    try:
+
+        date = datetime.strptime(date, "%Y-%m-%d")
+
+    except ValueError:
+
+        date = datetime.strptime(date, "%d-%m-%Y")
 
     if time_window == "1Y":
 
@@ -165,9 +171,15 @@ def roll_time_arr(date_arr, time_window):
     return date_delta
 
 
-def window_period_back(date_df, time_window):
+def window_period_back(date_df, time_window, quarter="N"):
 
-    last_date = max(date_df)
+    if quarter == "N":
+
+        last_date = max(date_df)
+
+    else:
+
+        last_date = last_quarter_end()
 
     first_date = roll_single_time(last_date, time_window)
 
@@ -178,9 +190,37 @@ def window_period_back(date_df, time_window):
     return first_date, last_date
 
 
+def last_quarter_end():
+
+    today_month = int(datetime.now().month)
+    today_year = int(datetime.now().year)
+    last_year = today_year - 1
+
+    if today_month <= 3:
+
+        quart = "31-12-" + str(last_year)
+
+    elif today_month <= 6:
+
+        quart = "31-03-" + str(today_year)
+
+    elif today_month <= 9:
+
+        quart = "30-06-" + str(today_year)
+
+    elif today_month <= 12:
+
+        quart = "30-09-" + str(today_year)
+
+    last_q_date_end = quart
+    # datetime.strptime(quart, "%d-%m-%Y")
+
+    return last_q_date_end
+
 # ----------------------------------
 # RETURN RETRIEVE AND SETUP OPERATION
 # ----------------------------------
+
 
 def price_retrieve(collection, db_name=DB_NAME):
 
@@ -436,7 +476,7 @@ def static_corr_op(return_df):
 # BTC DENOMINATED PRICES
 # ---------------------------------
 
-def return_in_btc_comp(total_df, time_window):
+def return_in_btc_comp(total_df, time_window, quarter="N"):
     """
     time_window can be "5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"
     """
@@ -446,7 +486,15 @@ def return_in_btc_comp(total_df, time_window):
 
     date_df = total_df["Date"]
 
-    first_date, last_date = window_period_back(date_df, time_window)
+    first_date, last_date = window_period_back(date_df, time_window, quarter)
+
+    try:
+
+        last_date = datetime.strptime(last_date, "%d-%m-%Y")
+        last_date = last_date.strftime("%Y-%m-%d")
+
+    except ValueError:
+        pass
 
     total_df = total_df.loc[total_df.Date.between(
         first_date, last_date, inclusive=True)]
@@ -483,6 +531,8 @@ def return_in_btc_comp(total_df, time_window):
 
 
 def btc_denominated_total(yahoo_price_df, alt_price_df):
+
+    # computation as of yesterday
 
     yahoo_df_YTD = return_in_btc_comp(yahoo_price_df, "YTD")
     alt_df_YTD = return_in_btc_comp(alt_price_df, "YTD")
@@ -538,13 +588,70 @@ def btc_denominated_total(yahoo_price_df, alt_price_df):
     mongo_upload(yahoo_df_1W, "collection_yahoo_btc_den_1W")
     mongo_upload(alt_df_1W, "collection_alt_btc_den_1W")
 
+    # computation as of last quarter
+
+    yahoo_df_YTD_quarter = return_in_btc_comp(
+        yahoo_price_df, "YTD", quarter="Y")
+    alt_df_YTD_quarter = return_in_btc_comp(alt_price_df, "YTD", quarter="Y")
+
+    mongo_upload(yahoo_df_YTD_quarter, "collection_yahoo_btc_den_YTD_quarter")
+    mongo_upload(alt_df_YTD_quarter, "collection_alt_btc_den_YTD_quarter")
+
+    yahoo_df_5Y_quarter = return_in_btc_comp(yahoo_price_df, "5Y", quarter="Y")
+    alt_df_5Y_quarter = return_in_btc_comp(alt_price_df, "5Y", quarter="Y")
+
+    mongo_upload(yahoo_df_5Y_quarter, "collection_yahoo_btc_den_5Y_quarter")
+    mongo_upload(alt_df_5Y_quarter, "collection_alt_btc_den_5Y_quarter")
+
+    yahoo_df_3Y_quarter = return_in_btc_comp(yahoo_price_df, "3Y", quarter="Y")
+    alt_df_3Y_quarter = return_in_btc_comp(alt_price_df, "3Y", quarter="Y")
+
+    mongo_upload(yahoo_df_3Y_quarter, "collection_yahoo_btc_den_3Y_quarter")
+    mongo_upload(alt_df_3Y_quarter, "collection_alt_btc_den_3Y_quarter")
+
+    yahoo_df_2Y_quarter = return_in_btc_comp(yahoo_price_df, "2Y", quarter="Y")
+    alt_df_2Y_quarter = return_in_btc_comp(alt_price_df, "2Y", quarter="Y")
+
+    mongo_upload(yahoo_df_2Y_quarter, "collection_yahoo_btc_den_2Y_quarter")
+    mongo_upload(alt_df_2Y_quarter, "collection_alt_btc_den_2Y_quarter")
+
+    yahoo_df_1Y_quarter = return_in_btc_comp(yahoo_price_df, "1Y", quarter="Y")
+    alt_df_1Y_quarter = return_in_btc_comp(alt_price_df, "1Y", quarter="Y")
+
+    mongo_upload(yahoo_df_1Y_quarter, "collection_yahoo_btc_den_1Y_quarter")
+    mongo_upload(alt_df_1Y_quarter, "collection_alt_btc_den_1Y_quarter")
+
+    yahoo_df_6M_quarter = return_in_btc_comp(yahoo_price_df, "6M", quarter="Y")
+    alt_df_6M_quarter = return_in_btc_comp(alt_price_df, "6M", quarter="Y")
+
+    mongo_upload(yahoo_df_6M_quarter, "collection_yahoo_btc_den_6M_quarter")
+    mongo_upload(alt_df_6M_quarter, "collection_alt_btc_den_6M_quarter")
+
+    yahoo_df_3M_quarter = return_in_btc_comp(yahoo_price_df, "3M", quarter="Y")
+    alt_df_3M_quarter = return_in_btc_comp(alt_price_df, "3M", quarter="Y")
+
+    mongo_upload(yahoo_df_3M_quarter, "collection_yahoo_btc_den_3M_quarter")
+    mongo_upload(alt_df_3M_quarter, "collection_alt_btc_den_3M_quarter")
+
+    yahoo_df_1M_quarter = return_in_btc_comp(yahoo_price_df, "1M", quarter="Y")
+    alt_df_1M_quarter = return_in_btc_comp(alt_price_df, "1M", quarter="Y")
+
+    mongo_upload(yahoo_df_1M_quarter, "collection_yahoo_btc_den_1M_quarter")
+    mongo_upload(alt_df_1M_quarter, "collection_alt_btc_den_1M_quarter")
+
+    yahoo_df_1W_quarter = return_in_btc_comp(yahoo_price_df, "1W", quarter="Y")
+    alt_df_1W_quarter = return_in_btc_comp(alt_price_df, "1W", quarter="Y")
+
+    mongo_upload(yahoo_df_1W_quarter, "collection_yahoo_btc_den_1W_quarter")
+    mongo_upload(alt_df_1W_quarter, "collection_alt_btc_den_1W_quarter")
+
 
 # ---------------------------------
 # USD DENOMINATED PRICES
 # ---------------------------------
 
 
-def usd_normalized_calc(yahoo_returns, time_window):
+def usd_normalized_calc(yahoo_returns, time_window, quarter="N"):
     """
     time_window can be "5Y "3Y", "2Y", 1Y", "6M", "3M", "1M", "1W", "YTD"
     """
@@ -561,7 +668,15 @@ def usd_normalized_calc(yahoo_returns, time_window):
     yahoo_col = yahoo_col_tot.copy()
     yahoo_col.remove("Date")
 
-    first_date, last_date = window_period_back(date_df, time_window)
+    first_date, last_date = window_period_back(date_df, time_window, quarter)
+
+    try:
+
+        last_date = datetime.strptime(last_date, "%d-%m-%Y")
+        last_date = last_date.strftime("%Y-%m-%d")
+
+    except ValueError:
+        pass
 
     total_df = yahoo_returns.loc[yahoo_returns.Date.between(
         first_date, last_date, inclusive=True)]
@@ -595,6 +710,8 @@ def usd_normalized_calc(yahoo_returns, time_window):
 
 
 def usd_normalized_total(yahoo_price_df):
+
+    # computation as of yesterday
 
     yahoo_df_YTD = usd_normalized_calc(yahoo_price_df, "YTD")
 
@@ -631,3 +748,59 @@ def usd_normalized_total(yahoo_price_df):
     yahoo_df_1W = usd_normalized_calc(yahoo_price_df, "1W")
 
     mongo_upload(yahoo_df_1W, "collection_normalized_prices_1W")
+
+    # computation as of last quarter end
+
+    yahoo_df_YTD_quarter = usd_normalized_calc(
+        yahoo_price_df, "YTD", quarter="Y")
+
+    mongo_upload(yahoo_df_YTD_quarter,
+                 "collection_normalized_prices_YTD_quarter")
+
+    yahoo_df_5Y_quarter = usd_normalized_calc(
+        yahoo_price_df, "5Y", quarter="Y")
+
+    mongo_upload(yahoo_df_5Y_quarter,
+                 "collection_normalized_prices_5Y_quarter")
+
+    yahoo_df_3Y_quarter = usd_normalized_calc(
+        yahoo_price_df, "3Y", quarter="Y")
+
+    mongo_upload(yahoo_df_3Y_quarter,
+                 "collection_normalized_prices_3Y_quarter")
+
+    yahoo_df_2Y_quarter = usd_normalized_calc(
+        yahoo_price_df, "2Y", quarter="Y")
+
+    mongo_upload(yahoo_df_2Y_quarter,
+                 "collection_normalized_prices_2Y_quarter")
+
+    yahoo_df_1Y_quarter = usd_normalized_calc(
+        yahoo_price_df, "1Y", quarter="Y")
+
+    mongo_upload(yahoo_df_1Y_quarter,
+                 "collection_normalized_prices_1Y_quarter")
+
+    yahoo_df_6M_quarter = usd_normalized_calc(
+        yahoo_price_df, "6M", quarter="Y")
+
+    mongo_upload(yahoo_df_6M_quarter,
+                 "collection_normalized_prices_6M_quarter")
+
+    yahoo_df_3M_quarter = usd_normalized_calc(
+        yahoo_price_df, "3M", quarter="Y")
+
+    mongo_upload(yahoo_df_3M_quarter,
+                 "collection_normalized_prices_3M_quarter")
+
+    yahoo_df_1M_quarter = usd_normalized_calc(
+        yahoo_price_df, "1M", quarter="Y")
+
+    mongo_upload(yahoo_df_1M_quarter,
+                 "collection_normalized_prices_1M_quarter")
+
+    yahoo_df_1W_quarter = usd_normalized_calc(
+        yahoo_price_df, "1W", quarter="Y")
+
+    mongo_upload(yahoo_df_1W_quarter,
+                 "collection_normalized_prices_1W_quarter")

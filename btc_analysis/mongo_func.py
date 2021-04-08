@@ -7,14 +7,6 @@ connection = MongoClient("localhost", 27017)
 # creating the database called index
 db = connection.btc_analysis
 
-# function that takes as arguments:
-# database = database name [index_raw, index_cleaned, index_cleaned]
-# collection = the name of the collection of interest
-# query_dict = mongo db uses dictionary structure to do query ex:
-# {"Exchange" : "kraken", "Pair" : "btcjpy", "Time" : { "$gte": 1580774400} },
-#  this query call all the documents that contains kraken as exchange,
-#  the pair btcjpy and the time value is greater than 1580774400
-
 
 def query_mongo(database, collection, query_dict=None):
 
@@ -136,6 +128,25 @@ def mongo_indexing():
     db.altcoin_btc_denominated_1W.create_index([("id", -1)])
     db.yahoo_btc_denominated_YTD.create_index([("id", -1)])
     db.altcoin_btc_denominated_YTD.create_index([("id", -1)])
+    # ------
+    db.yahoo_btc_denominated_5Y_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_5Y_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_3Y_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_3Y_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_2Y_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_2Y_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_1Y_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_1Y_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_6M_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_6M_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_3M_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_3M_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_1M_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_1M_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_1W_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_1W_quarter.create_index([("id", -1)])
+    db.yahoo_btc_denominated_YTD_quarter.create_index([("id", -1)])
+    db.altcoin_btc_denominated_YTD_quarter.create_index([("id", -1)])
 
     # series USD prices
     db.normalized_prices_5Y.create_index([("id", -1)])
@@ -147,6 +158,16 @@ def mongo_indexing():
     db.normalized_prices_1M.create_index([("id", -1)])
     db.normalized_prices_1W.create_index([("id", -1)])
     db.normalized_prices_YTD.create_index([("id", -1)])
+    # ----
+    db.normalized_prices_5Y_quarter.create_index([("id", -1)])
+    db.normalized_prices_3Y_quarter.create_index([("id", -1)])
+    db.normalized_prices_2Y_quarter.create_index([("id", -1)])
+    db.normalized_prices_1Y_quarter.create_index([("id", -1)])
+    db.normalized_prices_6M_quarter.create_index([("id", -1)])
+    db.normalized_prices_3M_quarter.create_index([("id", -1)])
+    db.normalized_prices_1M_quarter.create_index([("id", -1)])
+    db.normalized_prices_1W_quarter.create_index([("id", -1)])
+    db.normalized_prices_YTD_quarter.create_index([("id", -1)])
 
     # volatility
     db.volatility_30.create_index([("id", -1)])
@@ -246,6 +267,25 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_alt_btc_den_1W": db.altcoin_btc_denominated_1W,
             "collection_yahoo_btc_den_YTD": db.yahoo_btc_denominated_YTD,
             "collection_alt_btc_den_YTD": db.altcoin_btc_denominated_YTD,
+            # ----
+            "collection_yahoo_btc_den_5Y_quarter": db.yahoo_btc_denominated_5Y_quarter,
+            "collection_alt_btc_den_5Y_quarter": db.altcoin_btc_denominated_5Y_quarter,
+            "collection_yahoo_btc_den_3Y_quarter": db.yahoo_btc_denominated_3Y_quarter,
+            "collection_alt_btc_den_2Y_quarter": db.altcoin_btc_denominated_2Y_quarter,
+            "collection_yahoo_btc_den_2Y_quarter": db.yahoo_btc_denominated_2Y_quarter,
+            "collection_alt_btc_den_3Y_quarter": db.altcoin_btc_denominated_3Y_quarter,
+            "collection_yahoo_btc_den_1Y_quarter": db.yahoo_btc_denominated_1Y_quarter,
+            "collection_alt_btc_den_1Y_quarter": db.altcoin_btc_denominated_1Y_quarter,
+            "collection_yahoo_btc_den_6M_quarter": db.yahoo_btc_denominated_6M_quarter,
+            "collection_alt_btc_den_6M_quarter": db.altcoin_btc_denominated_6M_quarter,
+            "collection_yahoo_btc_den_3M_quarter": db.yahoo_btc_denominated_3M_quarter,
+            "collection_alt_btc_den_3M_quarter": db.altcoin_btc_denominated_3M_quarter,
+            "collection_yahoo_btc_den_1M_quarter": db.yahoo_btc_denominated_1M_quarter,
+            "collection_alt_btc_den_1M_quarter": db.altcoin_btc_denominated_1M_quarter,
+            "collection_yahoo_btc_den_1W_quarter": db.yahoo_btc_denominated_1W_quarter,
+            "collection_alt_btc_den_1W_quarter": db.altcoin_btc_denominated_1W_quarter,
+            "collection_yahoo_btc_den_YTD_quarter": db.yahoo_btc_denominated_YTD_quarter,
+            "collection_alt_btc_den_YTD_quarter": db.altcoin_btc_denominated_YTD_quarter,
 
             # normalized prices
             "collection_normalized_prices_5Y": db.normalized_prices_5Y,
@@ -257,6 +297,16 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_normalized_prices_1M": db.normalized_prices_1M,
             "collection_normalized_prices_1W": db.normalized_prices_1W,
             "collection_normalized_prices_YTD": db.normalized_prices_YTD,
+            # -----
+            "collection_normalized_prices_5Y_quarter": db.normalized_prices_5Y_quarter,
+            "collection_normalized_prices_3Y_quarter": db.normalized_prices_3Y_quarter,
+            "collection_normalized_prices_2Y_quarter": db.normalized_prices_2Y_quarter,
+            "collection_normalized_prices_1Y_quarter": db.normalized_prices_1Y_quarter,
+            "collection_normalized_prices_6M_quarter": db.normalized_prices_6M_quarter,
+            "collection_normalized_prices_3M_quarter": db.normalized_prices_3M_quarter,
+            "collection_normalized_prices_1M_quarter": db.normalized_prices_1M_quarter,
+            "collection_normalized_prices_1W_quarter": db.normalized_prices_1W_quarter,
+            "collection_normalized_prices_YTD_quarter": db.normalized_prices_YTD_quarter,
 
             # volatility
             "collection_volatility_252": db.volatility_252,
@@ -411,6 +461,25 @@ def mongo_coll_drop(corr_type):
         db.altcoin_btc_denominated_1W.drop()
         db.yahoo_btc_denominated_YTD.drop()
         db.altcoin_btc_denominated_YTD.drop()
+        # ----
+        db.yahoo_btc_denominated_5Y_quarter.drop()
+        db.altcoin_btc_denominated_5Y_quarter.drop()
+        db.yahoo_btc_denominated_3Y_quarter.drop()
+        db.altcoin_btc_denominated_3Y_quarter.drop()
+        db.yahoo_btc_denominated_2Y_quarter.drop()
+        db.altcoin_btc_denominated_2Y_quarter.drop()
+        db.yahoo_btc_denominated_1Y_quarter.drop()
+        db.altcoin_btc_denominated_1Y_quarter.drop()
+        db.yahoo_btc_denominated_6M_quarter.drop()
+        db.altcoin_btc_denominated_6M_quarter.drop()
+        db.yahoo_btc_denominated_3M_quarter.drop()
+        db.altcoin_btc_denominated_3M_quarter.drop()
+        db.yahoo_btc_denominated_1M_quarter.drop()
+        db.altcoin_btc_denominated_1M_quarter.drop()
+        db.yahoo_btc_denominated_1W_quarter.drop()
+        db.altcoin_btc_denominated_1W_quarter.drop()
+        db.yahoo_btc_denominated_YTD_quarter.drop()
+        db.altcoin_btc_denominated_YTD_quarter.drop()
 
     elif corr_type == "norm":
 
@@ -423,6 +492,16 @@ def mongo_coll_drop(corr_type):
         db.normalized_prices_1M.drop()
         db.normalized_prices_1W.drop()
         db.normalized_prices_YTD.drop()
+        # ---
+        db.normalized_prices_5Y_quarter.drop()
+        db.normalized_prices_3Y_quarter.drop()
+        db.normalized_prices_2Y_quarter.drop()
+        db.normalized_prices_1Y_quarter.drop()
+        db.normalized_prices_6M_quarter.drop()
+        db.normalized_prices_3M_quarter.drop()
+        db.normalized_prices_1M_quarter.drop()
+        db.normalized_prices_1W_quarter.drop()
+        db.normalized_prices_YTD_quarter.drop()
 
     elif corr_type == "vola":
 

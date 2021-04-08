@@ -28,6 +28,8 @@ In order to effectively run the scripts the order of running is relevant. More s
 
     The script downloads the updated financial data from Yahoo Finance using the API and retrieves crypto's prices and volumes from the "index" database; then compiutes returns and logreturns.
 
+    RELEVANT: In order to work locally the MongoDB database "index" has to exist along with the collections "crypto_price", "crypto_volume" and "index_data_feed".
+
     Once launched, the script updates the MongoDB collection:
     - "all_prices_y"
     - "all_returns_y"
@@ -37,6 +39,7 @@ In order to effectively run the scripts the order of running is relevant. More s
     Moreover the script updates the collections:
     - "market_cap" 
     - "btc_supply"
+
     Specifically, the supply update leverages on the API of blockchain.info website.
 
 
@@ -93,6 +96,8 @@ In order to effectively run the scripts the order of running is relevant. More s
 # 5) btc_correlation_launcher.py
 
     The script computes both dynamic and static correlations between Bitcoin and differents assets. The correlations results are divided into two main streams: one related to the stocks, bonds, commodity, currencies downloaded from Yahoo Finance and the other related to all the altcoins retrieved from the "index" database.
+
+    RELEVANT: In order to work locally the MongoDB database "index" has to exist along with the collections "crypto_price" and "crypto_price_return".
 
     Dynamic Correlations
 
@@ -160,10 +165,19 @@ In order to effectively run the scripts the order of running is relevant. More s
         Knowing slope and intercept is thus possible to built the model price series using the inferable future S2F ratios and computing the Market Cap using the previously found slope and intecept.
         
 
+# 8) btc_supply_launcher.py
+
+
+
+
 
 # ---- excel creator ----
 
+# excel_corr_creator.py
 
+    The script creates two excel files contaioning data and graphs regardind the correlations, both dynamic and static, of altcoins and various assets with Bitcoin.
+
+    Each file is created inside the sub-folder "output" of the main folder "excel creator".
 
 
 # ---- dashboard ----
@@ -194,7 +208,11 @@ In order to effectively run the scripts the order of running is relevant. More s
 
     WIP
 
-# 4) markovitz_dashboard
+# 4) markovitz_dashboard.py
 
-# 5) stock2flow_dashboard
+# 5) stock2flow_dashboard.py
+
+# 6) stock2flow_cross_dashboard.py
+
+# 7) btc_stats_dashboard.py
 
