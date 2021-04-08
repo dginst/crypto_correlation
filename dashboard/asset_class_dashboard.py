@@ -429,7 +429,8 @@ def update_graph_volume(start, stop, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         title='Asset Classes: Volume',
-        labels={"value": "Volume (USD)"},
+        labels={"value": "Volume (USD)",
+                "variable": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -493,6 +494,8 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
+        labels={"value": "Correlation Value",
+                "variable": ""},
         title='Asset Class correlation with Bitcoin',
         range_y=[-1, 1],
         color_discrete_map={
@@ -501,14 +504,12 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
             "CRUDE OIL": "#85660D",
             "COPPER": "#B68100",
             "SILVER": "#E2E2E2",
-            "TESLA": "#86CE00",
             "US index": "#FBE426",
             "CORN": "#DA16FF",
             "NASDAQ": "black",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
             "US TREASURY": "#A777F1",
-            "AMAZON": "#F58518",
             "GOLD": "#F6F926"
         }
     )

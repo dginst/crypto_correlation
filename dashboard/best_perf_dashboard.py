@@ -250,7 +250,7 @@ app.layout = dbc.Container([
                                         html.Br(),
 
                                         dcc.DatePickerRange(
-                                            id='date-picker-range_vol',
+                                            id='date_range_vol',
                                             min_date_allowed=date(2017, 1, 1),
                                             max_date_allowed=date(
                                                 max_year, max_month, max_day),
@@ -460,25 +460,24 @@ def update_graph_vola(days_selection, start, stop, asset_selection):
 @ app.callback(
     [Output(component_id="volume_graph", component_property="figure"),
      Output(component_id='download-link_yahoo_volume', component_property='href')],
-    [Input(component_id='date-picker-range_vol', component_property='start_date'),
-     Input(component_id='date-picker-range_vol',
-           component_property='end_date'),
+    [Input(component_id='date_range_vol', component_property='start_date'),
+     Input(component_id='date_range_vol', component_property='end_date'),
      Input(component_id="best_volume", component_property="value"),
      ]
 )
-def update_graph_volume(asset_selection, start, stop):
+def update_graph_volume(start, stop, asset_selection):
 
     df_volume = query_mongo(DB_NAME, "all_volume_y")
     dff_volume = df_volume.copy()
 
     # selecting start and stop
-    dff_range = dff_volume.loc[dff_volume.Date.between(
+    dff_vol_range = dff_volume.loc[dff_volume.Date.between(
         start, stop, inclusive=True)]
-    dff_range.reset_index(drop=True, inplace=True)
+    dff_vol_range.reset_index(drop=True, inplace=True)
 
-    dff_vol_date = dff_range["Date"]
+    dff_vol_date = dff_vol_range["Date"]
 
-    dff_vol_filtered = dff_range[asset_selection]
+    dff_vol_filtered = dff_vol_range[asset_selection]
     dff_vol_filtered["Date"] = dff_vol_date
 
     fig_volume = px.line(
@@ -486,7 +485,7 @@ def update_graph_volume(asset_selection, start, stop):
         x="Date",
         y=asset_selection,
         template='plotly_dark',
-        title='Best Performing Assets: Volume',
+        title='Asset Classes: Volume',
         labels={"value": "Volume (USD)",
                 "variable": ""},
         color_discrete_map={
@@ -498,6 +497,14 @@ def update_graph_volume(asset_selection, start, stop):
         }
     )
 
+    fig_volume.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+    ))
+
     csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
     csv_string_volume = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_volume)
@@ -508,4 +515,4 @@ def update_graph_volume(asset_selection, start, stop):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=5000, host='0.0.0.0')
+    app.run_server(debug=True, port=5000, host='0.0.0.0')
