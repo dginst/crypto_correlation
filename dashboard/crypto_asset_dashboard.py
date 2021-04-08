@@ -63,6 +63,7 @@ all_options = {
 
 corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 df_alt, _ = btc_total_dfs(corr_window_list, "correlation")
+print(df_alt)
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -395,4 +396,4 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=4000, host='0.0.0.0')
+    app.run_server(debug=False, port=4000)  # , host='0.0.0.0')

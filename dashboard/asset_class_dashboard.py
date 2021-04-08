@@ -42,6 +42,7 @@ last_quarter = datetime.strptime(
     last_quarter_, "%d-%m-%Y").strftime("%Y-%m-%d")
 
 
+corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
 vola_days_list = ["252", "90", "30"]
 as_of_list = [yesterday, last_quarter_]
@@ -59,9 +60,10 @@ all_options = {
 }
 
 
-_, df_yahoo = btc_total_dfs(window_list, "correlation")
+_, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
+print(df_yahoo)
 df_yahoo = df_yahoo.drop(
-    columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS'])
+    columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"])
 df_col_yahoo = list(df_yahoo.columns)
 
 # ----------------
@@ -165,30 +167,26 @@ app.layout = dbc.Container([
                                     dbc.Col([
 
 
-                                        html.Label(['Time Window:']),
+                                        html.Label(['Date Range:']),
 
-                                        dcc.Dropdown(
-                                            id='volume_window_dropdown',
-                                            options=[{'label': k, 'value': k}
-                                                     for k in all_options.keys()],
-                                            multi=False,
-                                            value="3Y",
-                                            style={"width": "50%"},
-                                            clearable=False
+                                        html.Br(),
+
+                                        dcc.DatePickerRange(
+                                            id='date_range_as_vol',
+                                            min_date_allowed=date(2017, 1, 1),
+                                            max_date_allowed=date(
+                                                max_year, max_month, max_day),
+                                            initial_visible_month=date(
+                                                max_year, max_month, 1),
+                                            start_date=date(max_year, 1, 1),
+                                            end_date=date(
+                                                max_year, max_month, max_day)
                                         ),
 
                                         html.Hr(),
 
-                                        html.Label(['As of:']),
-
-                                        dcc.Dropdown(id='volume_as_of_dropdown',
-                                                     style={"width": "50%"},
-                                                     ),
-
-                                        html.Hr(),
-
                                         dcc.Checklist(
-                                            id='my_yahoo_volume',
+                                            id='asset_volume_check',
                                             options=[
                                                 {'label': x, 'value': x} for x in YAHOO_DASH_LIST
                                             ],
@@ -242,7 +240,7 @@ app.layout = dbc.Container([
                                     dcc.Dropdown(
                                         id='corr_dropdown',
                                         options=[
-                                            {'label': w, 'value': w} for w in window_list
+                                            {'label': w, 'value': w} for w in corr_window_list
                                         ],
                                         multi=False,
                                         value="1Y",
@@ -257,7 +255,7 @@ app.layout = dbc.Container([
                                     html.Br(),
 
                                     dcc.DatePickerRange(
-                                        id='date-picker-range',
+                                        id='date_range_as_corr',
                                         min_date_allowed=date(2017, 1, 1),
                                         max_date_allowed=date(
                                             max_year, max_month, max_day),
@@ -402,55 +400,29 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection):
 # volume
 
 
-@app.callback(
-    Output(component_id='volume_as_of_dropdown', component_property='options'),
-    Input(component_id="volume_window_dropdown", component_property="value")
-)
-def set_as_of_option_volume(selected_time_window):
-
-    return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
-
-
-@app.callback(
-    Output(component_id="volume_as_of_dropdown", component_property="value"),
-    Input(component_id="volume_as_of_dropdown", component_property="options")
-)
-def set_as_of_value_volume(available_options):
-
-    return available_options[0]['value']
-
-
 @ app.callback(
     [Output(component_id="volume_graph", component_property="figure"),
      Output(component_id='download-link_yahoo_volume', component_property='href')],
-    [Input(component_id="volume_window_dropdown", component_property="value"),
-        Input(component_id="volume_as_of_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_volume", component_property="value")]
+    [Input(component_id='date_range_as_corr',
+           component_property='start_date'),
+     Input(component_id='date_range_as_corr',
+           component_property='end_date'),
+     Input(component_id="asset_volume_check", component_property="value")
+     ]
 )
-def update_graph_volume(window_selection, as_of_selection, asset_selection):
+def update_graph_volume(start, stop, asset_selection):
 
     df_volume = query_mongo(DB_NAME, "all_volume_y")
-
     dff_volume = df_volume.copy()
 
-    dff_vol_date = dff_volume["Date"]
+    dff_volume_range = dff_volume.loc[dff_volume.Date.between(
+        start, stop, inclusive=True)]
+    dff_volume_range.reset_index(drop=True, inplace=True)
 
-    if as_of_selection == yesterday:
+    dff_range_date = dff_volume_range["Date"]
 
-        first_date, last_date = window_period_back(
-            dff_vol_date, window_selection, quarter="Y")
-
-    else:
-        first_date, last_date = window_period_back(
-            dff_vol_date, window_selection)
-
-    dff_volume_w = dff_volume.loc[dff_volume.Date.between(
-        first_date, last_date, inclusive=True)]
-    dff_volume_w.reset_index(drop=True, inplace=True)
-    dff_w_date = dff_volume_w["Date"]
-
-    dff_vol_filtered = dff_volume_w[asset_selection]
-    dff_vol_filtered["Date"] = dff_w_date
+    dff_vol_filtered = dff_volume_range[asset_selection]
+    dff_vol_filtered["Date"] = dff_range_date
 
     fig_volume = px.line(
         data_frame=dff_vol_filtered,
@@ -482,9 +454,6 @@ def update_graph_volume(window_selection, as_of_selection, asset_selection):
 
 # asset classes correlation with btc
 
-# various asset btc den
-
-
 @ app.callback(
     [
         Output(component_id="corr_graph", component_property="figure"),
@@ -492,18 +461,20 @@ def update_graph_volume(window_selection, as_of_selection, asset_selection):
     ],
     [
         Input(component_id="corr_dropdown", component_property="value"),
-        Input(component_id='date-picker-range',
+        Input(component_id='date_range_as_corr',
               component_property='start_date'),
-        Input(component_id='date-picker-range', component_property='end_date'),
+        Input(component_id='date_range_as_corr',
+              component_property='end_date'),
         Input(component_id="corr_check", component_property="value"),
-        Input(component_id="all-update", component_property="n_intervals"),
-        Input(component_id='my_yahoo_dropdown', component_property='value')
+        Input(component_id="all-update", component_property="n_intervals")
     ]
 )
-def update_corr_graph(window_selection, start, stop, asset_selection, n):
+def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
 
-    _, df_yahoo = btc_total_dfs(window_list, "correlation")
+    _, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
     dff_yahoo = df_yahoo.copy()
+    dff_yahoo["Date"] = [datetime.strptime(
+        x, "%Y-%m-%d") for x in dff_yahoo["Date"]]
 
     dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
 
@@ -513,7 +484,7 @@ def update_corr_graph(window_selection, start, stop, asset_selection, n):
     dff_range = dff_w.loc[dff_w.Date.between(
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
-
+    print(dff_range)
     dff_date = dff_range["Date"]
 
     dff_filtered = dff_range[asset_selection]
@@ -554,4 +525,4 @@ def update_corr_graph(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=4500, host='0.0.0.0')
+    app.run_server(debug=False, port=4500)  # , host='0.0.0.0')
