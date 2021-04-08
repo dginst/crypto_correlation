@@ -54,7 +54,11 @@ VARIOUS_LIST_Y = ["BTC",
                   'VIX',
                   'US TREASURY',
                   'EUR Aggregate Bond',
-                  'US Aggregate Bond']
+                  'US Aggregate Bond',
+                  "AMAZON",
+                  "TESLA",
+                  "APPLE",
+                  "NETFLIX"]
 
 EQUITY = ["NASDAQ", "EUROSTOXX50", "S&P500",
           "MSCI BRIC ", "VIX Index"]
