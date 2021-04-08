@@ -63,7 +63,6 @@ all_options = {
 
 corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 df_alt, _ = btc_total_dfs(corr_window_list, "correlation")
-print(df_alt)
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -339,8 +338,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
               component_property='start_date'),
         Input(component_id='date-picker-range', component_property='end_date'),
         Input(component_id="my_alt_check", component_property="value"),
-        Input(component_id="all-update", component_property="n_intervals"),
-        Input(component_id='my_alt_dropdown', component_property='value')
+        Input(component_id="yahoo-update", component_property="n_intervals")
     ]
 )
 def update_graph_corr(window_selection, start, stop, asset_selection, n):
@@ -350,7 +348,6 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 
     dff_w_alt = dff_alt.loc[dff_alt.Window == window_selection]
     dff_w_alt = dff_w_alt.drop(columns=["Window", "As Of"])
-    print(dff_w_alt)
 
     dff_range = dff_w_alt.loc[dff_w_alt.Date.between(
         start, stop, inclusive=True)]
@@ -396,4 +393,4 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000, host='0.0.0.0')
+    app.run_server(debug=False, port=4000, host='0.0.0.0')

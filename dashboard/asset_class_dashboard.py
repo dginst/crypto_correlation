@@ -61,7 +61,6 @@ all_options = {
 
 
 _, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
-print(df_yahoo)
 df_yahoo = df_yahoo.drop(
     columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"])
 df_col_yahoo = list(df_yahoo.columns)
@@ -466,7 +465,7 @@ def update_graph_volume(start, stop, asset_selection):
         Input(component_id='date_range_as_corr',
               component_property='end_date'),
         Input(component_id="corr_check", component_property="value"),
-        Input(component_id="all-update", component_property="n_intervals")
+        Input(component_id="yahoo-update", component_property="n_intervals")
     ]
 )
 def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
@@ -484,7 +483,6 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
     dff_range = dff_w.loc[dff_w.Date.between(
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
-    print(dff_range)
     dff_date = dff_range["Date"]
 
     dff_filtered = dff_range[asset_selection]
@@ -525,4 +523,4 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4500, host='0.0.0.0')
+    app.run_server(debug=False, port=4500, host='0.0.0.0')
