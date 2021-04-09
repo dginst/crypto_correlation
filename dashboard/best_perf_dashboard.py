@@ -62,10 +62,9 @@ all_options = {
     'YTD': [yesterday, last_quarter_],
 }
 
-_, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
-df_yahoo = df_yahoo.drop(
-    columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"])
-df_col_yahoo = list(df_yahoo.columns)
+corr_best_list = ["AMAZON",
+                  "TESLA", "APPLE",
+                  "NETFLIX"]
 # ----------------
 # app layout: bootstrap
 
@@ -286,9 +285,9 @@ app.layout = dbc.Container([
                                     dcc.Checklist(
                                         id='best_corr_check',
                                         options=[
-                                            {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
+                                            {'label': x, 'value': x} for x in corr_best_list
                                         ],
-                                        value=["BTC", "AMAZON",
+                                        value=["AMAZON",
                                                "TESLA", "APPLE", "NETFLIX"],
                                         labelStyle={
                                             'display': 'inline-block'},
