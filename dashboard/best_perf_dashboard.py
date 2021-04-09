@@ -45,6 +45,7 @@ last_quarter = datetime.strptime(
     last_quarter_, "%d-%m-%Y").strftime("%Y-%m-%d")
 
 
+corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
 vola_days_list = ["252", "90", "30"]
 as_of_list = [yesterday, last_quarter_]
@@ -231,6 +232,93 @@ app.layout = dbc.Container([
             ]),
 
             ], justify='center'),
+
+
+    # best performing asset correlation with btc
+
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+                            dbc.Row([
+                                dbc.Col([
+
+
+                                    html.Label(['Time Window:']),
+
+                                    dcc.Dropdown(
+                                        id='best_corr_dropdown',
+                                        options=[
+                                            {'label': w, 'value': w} for w in corr_window_list
+                                        ],
+                                        multi=False,
+                                        value="1Y",
+                                        style={"width": "50%"},
+                                        clearable=False
+                                    ),
+
+                                    html.Hr(),
+
+                                    html.Label(['Date Range:']),
+
+                                    html.Br(),
+
+                                    dcc.DatePickerRange(
+                                        id='date_range_best_corr',
+                                        min_date_allowed=date(2017, 1, 1),
+                                        max_date_allowed=date(
+                                            max_year, max_month, max_day),
+                                        initial_visible_month=date(
+                                            max_year, max_month, 1),
+                                        start_date=date(max_year, 1, 1),
+                                        end_date=date(
+                                            max_year, max_month, max_day)
+                                    ),
+
+                                    html.Hr(),
+
+                                    dcc.Checklist(
+                                        id='best_corr_check',
+                                        options=[
+                                            {'label': x, 'value': x} for x in df_col_yahoo
+                                        ],
+                                        value=["GOLD", "S&P500",
+                                                       "CRUDE OIL", "US TREASURY"],
+                                        labelStyle={
+                                            'display': 'inline-block'},
+                                        inputStyle={"margin-right": "10px",
+                                                    "margin-left": "10px"}
+                                    ),
+
+
+                                    dcc.Graph(
+                                        id='best_corr_graph', figure={}),
+
+                                    html.Hr(),
+
+                                    html.A(
+                                        'Download Data',
+                                        id='download-link_corr_best',
+                                        download="correlation_rawdata.csv",
+                                        href="",
+                                        target="_blank"
+                                    )
+                                ])
+
+                            ]),
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
+
+        ]),
+
+    ], justify='center'),
+
 
     # best performing assets volume
 
@@ -510,6 +598,69 @@ def update_graph_volume(start, stop, asset_selection):
         urllib.parse.quote(csv_string_volume)
 
     return fig_volume, csv_string_volume
+
+
+# correlation with btc
+
+@ app.callback(
+    [
+        Output(component_id="best_corr_graph", component_property="figure"),
+        Output(component_id='download-link_corr_best',
+               component_property='href')
+    ],
+    [
+        Input(component_id="best_corr_dropdown", component_property="value"),
+        Input(component_id='date_range_best_corr',
+              component_property='start_date'),
+        Input(component_id='date_range_best_corr',
+              component_property='end_date'),
+        Input(component_id="best_corr_check", component_property="value"),
+        Input(component_id="yahoo-update", component_property="n_intervals")
+    ]
+)
+def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
+
+    _, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
+    dff_yahoo = df_yahoo.copy()
+    dff_yahoo["Date"] = [datetime.strptime(
+        x, "%Y-%m-%d") for x in dff_yahoo["Date"]]
+
+    dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+
+    dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
+    dff_w = dff_w.drop(columns=["Window"])
+
+    dff_range = dff_w.loc[dff_w.Date.between(
+        start, stop, inclusive=True)]
+    dff_range.reset_index(drop=True, inplace=True)
+    dff_date = dff_range["Date"]
+
+    dff_filtered = dff_range[asset_selection]
+    dff_filtered["Date"] = dff_date
+
+    fig_corr = px.line(
+        data_frame=dff_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        labels={"value": "Correlation Value",
+                "variable": ""},
+        title='Best Performing Asset correlation with Bitcoin',
+        range_y=[-1, 1],
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "TESLA": "#86CE00",
+            "AMAZON": "#F58518",
+            "APPLE": "#BAB0AC",
+            "NETFLIX": "#FD3216",
+        }
+    )
+
+    csv_string = dff_range.to_csv(index=False, encoding='utf-8')
+    csv_string = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string)
+
+    return fig_corr, csv_string
 
 
 print("Done")
