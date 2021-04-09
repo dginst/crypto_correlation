@@ -10,7 +10,8 @@ import plotly.graph_objects as go
 from btc_analysis.calc import last_quarter_end, window_period_back
 from btc_analysis.config import (BEST_PERFORMING_LIST,
                                  BEST_PERFORMING_LIST_VOL, COMPLETE_MKT_CAP,
-                                 CRYPTO_LIST, DB_NAME, YAHOO_DASH_LIST)
+                                 CRYPTO_LIST, DB_NAME, YAHOO_DASH_LIST,
+                                 YAHOO_DASH_LIST_W_BTC)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
                                          vola_total_df)
 from btc_analysis.market_data import yesterday_str
@@ -286,7 +287,7 @@ app.layout = dbc.Container([
                                         dcc.Checklist(
                                             id='vola_checklist',
                                             options=[
-                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST
+                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST_W_BTC
                                             ],
                                             value=["GOLD", "S&P500",
                                                    "CRUDE OIL", "US TREASURY"],
