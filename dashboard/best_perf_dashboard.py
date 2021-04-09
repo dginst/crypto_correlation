@@ -286,10 +286,10 @@ app.layout = dbc.Container([
                                     dcc.Checklist(
                                         id='best_corr_check',
                                         options=[
-                                            {'label': x, 'value': x} for x in df_col_yahoo
+                                            {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
                                         ],
-                                        value=["GOLD", "S&P500",
-                                                       "CRUDE OIL", "US TREASURY"],
+                                        value=["BTC", "AMAZON",
+                                               "TESLA", "APPLE", "NETFLIX"],
                                         labelStyle={
                                             'display': 'inline-block'},
                                         inputStyle={"margin-right": "10px",
