@@ -19,7 +19,7 @@ WINDOW_LIST = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
 
 TIME_WINDOW = ['All', '3Y', '1Y', '1Q', '1M']
 
-VOLA_DAY_LIST = [252, 90, 30]
+VOLA_DAY_LIST = ["252", "90", "30"]
 
 # ----------
 
