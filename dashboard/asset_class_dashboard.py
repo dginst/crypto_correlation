@@ -152,76 +152,7 @@ app.layout = dbc.Container([
             ], justify='center'),
 
 
-    # asset classes volume
-
-    dbc.Row([
-            dbc.Col([
-
-                dbc.Card(
-                    [
-                        dbc.CardBody(
-                            [
-
-                                dbc.Row([
-                                    dbc.Col([
-
-
-                                        html.Label(['Date Range:']),
-
-                                        html.Br(),
-
-                                        dcc.DatePickerRange(
-                                            id='date_range_as_vol',
-                                            min_date_allowed=date(2017, 1, 1),
-                                            max_date_allowed=date(
-                                                max_year, max_month, max_day),
-                                            initial_visible_month=date(
-                                                max_year, max_month, 1),
-                                            start_date=date(max_year, 1, 1),
-                                            end_date=date(
-                                                max_year, max_month, max_day)
-                                        ),
-
-                                        html.Hr(),
-
-                                        dcc.Checklist(
-                                            id='asset_volume_check',
-                                            options=[
-                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST
-                                            ],
-                                            value=["BTC", "GOLD", "S&P500",
-                                                   "US TREASURY", "US index", "VIX"],
-                                            labelStyle={
-                                                'display': 'inline-block'},
-                                            inputStyle={"margin-right": "10px",
-                                                        "margin-left": "10px"}
-                                        ),
-
-                                        dcc.Graph(
-                                            id='volume_graph', figure={}),
-
-                                        html.A(
-                                            'Download Data',
-                                            id='download-link_yahoo_volume',
-                                            download="yahoo_volume.csv",
-                                            href='',
-                                            target="_blank"
-                                        )
-                                    ])
-
-                                ]),
-
-                            ]),
-                    ],
-                    style={"width": "70rem"},
-                    className="mt-3"
-                )
-
-            ]),
-
-            ], justify='center'),
-
-    # seet classes correlation with btc
+    # aseet classes correlation with btc
 
     dbc.Row([
         dbc.Col([
@@ -306,6 +237,158 @@ app.layout = dbc.Container([
 
     ], justify='center'),
 
+    # best performing assets and BTC volatility
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+                                    dbc.Col([
+
+                                        html.Label(['Rolling Days:']),
+
+                                        dcc.Dropdown(
+                                            id='vola_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in vola_days_list
+                                            ],
+                                            multi=False,
+                                            value="252",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Hr(),
+
+                                        html.Label(['Date Range:']),
+
+                                        html.Br(),
+
+                                        dcc.DatePickerRange(
+                                            id='date-picker-range',
+                                            min_date_allowed=date(2017, 1, 1),
+                                            max_date_allowed=date(
+                                                max_year, max_month, max_day),
+                                            initial_visible_month=date(
+                                                max_year, max_month, 1),
+                                            start_date=date(max_year, 1, 1),
+                                            end_date=date(
+                                                max_year, max_month, max_day)
+                                        ),
+
+                                        html.Hr(),
+
+                                        dcc.Checklist(
+                                            id='vola_checklist',
+                                            options=[
+                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST
+                                            ],
+                                            value=["GOLD", "S&P500",
+                                                   "CRUDE OIL", "US TREASURY"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='vola_graph', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_vola',
+                                            download="yahoo_vola.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
+
+    # asset classes volume
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+                                    dbc.Col([
+
+
+                                        html.Label(['Date Range:']),
+
+                                        html.Br(),
+
+                                        dcc.DatePickerRange(
+                                            id='date_range_as_vol',
+                                            min_date_allowed=date(2017, 1, 1),
+                                            max_date_allowed=date(
+                                                max_year, max_month, max_day),
+                                            initial_visible_month=date(
+                                                max_year, max_month, 1),
+                                            start_date=date(max_year, 1, 1),
+                                            end_date=date(
+                                                max_year, max_month, max_day)
+                                        ),
+
+                                        html.Hr(),
+
+                                        dcc.Checklist(
+                                            id='asset_volume_check',
+                                            options=[
+                                                {'label': x, 'value': x} for x in YAHOO_DASH_LIST
+                                            ],
+                                            value=["BTC", "GOLD", "S&P500",
+                                                   "US TREASURY", "US index", "VIX"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='volume_graph', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_volume',
+                                            download="yahoo_volume.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
 
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
@@ -519,6 +602,74 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
         urllib.parse.quote(csv_string)
 
     return fig_corr, csv_string
+
+
+# volatility
+
+@ app.callback(
+    [Output(component_id="vola_graph", component_property="figure"),
+     Output(component_id='download-link_yahoo_vola', component_property='href')],
+    [Input(component_id="vola_dropdown", component_property="value"),
+     Input(component_id='date-picker-range', component_property='start_date'),
+     Input(component_id='date-picker-range', component_property='end_date'),
+     Input(component_id="vola_checklist", component_property="value")]
+)
+def update_graph_vola(days_selection, start, stop, asset_selection):
+
+    df_vola = vola_total_df(vola_days_list)
+    dff_vola = df_vola.copy()
+
+    # selecting the rooling days vola type
+    dff_days = dff_vola.loc[dff_vola.Days == days_selection]
+    dff_days = dff_days.drop(columns=["Days"])
+
+    # selecting start and stop
+    dff_range = dff_days.loc[dff_days.Date.between(
+        start, stop, inclusive=True)]
+    dff_range.reset_index(drop=True, inplace=True)
+
+    dff_v_date = dff_range["Date"]
+
+    dff_vola_filtered = dff_range[asset_selection]
+    dff_vola_filtered["Date"] = dff_v_date
+
+    fig_yahoo_vola = px.line(
+        data_frame=dff_vola_filtered,
+        x="Date",
+        y=asset_selection,
+        template='plotly_dark',
+        title='Annualized Volatility',
+        labels={"value": "Volatility",
+                "variable": ""},
+        color_discrete_map={
+            "BTC": "#FEAF16",
+            "S&P500": "#511CFB",
+            "CRUDE OIL": "#85660D",
+            "COPPER": "#B68100",
+            "SILVER": "#E2E2E2",
+            "US index": "#FBE426",
+            "CORN": "#DA16FF",
+            "NASDAQ": "black",
+            "VIX": "#00B5F7",
+            "DOWJONES": "#750D86",
+            "US TREASURY": "#A777F1",
+            "GOLD": "#F6F926"
+        }
+    )
+
+    fig_yahoo_vola.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+    ))
+
+    csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
+    csv_string_vola = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_vola)
+
+    return fig_yahoo_vola, csv_string_vola
 
 
 print("Done")

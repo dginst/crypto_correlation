@@ -152,90 +152,6 @@ app.layout = dbc.Container([
 
             ], justify='center'),
 
-    # best performing assets and BTC volatility
-
-    dbc.Row([
-            dbc.Col([
-
-                dbc.Card(
-                    [
-                        dbc.CardBody(
-                            [
-
-                                dbc.Row([
-                                    dbc.Col([
-
-                                        html.Label(['Rolling Days:']),
-
-                                        dcc.Dropdown(
-                                            id='vola_dropdown',
-                                            options=[
-                                                {'label': w, 'value': w} for w in vola_days_list
-                                            ],
-                                            multi=False,
-                                            value="252",
-                                            style={"width": "50%"},
-                                            clearable=False
-                                        ),
-
-                                        html.Hr(),
-
-                                        html.Label(['Date Range:']),
-
-                                        html.Br(),
-
-                                        dcc.DatePickerRange(
-                                            id='date-picker-range',
-                                            min_date_allowed=date(2017, 1, 1),
-                                            max_date_allowed=date(
-                                                max_year, max_month, max_day),
-                                            initial_visible_month=date(
-                                                max_year, max_month, 1),
-                                            start_date=date(max_year, 1, 1),
-                                            end_date=date(
-                                                max_year, max_month, max_day)
-                                        ),
-
-                                        html.Hr(),
-
-                                        dcc.Checklist(
-                                            id='vola_checklist',
-                                            options=[
-                                                {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
-                                            ],
-                                            value=["BTC", "AMAZON",
-                                                   "TESLA", "APPLE", "NETFLIX"],
-                                            labelStyle={
-                                                'display': 'inline-block'},
-                                            inputStyle={"margin-right": "10px",
-                                                        "margin-left": "10px"}
-                                        ),
-
-                                        dcc.Graph(
-                                            id='vola_graph', figure={}),
-
-                                        html.A(
-                                            'Download Data',
-                                            id='download-link_yahoo_vola',
-                                            download="yahoo_vola.csv",
-                                            href='',
-                                            target="_blank"
-                                        )
-                                    ])
-
-                                ]),
-
-                            ]),
-                    ],
-                    style={"width": "70rem"},
-                    className="mt-3"
-                )
-
-            ]),
-
-            ], justify='center'),
-
-
     # best performing asset correlation with btc
 
     dbc.Row([
@@ -321,6 +237,88 @@ app.layout = dbc.Container([
 
     ], justify='center'),
 
+    # best performing assets and BTC volatility
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+                                    dbc.Col([
+
+                                        html.Label(['Rolling Days:']),
+
+                                        dcc.Dropdown(
+                                            id='vola_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in vola_days_list
+                                            ],
+                                            multi=False,
+                                            value="252",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+
+                                        html.Hr(),
+
+                                        html.Label(['Date Range:']),
+
+                                        html.Br(),
+
+                                        dcc.DatePickerRange(
+                                            id='date-picker-range',
+                                            min_date_allowed=date(2017, 1, 1),
+                                            max_date_allowed=date(
+                                                max_year, max_month, max_day),
+                                            initial_visible_month=date(
+                                                max_year, max_month, 1),
+                                            start_date=date(max_year, 1, 1),
+                                            end_date=date(
+                                                max_year, max_month, max_day)
+                                        ),
+
+                                        html.Hr(),
+
+                                        dcc.Checklist(
+                                            id='vola_checklist',
+                                            options=[
+                                                {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
+                                            ],
+                                            value=["BTC", "AMAZON",
+                                                   "TESLA", "APPLE", "NETFLIX"],
+                                            labelStyle={
+                                                'display': 'inline-block'},
+                                            inputStyle={"margin-right": "10px",
+                                                        "margin-left": "10px"}
+                                        ),
+
+                                        dcc.Graph(
+                                            id='vola_graph', figure={}),
+
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_yahoo_vola',
+                                            download="yahoo_vola.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
     # best performing assets volume
 
@@ -657,6 +655,14 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
             "NETFLIX": "#FD3216",
         }
     )
+
+    fig_corr.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+    ))
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + \
