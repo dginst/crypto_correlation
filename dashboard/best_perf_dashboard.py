@@ -47,7 +47,7 @@ last_quarter = datetime.strptime(
 
 corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 window_list = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
-vola_days_list = ["252", "90", "30"]
+vola_days_list = ["252", "90", "30", "ewm"]
 as_of_list = [yesterday, last_quarter_]
 
 all_options = {
