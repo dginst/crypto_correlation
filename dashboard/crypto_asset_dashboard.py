@@ -63,7 +63,7 @@ all_options = {
 
 corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
 
-df_alt = query_mongo(DB_NAME, "collection_dash_corr_crypto")
+df_alt = query_mongo(DB_NAME, "dash_corr_crypto")
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -278,7 +278,7 @@ def set_as_of_value(available_options):
 )
 def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
 
-    df_alt = query_mongo(DB_NAME, "collection_dash_btc_den_crypto")
+    df_alt = query_mongo(DB_NAME, "dash_btc_den_crypto")
     dff_alt = df_alt.copy()
 
     # window selection
@@ -345,7 +345,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
 )
 def update_graph_corr(window_selection, start, stop, asset_selection, n):
 
-    df_alt = query_mongo(DB_NAME, "collection_dash_corr_crypto")
+    df_alt = query_mongo(DB_NAME, "dash_corr_crypto")
     dff_alt = df_alt.copy()
 
     dff_w_alt = dff_alt.loc[dff_alt.Window == window_selection]
