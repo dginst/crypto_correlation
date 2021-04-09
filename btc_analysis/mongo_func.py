@@ -173,6 +173,8 @@ def mongo_indexing():
     db.volatility_30.create_index([("id", -1)])
     db.volatility_90.create_index([("id", -1)])
     db.volatility_252.create_index([("id", -1)])
+    # ----
+    db.volatility_ewm.create_index([("id", -1)])
 
     # market cap
     db.market_cap.create_index([("id", -1)])
@@ -321,6 +323,8 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_volatility_252": db.volatility_252,
             "collection_volatility_90": db.volatility_90,
             "collection_volatility_30": db.volatility_30,
+            # -----
+            "collection_volatility_ewm": db.volatility_ewm,
 
             # market cap
             "collection_market_cap": db.market_cap,
@@ -544,6 +548,8 @@ def mongo_coll_drop(corr_type):
         db.volatility_30.drop()
         # ---
         db.dash_vola.drop()
+        # ----
+        db.volatility_ewm.drop()
 
     elif corr_type == "market_cap":
 
