@@ -629,8 +629,13 @@ def historical_vola(return_df, logret_df, window_days):
 
 def ewm_volatility(return_df, square_root=252):
 
+    date = return_df["Date"]
+    date = date.sort_values(ascending=True)
+    date.reset_index(drop=True, inplace=True)
+
     span = len(np.array(return_df["BTC"])) - 1
 
-    ewm_vola_df = return_df.ewm(span=span).std()*np.sqrt(square_root)
+    ewm_vola_df = return_df.ewm(span=span).std() * np.sqrt(square_root)
+    ewm_vola_df["Date"] = date
 
     return ewm_vola_df
