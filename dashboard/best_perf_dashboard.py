@@ -258,7 +258,7 @@ app.layout = dbc.Container([
                                                 {'label': w, 'value': w} for w in vola_days_list
                                             ],
                                             multi=False,
-                                            value="252",
+                                            value="ewm",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
@@ -344,7 +344,8 @@ app.layout = dbc.Container([
                                                 max_year, max_month, max_day),
                                             initial_visible_month=date(
                                                 max_year, max_month, 1),
-                                            start_date=date(max_year, 1, 1),
+                                            start_date=date(
+                                                max_year - 1, 1, 1),
                                             end_date=date(
                                                 max_year, max_month, max_day)
                                         ),
@@ -674,4 +675,4 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=5000, host='0.0.0.0')
+    app.run_server(debug=True, port=5000)  # , host='0.0.0.0')

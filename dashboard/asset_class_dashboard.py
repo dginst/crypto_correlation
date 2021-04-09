@@ -259,7 +259,7 @@ app.layout = dbc.Container([
                                                 {'label': w, 'value': w} for w in vola_days_list
                                             ],
                                             multi=False,
-                                            value="252",
+                                            value="ewm",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
@@ -277,7 +277,8 @@ app.layout = dbc.Container([
                                                 max_year, max_month, max_day),
                                             initial_visible_month=date(
                                                 max_year, max_month, 1),
-                                            start_date=date(max_year, 1, 1),
+                                            start_date=date(
+                                                max_year - 1, 1, 1),
                                             end_date=date(
                                                 max_year, max_month, max_day)
                                         ),
@@ -289,7 +290,7 @@ app.layout = dbc.Container([
                                             options=[
                                                 {'label': x, 'value': x} for x in YAHOO_DASH_LIST_W_BTC
                                             ],
-                                            value=["GOLD", "S&P500",
+                                            value=["BTC", "GOLD", "S&P500",
                                                    "CRUDE OIL", "US TREASURY"],
                                             labelStyle={
                                                 'display': 'inline-block'},
