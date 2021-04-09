@@ -12,7 +12,16 @@ REF_VARIOUS = "BITCOIN"
 
 REF_SP500 = "S&P500"
 
+# -----
+CORR_WINDOW_LIST = ["3Y", "1Y", "1Q", "1M", "YTD"]
+
+WINDOW_LIST = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
+
 TIME_WINDOW = ['All', '3Y', '1Y', '1Q', '1M']
+
+VOLA_DAY_LIST = [252, 90, 30]
+
+# ----------
 
 ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
                   'Currency', 'Equity', 'Volatility', 'Bond']

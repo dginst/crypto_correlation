@@ -195,6 +195,15 @@ def mongo_indexing():
     # supply
     db.btc_total_supply.create_index([("id", -1)])
 
+    # dash
+    db.dash_corr_yahoo.create_index([("id", -1)])
+    db.dash_corr_crypto.create_index([("id", -1)])
+    db.dash_btc_den_yahoo.create_index([("id", -1)])
+    db.dash_btc_den_crypto.create_index([("id", -1)])
+    db.dash_vola.create_index([("id", -1)])
+    db.dash_usd_den.create_index([("id", -1)])
+    db.dash_static_corr.create_index([("id", -1)])
+
 
 def mongo_coll(db_name="btc_analysis"):
 
@@ -334,6 +343,20 @@ def mongo_coll(db_name="btc_analysis"):
             # supply
             "collection_total_supply": db.btc_total_supply,
 
+            # dashboard total df
+            "collection_dash_static_corr": db.dash_static_corr,
+            # ---
+            "collection_dash_corr_yahoo": db.dash_corr_yahoo,
+            "collection_dash_corr_crypto": db.dash_corr_crypto,
+            # ---
+            "collection_dash_btc_den_yahoo": db.dash_btc_den_yahoo,
+            "collection_dash_btc_den_crypto": db.dash_btc_den_crypto,
+            # --
+            "collection_dash_volatility": db.dash_vola,
+            # ---
+            "collection_dash_usd_den": db.dash_usd_den,
+
+
         }
 
     else:
@@ -377,6 +400,8 @@ def mongo_coll_drop(corr_type):
         db.stat_yahoo_correlation_1Y.drop()
         db.stat_yahoo_correlation_1Q.drop()
         db.stat_yahoo_correlation_1M.drop()
+        # ---
+        db.dash_static_corr.drop()
 
     elif corr_type == "dynamic_var":
 
@@ -392,6 +417,8 @@ def mongo_coll_drop(corr_type):
         db.dyn_yahoo_correlation_1Y.drop()
         db.dyn_yahoo_correlation_1Q.drop()
         db.dyn_yahoo_correlation_1M.drop()
+        # ---
+        db.dash_corr_yahoo.drop()
 
     elif corr_type == "dynamic_SP500":
 
@@ -407,6 +434,8 @@ def mongo_coll_drop(corr_type):
         db.dyn_alt_correlation_1Y.drop()
         db.dyn_alt_correlation_1Q.drop()
         db.dyn_alt_correlation_1M.drop()
+        # ---
+        db.dash_corr_crypto.drop()
 
     elif corr_type == "return_alt":
 
@@ -480,6 +509,9 @@ def mongo_coll_drop(corr_type):
         db.altcoin_btc_denominated_1W_quarter.drop()
         db.yahoo_btc_denominated_YTD_quarter.drop()
         db.altcoin_btc_denominated_YTD_quarter.drop()
+        # ----
+        db.dash_btc_den_yahoo.drop()
+        db.dash_btc_den_crypto.drop()
 
     elif corr_type == "norm":
 
@@ -502,12 +534,16 @@ def mongo_coll_drop(corr_type):
         db.normalized_prices_1M_quarter.drop()
         db.normalized_prices_1W_quarter.drop()
         db.normalized_prices_YTD_quarter.drop()
+        # ---
+        db.dash_usd_den.drop()
 
     elif corr_type == "vola":
 
         db.volatility_252.drop()
         db.volatility_90.drop()
         db.volatility_30.drop()
+        # ---
+        db.dash_vola.drop()
 
     elif corr_type == "market_cap":
 

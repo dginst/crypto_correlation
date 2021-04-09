@@ -62,7 +62,8 @@ all_options = {
 # btc correlation initial variables
 
 corr_window_list = ["3Y", "1Y", "1Q", "1M", "YTD"]
-df_alt, _ = btc_total_dfs(corr_window_list, "correlation")
+
+df_alt = query_mongo(DB_NAME, "collection_dash_corr_crypto")
 
 df_alt_col = list(df_alt.columns)
 df_alt_col.remove('Date')
@@ -277,7 +278,7 @@ def set_as_of_value(available_options):
 )
 def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
 
-    df_alt, _ = btc_total_dfs(window_list, "btc_denominated")
+    df_alt = query_mongo(DB_NAME, "collection_dash_btc_den_crypto")
     dff_alt = df_alt.copy()
 
     # window selection
@@ -299,7 +300,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         labels={"value": "Performance",
-                # "variable": ""
+                "variable": ""
                 },
         title='Crypto-Assets: BTC denominated performances',
         color_discrete_map={
@@ -344,7 +345,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
 )
 def update_graph_corr(window_selection, start, stop, asset_selection, n):
 
-    df_alt, _ = btc_total_dfs(corr_window_list, "correlation")
+    df_alt = query_mongo(DB_NAME, "collection_dash_corr_crypto")
     dff_alt = df_alt.copy()
 
     dff_w_alt = dff_alt.loc[dff_alt.Window == window_selection]
@@ -394,4 +395,4 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=4000, host='0.0.0.0')
+    app.run_server(debug=True, port=4000, host='0.0.0.0')

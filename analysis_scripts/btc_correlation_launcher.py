@@ -2,12 +2,13 @@ from btc_analysis.mongo_func import (
     query_mongo, mongo_upload, mongo_coll_drop
 )
 from btc_analysis.config import (
-    DB_NAME, INDEX_DB_NAME
+    DB_NAME, INDEX_DB_NAME, CORR_WINDOW_LIST
 )
 from btc_analysis.calc import (
     return_retrieve, static_corr_op,
     dynamic_corr_op, price_retrieve
 )
+from btc_analysis.dashboard_func import (dash_correlation_df)
 
 mongo_coll_drop("static_alt")
 mongo_coll_drop("static_yahoo")
@@ -38,7 +39,7 @@ mongo_upload(static_1M, "collection_1M_stat_yahoo")
 
 
 # ------------------------------------------------------------------------
-# BTC corelations with altcoins
+# BTC correlations with altcoins
 
 alt_ret_df = return_retrieve("crypto_price_return", db_name=INDEX_DB_NAME)
 alt_price_df = price_retrieve("crypto_price", db_name=INDEX_DB_NAME)
@@ -61,3 +62,8 @@ mongo_upload(stat_alt_corr_3Y, "collection_3Y_stat_alt")
 mongo_upload(stat_alt_corr_1Y, "collection_1Y_stat_alt")
 mongo_upload(stat_alt_corr_1Q, "collection_1Q_stat_alt")
 mongo_upload(stat_alt_corr_1M, "collection_1M_stat_alt")
+
+# -----------------
+# correlation total dataframes for dash
+
+dash_correlation_df(CORR_WINDOW_LIST)

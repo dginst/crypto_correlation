@@ -433,7 +433,7 @@ def set_as_of_value(available_options):
 )
 def update_graph_norm(window_selection, as_of_selection, asset_selection):
 
-    df_usd_norm = usd_den_total_df(window_list)
+    df_usd_norm = query_mongo(DB_NAME, "dash_usd_den")
 
     dff_norm = df_usd_norm.copy()
 
@@ -494,7 +494,7 @@ def update_graph_norm(window_selection, as_of_selection, asset_selection):
 )
 def update_graph_vola(days_selection, start, stop, asset_selection):
 
-    df_vola = vola_total_df(vola_days_list)
+    df_vola = query_mongo(DB_NAME, "dash_vola")
     dff_vola = df_vola.copy()
 
     # selecting the rooling days vola type
@@ -620,7 +620,7 @@ def update_graph_volume(start, stop, asset_selection):
 )
 def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
 
-    _, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
+    df_yahoo = query_mongo(DB_NAME, "dash_corr_yahoo")
     dff_yahoo = df_yahoo.copy()
     dff_yahoo["Date"] = [datetime.strptime(
         x, "%Y-%m-%d") for x in dff_yahoo["Date"]]

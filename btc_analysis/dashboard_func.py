@@ -1,9 +1,11 @@
 import pandas as pd
 from datetime import datetime
 
-from btc_analysis.mongo_func import query_mongo
+from btc_analysis.mongo_func import query_mongo, mongo_upload
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.calc import last_quarter_end
+
+# -------------------
 
 
 def btc_total_dfs(window_list, operation):
@@ -42,6 +44,9 @@ def static_corr_df(window_list):
     static_df = reunite_df(window_list, "yahoo", "static")
 
     return static_df
+
+
+# --------------
 
 
 def reunite_df(window_list, typology, op, quarter="N"):
@@ -140,3 +145,39 @@ def column_set_finder(typology, op):
     col_set = df_col.columns
 
     return col_set
+
+
+# ------------
+# correlation and btc denominated dfs unification and upload
+
+
+def dash_btc_den_df(window_list):
+
+    crypto_df, yahoo_df = btc_total_dfs(window_list, "btc_denominated")
+    mongo_upload(crypto_df, "collection_dash_btc_den_crypto")
+    mongo_upload(yahoo_df, "collection_dash_btc_den_yahoo")
+
+
+def dash_correlation_df(window_list):
+
+    crypto_df, yahoo_df = btc_total_dfs(window_list, "correlation")
+    mongo_upload(crypto_df, "collection_dash_corr_crypto")
+    mongo_upload(yahoo_df, "collection_dash_corr_yahoo")
+
+
+def dash_usd_den_df(window_list):
+
+    usd_den_tot = usd_den_total_df(window_list)
+    mongo_upload(usd_den_tot, "collection_dash_usd_den")
+
+
+def dash_volatility_df(days_list):
+
+    vola_df = vola_total_df(days_list)
+    mongo_upload(vola_df, "collection_dash_volatility")
+
+
+def dash_static_corr_df(window_list):
+
+    static_df = static_corr_df(window_list)
+    mongo_upload(static_df, "collection_dash_static_corr")
