@@ -299,7 +299,8 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         y=asset_selection,
         template='plotly_dark',
         labels={"value": "Performance",
-                "variable": ""},
+                # "variable": ""
+                },
         title='Crypto-Assets: BTC denominated performances',
         color_discrete_map={
             "BTC": "#FEAF16",
