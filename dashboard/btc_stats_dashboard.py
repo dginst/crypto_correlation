@@ -1,9 +1,11 @@
+import urllib.parse
 from datetime import datetime
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
+import plotly.express as px
 import plotly.graph_objects as go
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
@@ -33,6 +35,52 @@ app.layout = dbc.Container([
                         className='text-center text-primary, mb-4'),
                 width=12)
     ]),
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row(
+                                    [
+                                        dbc.Col([
+                                            dcc.Graph(id="price_indicator", figure={},
+                                                      config={'displayModeBar': False})
+                                        ])
+                                    ]),
+
+                                html.Hr(),
+
+                                dbc.Row(
+                                    [
+                                        dbc.Col([
+
+
+                                            dcc.Graph(id="btc_price", figure={},
+                                                      config={'displayModeBar': False}),
+
+                                            html.A(
+                                                'Download Data',
+                                                id='download-link_price',
+                                                download="btc_price.csv",
+                                                href='',
+                                                target="_blank"
+                                            ),
+
+                                        ])
+                                    ]),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
 
     dbc.Row([
@@ -72,6 +120,90 @@ app.layout = dbc.Container([
 
 # --------------------------
 # Callbacks part
+
+# bitcoin price
+
+
+@app.callback(
+    [Output('btc_price', 'figure'),
+     Output('download-link_price', 'href')],
+    Input('df-update', 'n_intervals')
+)
+def update_index_df(n):
+
+    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
+    df_price = df_price.drop(columns=["Days to Halving"])
+
+    dff = df_price.copy()
+    df_to_download = df_price.copy()
+
+    # identifying the last price variation
+    dff_last = dff.tail(2)
+    dff_yest = dff_last[dff_last['Datetime']
+                        == dff_last['Datetime'].min()]['BTC Price'].values[0]
+    dff_today = dff_last[dff_last['Datetime']
+                         == dff_last['Datetime'].max()]['BTC Price'].values[0]
+    variation = (dff_today >= dff_yest)
+    dff["Var"] = variation
+
+    price_area = px.area(
+        data_frame=dff,
+        x="Datetime",
+        y="BTC Price",
+        template='plotly_dark',
+        title='Bitcoin Price',
+        labels={"BTC Price": "Bitcoin Price (USD)",
+                "Datetime": "Date"},
+        color="Var",
+        color_discrete_map={
+            False: '#FD3216',
+            True: '#1CA71C',
+
+        }
+    )
+
+    price_area.update_layout(showlegend=False)
+
+    csv_string_price = df_to_download.to_csv(index=False, encoding='utf-8')
+    csv_string_price = "data:text/csv;charset=utf-8," + \
+        urllib.parse.quote(csv_string_price)
+
+    return price_area, csv_string_price
+
+
+@ app.callback(
+    Output('price_indicator', 'figure'),
+    Input('update', 'n_intervals')
+)
+def update_indicator(timer):
+
+    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
+    dff_p = df_price.copy()
+    dff_p = dff_p.drop(columns=["Days to Halving"])
+
+    dff_last_p = dff_p.tail(2)
+    dff_ind_y = dff_last_p[dff_last_p['Datetime']
+                           == dff_last_p['Datetime'].min()]['BTC Price'].values[0]
+    dff_ind_t = dff_last_p[dff_last_p['Datetime']
+                           == dff_last_p['Datetime'].max()]['BTC Price'].values[0]
+
+    fig_indicator = go.Figure(go.Indicator(
+        mode="delta",
+        value=dff_ind_t,
+        delta={'reference': dff_ind_y, 'relative': True, 'valueformat': '.2%'}))
+
+    fig_indicator.update_traces(delta_font={'size': 18})
+
+    fig_indicator.update_layout(height=50, width=100)
+
+    if dff_ind_t >= dff_ind_y:
+        fig_indicator.update_traces(delta_increasing_color='green')
+    elif dff_ind_t < dff_ind_y:
+        fig_indicator.update_traces(delta_decreasing_color='red')
+
+    return fig_indicator
+
+# bitcoin supply
 
 
 @ app.callback(
@@ -137,4 +269,4 @@ def update_supply(n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8000, host='0.0.0.0')
+    app.run_server(debug=True, port=3500, host='0.0.0.0')
