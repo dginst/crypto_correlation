@@ -62,7 +62,10 @@ all_options = {
     'YTD': [yesterday, last_quarter_],
 }
 
-
+_, df_yahoo = btc_total_dfs(corr_window_list, "correlation")
+df_yahoo = df_yahoo.drop(
+    columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"])
+df_col_yahoo = list(df_yahoo.columns)
 # ----------------
 # app layout: bootstrap
 
