@@ -97,7 +97,7 @@ app.layout = dbc.Container([
                                             options=[{'label': k, 'value': k}
                                                      for k in window_list],
                                             multi=False,
-                                            value="1W",
+                                            value="3M",
                                             style={"width": "50%"},
                                             clearable=True
                                         ),
@@ -115,7 +115,7 @@ app.layout = dbc.Container([
                                         html.Hr(),
 
                                         dcc.Checklist(
-                                            id='my_yahoo_norm',
+                                            id='usd_best_check',
                                             options=[
                                                 {'label': x, 'value': x} for x in BEST_PERFORMING_LIST
                                             ],
@@ -430,9 +430,9 @@ def set_as_of_value(available_options):
      Output(component_id='download-link_yahoo_norm', component_property='href')],
     [Input(component_id="time_window_dropdown", component_property="value"),
         Input(component_id="as_of_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_norm", component_property="value")]
+     Input(component_id="usd_best_check", component_property="value")]
 )
-def update_graph_norm(window_selection, as_of_selection, asset_selection):
+def update_graph_usd_best(window_selection, as_of_selection, asset_selection):
 
     df_usd_norm = query_mongo(DB_NAME, "dash_usd_den")
 
