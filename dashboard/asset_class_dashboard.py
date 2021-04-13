@@ -344,13 +344,9 @@ app.layout = dbc.Container([
                                         dcc.DatePickerRange(
                                             id='date_range_as_vol',
                                             min_date_allowed=date(2017, 1, 1),
-                                            max_date_allowed=date(
-                                                max_year, max_month, max_day),
                                             initial_visible_month=date(
                                                 max_year, max_month, 1),
-                                            start_date=date(max_year, 1, 1),
-                                            end_date=date(
-                                                max_year, max_month, max_day)
+                                            start_date=date(max_year, 1, 1)
                                         ),
 
                                         html.Hr(),
@@ -410,29 +406,32 @@ app.layout = dbc.Container([
 # naming has to be commented in the layout part for the second and third graph
 
 
-# @app.callback(
-#     Output(component_id="time_window_dropdown", component_property="options"),
-#     Input(component_id="yahoo-update", component_property="n_intervals")
-# )
-# def set_tw_options():
+@app.callback(
+    Output(component_id="date_range_as_vol",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date():
 
-#     yesterday = yesterday_str
-#     last_quarter_ = last_quarter_end()
+    max_y, max_m, max_d = date_elements()
 
-#     all_options = {
-#         '5Y': [yesterday, last_quarter_],
-#         '3Y': [yesterday, last_quarter_],
-#         '2Y': [yesterday, last_quarter_],
-#         '1Y': [yesterday, last_quarter_],
-#         '6M': [yesterday, last_quarter_],
-#         '3M': [yesterday, last_quarter_],
-#         '1M': [yesterday, last_quarter_],
-#         '1W': [yesterday, last_quarter_],
-#         'YTD': [yesterday, last_quarter_],
-#     }
+    max_date = date(max_y, max_m, max_d)
 
-#     # [{'label': k, 'value': k} for k in all_options.keys()]
-#     return all_options
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_as_vol",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date():
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
 
 
 @app.callback(
