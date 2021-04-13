@@ -200,6 +200,10 @@ def update_index_df(n):
         fixedrange=True
     )
 
+    price_.update_xaxes(
+        title_text="Date",
+    )
+
     csv_string_price = df_to_download.to_csv(index=False, encoding='utf-8')
     csv_string_price = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_price)
@@ -284,6 +288,10 @@ def update_log_price(n):
         title_text="BTC Price (USD)",
         type="log",
         fixedrange=True
+    )
+
+    model_cap.update_xaxes(
+        title_text="Date",
     )
 
     return model_cap
