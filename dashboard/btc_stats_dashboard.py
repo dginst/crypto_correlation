@@ -56,7 +56,7 @@ app.layout = dbc.Container([
                                         dbc.Col([
 
                                             dcc.Graph(id="price_indicator", figure={},
-                                                      config={'displayModeBar': False})
+                                                      config={'displayModeBar': False}),
 
                                             html.Hr(),
 
