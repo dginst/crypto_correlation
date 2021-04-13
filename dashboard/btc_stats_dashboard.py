@@ -169,38 +169,42 @@ def update_index_df(n):
     dff = df_price.copy()
     df_to_download = df_price.copy()
 
-    # identifying the last price variation
-    dff_last = dff.tail(2)
-    dff_yest = dff_last[dff_last['Datetime']
-                        == dff_last['Datetime'].min()]['BTC Price'].values[0]
-    dff_today = dff_last[dff_last['Datetime']
-                         == dff_last['Datetime'].max()]['BTC Price'].values[0]
-    variation = (dff_today >= dff_yest)
-    dff["Var"] = variation
+    price_ = go.Figure()
 
-    price_area = px.line(
-        data_frame=dff,
-        x="Datetime",
-        y="BTC Price",
-        template='plotly_dark',
-        title='Bitcoin Price',
-        labels={"BTC Price": "Bitcoin Price (USD)",
-                "Datetime": "Date"},
-        # color="Var",
-        color_discrete_map={
-            "BTC Price": "#FEAF16"
-            # True: '#1CA71C',
+    price_.add_trace(
+        go.Scatter(
+            x=dff["Datetime"],
+            y=dff["BTC Price"],
+            name="BTC Price",
+            mode='lines',
+            line_color="#FEAF16",
+        ))
 
-        }
+    price_.update_layout(
+        # title_text="Stock to Flow vs Market Cap",
+        template='plotly_dark'
     )
 
-    price_area.update_layout(showlegend=False)
+    price_.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    price_.update_yaxes(
+        tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
+        tickprefix="$",
+        title_text="BTC Price (USD)",
+        fixedrange=True
+    )
 
     csv_string_price = df_to_download.to_csv(index=False, encoding='utf-8')
     csv_string_price = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_price)
 
-    return price_area, csv_string_price
+    return price_, csv_string_price
 
 
 @ app.callback(
