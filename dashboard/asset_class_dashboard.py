@@ -188,13 +188,9 @@ app.layout = dbc.Container([
                                     dcc.DatePickerRange(
                                         id='date_range_as_corr',
                                         min_date_allowed=date(2017, 1, 1),
-                                        max_date_allowed=date(
-                                            max_year, max_month, max_day),
                                         initial_visible_month=date(
                                             max_year, max_month, 1),
-                                        start_date=date(max_year, 1, 1),
-                                        end_date=date(
-                                            max_year, max_month, max_day)
+                                        start_date=date(max_year, 1, 1)
                                     ),
 
                                     html.Hr(),
@@ -271,16 +267,12 @@ app.layout = dbc.Container([
                                         html.Br(),
 
                                         dcc.DatePickerRange(
-                                            id='date-picker-range',
+                                            id='date_range_as_vola',
                                             min_date_allowed=date(2017, 1, 1),
-                                            max_date_allowed=date(
-                                                max_year, max_month, max_day),
                                             initial_visible_month=date(
                                                 max_year, max_month, 1),
                                             start_date=date(
-                                                max_year - 1, 1, 1),
-                                            end_date=date(
-                                                max_year, max_month, max_day)
+                                                max_year - 1, 1, 1)
                                         ),
 
                                         html.Hr(),
@@ -407,34 +399,6 @@ app.layout = dbc.Container([
 
 
 @app.callback(
-    Output(component_id="date_range_as_vol",
-           component_property="max_date_allowed"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
-)
-def set_max_date(n):
-
-    max_y, max_m, max_d = date_elements()
-
-    max_date = date(max_y, max_m, max_d)
-
-    return max_date
-
-
-@app.callback(
-    Output(component_id="date_range_as_vol",
-           component_property="end_date"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
-)
-def set_end_date(n):
-
-    max_y, max_m, max_d = date_elements()
-
-    end_date_ = date(max_y, max_m, max_d)
-
-    return end_date_
-
-
-@app.callback(
     Output(component_id='as_of_dropdown', component_property='options'),
     Input(component_id="time_window_dropdown", component_property="value")
 )
@@ -524,6 +488,34 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection):
 # volume
 
 
+@app.callback(
+    Output(component_id="date_range_as_vol",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_as_vol",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
+
+
 @ app.callback(
     [Output(component_id="volume_graph", component_property="figure"),
      Output(component_id='download-link_yahoo_volume', component_property='href')],
@@ -578,6 +570,34 @@ def update_graph_volume(start, stop, asset_selection):
 
 
 # asset classes correlation with btc
+
+@app.callback(
+    Output(component_id="date_range_as_corr",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date_corr(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_as_corr",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date_corr(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
+
 
 @ app.callback(
     [
@@ -648,12 +668,40 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
 
 # volatility
 
+@app.callback(
+    Output(component_id="date_range_as_vola",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date_vola(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_as_vola",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date_vola(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
+
+
 @ app.callback(
     [Output(component_id="vola_graph", component_property="figure"),
      Output(component_id='download-link_yahoo_vola', component_property='href')],
     [Input(component_id="vola_dropdown", component_property="value"),
-     Input(component_id='date-picker-range', component_property='start_date'),
-     Input(component_id='date-picker-range', component_property='end_date'),
+     Input(component_id='date_range_as_vola', component_property='start_date'),
+     Input(component_id='date_range_as_vola', component_property='end_date'),
      Input(component_id="vola_checklist", component_property="value")]
 )
 def update_graph_vola(days_selection, start, stop, asset_selection):
