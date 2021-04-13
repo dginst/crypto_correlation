@@ -441,7 +441,7 @@ app.layout = dbc.Container([
 )
 def set_as_of_option(selected_time_window):
 
-    yesterday = yesterday_str
+    yesterday = yesterday_str()
     last_quarter_ = last_quarter_end()
 
     all_options = {
