@@ -129,12 +129,12 @@ app.layout = dbc.Container([
                                             dcc.DatePickerRange(
                                                 id='date_range_log',
                                                 min_date_allowed=date(
-                                                    2011, 2, 1),
+                                                    2011, 2, 2),
                                                 max_date_allowed=date(
                                                     max_year, max_month, max_day),
                                                 initial_visible_month=date(
                                                     max_year, max_month, 1),
-                                                start_date=date(2011, 2, 1),
+                                                start_date=date(2011, 2, 2),
                                                 end_date=date(
                                                     max_year, max_month, max_day)
                                         ),
@@ -219,7 +219,7 @@ def update_index_df(start, stop, n):
     dff = df_price.copy()
     df_to_download = df_price.copy()
 
-    dff_range = dff.loc[dff.Date.between(
+    dff_range = dff.loc[dff.Datetime.between(
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
 
