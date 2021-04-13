@@ -55,6 +55,11 @@ app.layout = dbc.Container([
                                     [
                                         dbc.Col([
 
+                                            dcc.Graph(id="price_indicator", figure={},
+                                                      config={'displayModeBar': False})
+
+                                            html.Hr(),
+
                                             html.Label(['Date Range:']),
 
                                             html.Br(),
@@ -72,8 +77,6 @@ app.layout = dbc.Container([
                                                     max_year, max_month, max_day)
                                             ),
 
-                                            dcc.Graph(id="price_indicator", figure={},
-                                                      config={'displayModeBar': False})
                                         ])
                                     ]),
 
@@ -122,22 +125,22 @@ app.layout = dbc.Container([
                                 [
                                     dbc.Col([
 
-                                        html.Label(['Date Range:']),
+                                        # html.Label(['Date Range:']),
 
-                                            html.Br(),
+                                        #     html.Br(),
 
-                                            dcc.DatePickerRange(
-                                                id='date_range_log',
-                                                min_date_allowed=date(
-                                                    2011, 2, 2),
-                                                max_date_allowed=date(
-                                                    max_year, max_month, max_day),
-                                                initial_visible_month=date(
-                                                    max_year, max_month, 1),
-                                                start_date=date(2011, 2, 2),
-                                                end_date=date(
-                                                    max_year, max_month, max_day)
-                                        ),
+                                        #     dcc.DatePickerRange(
+                                        #         id='date_range_log',
+                                        #         min_date_allowed=date(
+                                        #             2011, 2, 2),
+                                        #         max_date_allowed=date(
+                                        #             max_year, max_month, max_day),
+                                        #         initial_visible_month=date(
+                                        #             max_year, max_month, 1),
+                                        #         start_date=date(2011, 2, 2),
+                                        #         end_date=date(
+                                        #             max_year, max_month, max_day)
+                                        # ),
 
 
                                         dcc.Graph(id="btc_price_log", figure={},
