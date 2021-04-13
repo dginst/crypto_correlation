@@ -82,6 +82,38 @@ app.layout = dbc.Container([
 
             ], justify='center'),
 
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+
+                            html.Hr(),
+
+                            dbc.Row(
+                                [
+                                    dbc.Col([
+
+
+                                        dcc.Graph(id="btc_price_log", figure={},
+                                                  config={'displayModeBar': False}),
+
+
+                                    ])
+                                ]),
+
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
+
+        ]),
+
+    ], justify='center'),
+
 
     dbc.Row([
         dbc.Col([
@@ -146,7 +178,7 @@ def update_index_df(n):
     variation = (dff_today >= dff_yest)
     dff["Var"] = variation
 
-    price_area = px.area(
+    price_area = px.line(
         data_frame=dff,
         x="Datetime",
         y="BTC Price",
@@ -154,10 +186,10 @@ def update_index_df(n):
         title='Bitcoin Price',
         labels={"BTC Price": "Bitcoin Price (USD)",
                 "Datetime": "Date"},
-        color="Var",
+        # color="Var",
         color_discrete_map={
-            False: '#FD3216',
-            True: '#1CA71C',
+            "BTC Price": "#FEAF16"
+            # True: '#1CA71C',
 
         }
     )
@@ -202,6 +234,56 @@ def update_indicator(timer):
         fig_indicator.update_traces(delta_decreasing_color='red')
 
     return fig_indicator
+
+
+# btc price log scale
+
+@ app.callback(
+    Output(component_id='btc_price_log', component_property='figure'),
+    Input(component_id='df-update', component_property='n_intervals')
+
+)
+def update_log_price(n):
+
+    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
+    df_price = df_price.drop(columns=["Days to Halving"])
+
+    dff = df_price.copy()
+    df_to_download = df_price.copy()
+
+    model_cap = go.Figure()
+
+    model_cap.add_trace(
+        go.Scatter(
+            x=dff["Datetime"],
+            y=reg_dff["BTC Price"],
+            name="BTC Price Log Scale",
+            mode='lines',
+            line_color="#FEAF16",
+        ))
+
+    model_cap.update_layout(
+        # title_text="Stock to Flow vs Market Cap",
+        template='plotly_dark'
+    )
+
+    model_cap.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    model_cap.update_yaxes(
+        tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
+        tickprefix="$",
+        title_text="BTC Price (USD)",
+        type="log",
+        fixedrange=True
+    )
+
+    return model_cap
 
 # bitcoin supply
 
