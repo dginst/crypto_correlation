@@ -194,7 +194,7 @@ def update_index_df(n):
     ))
 
     price_.update_yaxes(
-        tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
+        # tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
         tickprefix="$",
         title_text="BTC Price (USD)",
         fixedrange=True
