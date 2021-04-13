@@ -13,7 +13,7 @@ from btc_analysis.config import (BEST_PERFORMING_LIST,
                                  CRYPTO_LIST, DB_NAME, YAHOO_DASH_LIST,
                                  YAHOO_DASH_LIST_W_BTC)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
-                                         vola_total_df)
+                                         vola_total_df, date_elements)
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
@@ -95,15 +95,23 @@ app.layout = dbc.Container([
 
                                         html.Label(['Time Window']),
 
+                                        # dcc.Dropdown(
+                                        #     id='time_window_dropdown',
+                                        #     options=[{'label': k, 'value': k}
+                                        #              for k in all_options.keys()],
+                                        #     multi=False,
+                                        #     value="3Y",
+                                        #     style={"width": "50%"},
+                                        #     clearable=False
+                                        # ),
+
                                         dcc.Dropdown(
                                             id='time_window_dropdown',
-                                            options=[{'label': k, 'value': k}
-                                                     for k in all_options.keys()],
-                                            multi=False,
-                                            value="3Y",
+
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
+
 
                                         html.Hr(),
 
@@ -408,6 +416,30 @@ app.layout = dbc.Container([
 # NB: the dropdpwn display should be, at that point, disabled except for the
 # first one
 # naming has to be commented in the layout part for the second and third graph
+
+
+@app.callback(
+    Output(component_id="time_window_dropdown", component_property="options"),
+)
+def set_tw_options():
+
+    yesterday = yesterday_str
+    last_quarter_ = last_quarter_end()
+
+    all_options = {
+        '5Y': [yesterday, last_quarter_],
+        '3Y': [yesterday, last_quarter_],
+        '2Y': [yesterday, last_quarter_],
+        '1Y': [yesterday, last_quarter_],
+        '6M': [yesterday, last_quarter_],
+        '3M': [yesterday, last_quarter_],
+        '1M': [yesterday, last_quarter_],
+        '1W': [yesterday, last_quarter_],
+        'YTD': [yesterday, last_quarter_],
+    }
+
+    return [{'label': k, 'value': k} for k in all_options.keys()]
+
 
 @app.callback(
     Output(component_id='as_of_dropdown', component_property='options'),

@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, date
 
 from btc_analysis.mongo_func import query_mongo, mongo_upload
 from btc_analysis.market_data import yesterday_str
@@ -181,3 +181,16 @@ def dash_static_corr_df(window_list):
 
     static_df = static_corr_df(window_list)
     mongo_upload(static_df, "collection_dash_static_corr")
+
+
+# -------------
+
+def date_elements():
+
+    yesterday = yesterday_str()
+
+    max_year = int(datetime.strptime(yesterday, "%Y-%m-%d").year)
+    max_month = int(datetime.strptime(yesterday, "%Y-%m-%d").month)
+    max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
+
+    return max_year, max_month, max_day
