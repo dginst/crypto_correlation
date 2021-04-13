@@ -249,14 +249,13 @@ def update_log_price(n):
     df_price = df_price.drop(columns=["Days to Halving"])
 
     dff = df_price.copy()
-    df_to_download = df_price.copy()
 
     model_cap = go.Figure()
 
     model_cap.add_trace(
         go.Scatter(
             x=dff["Datetime"],
-            y=reg_dff["BTC Price"],
+            y=dff["BTC Price"],
             name="BTC Price Log Scale",
             mode='lines',
             line_color="#FEAF16",
