@@ -95,23 +95,15 @@ app.layout = dbc.Container([
 
                                         html.Label(['Time Window']),
 
-                                        # dcc.Dropdown(
-                                        #     id='time_window_dropdown',
-                                        #     options=[{'label': k, 'value': k}
-                                        #              for k in all_options.keys()],
-                                        #     multi=False,
-                                        #     value="3Y",
-                                        #     style={"width": "50%"},
-                                        #     clearable=False
-                                        # ),
-
                                         dcc.Dropdown(
                                             id='time_window_dropdown',
-
+                                            options=[{'label': k, 'value': k}
+                                                     for k in all_options.keys()],
+                                            multi=False,
+                                            value="3Y",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
-
 
                                         html.Hr(),
 
@@ -418,11 +410,36 @@ app.layout = dbc.Container([
 # naming has to be commented in the layout part for the second and third graph
 
 
+# @app.callback(
+#     Output(component_id="time_window_dropdown", component_property="options"),
+#     Input(component_id="yahoo-update", component_property="n_intervals")
+# )
+# def set_tw_options():
+
+#     yesterday = yesterday_str
+#     last_quarter_ = last_quarter_end()
+
+#     all_options = {
+#         '5Y': [yesterday, last_quarter_],
+#         '3Y': [yesterday, last_quarter_],
+#         '2Y': [yesterday, last_quarter_],
+#         '1Y': [yesterday, last_quarter_],
+#         '6M': [yesterday, last_quarter_],
+#         '3M': [yesterday, last_quarter_],
+#         '1M': [yesterday, last_quarter_],
+#         '1W': [yesterday, last_quarter_],
+#         'YTD': [yesterday, last_quarter_],
+#     }
+
+#     # [{'label': k, 'value': k} for k in all_options.keys()]
+#     return all_options
+
+
 @app.callback(
-    Output(component_id="time_window_dropdown", component_property="options"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
+    Output(component_id='as_of_dropdown', component_property='options'),
+    Input(component_id="time_window_dropdown", component_property="value")
 )
-def set_tw_options():
+def set_as_of_option(selected_time_window):
 
     yesterday = yesterday_str
     last_quarter_ = last_quarter_end()
@@ -438,15 +455,6 @@ def set_tw_options():
         '1W': [yesterday, last_quarter_],
         'YTD': [yesterday, last_quarter_],
     }
-
-    return [{'label': k, 'value': k} for k in all_options.keys()]
-
-
-@app.callback(
-    Output(component_id='as_of_dropdown', component_property='options'),
-    Input(component_id="time_window_dropdown", component_property="value")
-)
-def set_as_of_option(selected_time_window):
 
     return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
 
