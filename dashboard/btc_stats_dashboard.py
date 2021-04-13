@@ -1,5 +1,5 @@
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, date
 
 import dash
 import dash_bootstrap_components as dbc
@@ -9,6 +9,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
+from btc_analysis.market_data import yesterday_str
 
 # start app
 
@@ -21,6 +22,13 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG],
 
 server = app.server
 
+# ----------
+# Date variables
+
+yesterday = yesterday_str()
+max_year = int(datetime.strptime(yesterday, "%Y-%m-%d").year)
+max_month = int(datetime.strptime(yesterday, "%Y-%m-%d").month)
+max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
 
 last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
 S2F_list = ["S2F price 365d average", "S2F price"]
@@ -46,6 +54,24 @@ app.layout = dbc.Container([
                                 dbc.Row(
                                     [
                                         dbc.Col([
+
+                                            html.Label(['Date Range:']),
+
+                                            html.Br(),
+
+                                            dcc.DatePickerRange(
+                                                id='date_range_price',
+                                                min_date_allowed=date(
+                                                    2011, 2, 1),
+                                                max_date_allowed=date(
+                                                    max_year, max_month, max_day),
+                                                initial_visible_month=date(
+                                                    max_year, max_month, 1),
+                                                start_date=date(2011, 2, 1),
+                                                end_date=date(
+                                                    max_year, max_month, max_day)
+                                            ),
+
                                             dcc.Graph(id="price_indicator", figure={},
                                                       config={'displayModeBar': False})
                                         ])
@@ -95,6 +121,23 @@ app.layout = dbc.Container([
                             dbc.Row(
                                 [
                                     dbc.Col([
+
+                                        html.Label(['Date Range:']),
+
+                                            html.Br(),
+
+                                            dcc.DatePickerRange(
+                                                id='date_range_log',
+                                                min_date_allowed=date(
+                                                    2011, 2, 1),
+                                                max_date_allowed=date(
+                                                    max_year, max_month, max_day),
+                                                initial_visible_month=date(
+                                                    max_year, max_month, 1),
+                                                start_date=date(2011, 2, 1),
+                                                end_date=date(
+                                                    max_year, max_month, max_day)
+                                        ),
 
 
                                         dcc.Graph(id="btc_price_log", figure={},
@@ -157,11 +200,18 @@ app.layout = dbc.Container([
 
 
 @app.callback(
-    [Output('btc_price', 'figure'),
-     Output('download-link_price', 'href')],
-    Input('df-update', 'n_intervals')
+    [
+        Output(component_id='btc_price', component_property='figure'),
+        Output(component_id='download-link_price', component_property='href')
+    ],
+    [
+        Input(component_id='date_range_price',
+              component_property='start_date'),
+        Input(component_id='date_range_price', component_property='end_date'),
+        Input(component_id='df-update', component_property='n_intervals'),
+    ]
 )
-def update_index_df(n):
+def update_index_df(start, stop, n):
 
     df_price = query_mongo("btc_analysis", "S2F_BTC_price")
     df_price = df_price.drop(columns=["Days to Halving"])
@@ -169,19 +219,23 @@ def update_index_df(n):
     dff = df_price.copy()
     df_to_download = df_price.copy()
 
+    dff_range = dff.loc[dff.Date.between(
+        start, stop, inclusive=True)]
+    dff_range.reset_index(drop=True, inplace=True)
+
     price_ = go.Figure()
 
     price_.add_trace(
         go.Scatter(
-            x=dff["Datetime"],
-            y=dff["BTC Price"],
+            x=dff_range["Datetime"],
+            y=dff_range["BTC Price"],
             name="BTC Price",
             mode='lines',
             line_color="#FEAF16",
         ))
 
     price_.update_layout(
-        # title_text="Stock to Flow vs Market Cap",
+        title_text="Bitcoin Price",
         template='plotly_dark'
     )
 
@@ -194,7 +248,6 @@ def update_index_df(n):
     ))
 
     price_.update_yaxes(
-        # tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
         tickprefix="$",
         title_text="BTC Price (USD)",
         fixedrange=True
@@ -270,7 +323,7 @@ def update_log_price(n):
         ))
 
     model_cap.update_layout(
-        # title_text="Stock to Flow vs Market Cap",
+        title_text="Bitcoin Price Log Scale",
         template='plotly_dark'
     )
 
