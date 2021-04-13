@@ -411,7 +411,7 @@ app.layout = dbc.Container([
            component_property="max_date_allowed"),
     Input(component_id="yahoo-update", component_property="n_intervals")
 )
-def set_max_date():
+def set_max_date(n):
 
     max_y, max_m, max_d = date_elements()
 
@@ -425,7 +425,7 @@ def set_max_date():
            component_property="end_date"),
     Input(component_id="yahoo-update", component_property="n_intervals")
 )
-def set_end_date():
+def set_end_date(n):
 
     max_y, max_m, max_d = date_elements()
 
