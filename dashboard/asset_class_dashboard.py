@@ -420,6 +420,7 @@ app.layout = dbc.Container([
 
 @app.callback(
     Output(component_id="time_window_dropdown", component_property="options"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
 )
 def set_tw_options():
 
