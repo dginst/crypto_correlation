@@ -12,7 +12,7 @@ from btc_analysis.config import (BEST_PERFORMING_LIST,
                                  BEST_PERFORMING_LIST_VOL, COMPLETE_MKT_CAP,
                                  CRYPTO_LIST, DB_NAME, YAHOO_DASH_LIST)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
-                                         vola_total_df)
+                                         vola_total_df, date_elements)
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
