@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
 from btc_analysis.market_data import yesterday_str
+from btc_analysis.dashboard_func import date_elements
 
 # start app
 
@@ -25,12 +26,12 @@ server = app.server
 # ----------
 # Date variables
 
-yesterday = yesterday_str()
-max_year = int(datetime.strptime(yesterday, "%Y-%m-%d").year)
-max_month = int(datetime.strptime(yesterday, "%Y-%m-%d").month)
-max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
+# yesterday = yesterday_str()
+# max_year = int(datetime.strptime(yesterday, "%Y-%m-%d").year)
+# max_month = int(datetime.strptime(yesterday, "%Y-%m-%d").month)
+# max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
 
-last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
+# last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
 S2F_list = ["S2F price 365d average", "S2F price"]
 # ----------------
 # app layout: bootstrap
@@ -68,13 +69,9 @@ app.layout = dbc.Container([
                                                 id='date_range_price',
                                                 min_date_allowed=date(
                                                     2011, 2, 1),
-                                                max_date_allowed=date(
-                                                    max_year, max_month, max_day),
                                                 initial_visible_month=date(
                                                     max_year, max_month, 1),
                                                 start_date=date(2011, 2, 1),
-                                                end_date=date(
-                                                    max_year, max_month, max_day)
                                             ),
 
                                         ])
@@ -124,24 +121,6 @@ app.layout = dbc.Container([
                             dbc.Row(
                                 [
                                     dbc.Col([
-
-                                        # html.Label(['Date Range:']),
-
-                                        #     html.Br(),
-
-                                        #     dcc.DatePickerRange(
-                                        #         id='date_range_log',
-                                        #         min_date_allowed=date(
-                                        #             2011, 2, 2),
-                                        #         max_date_allowed=date(
-                                        #             max_year, max_month, max_day),
-                                        #         initial_visible_month=date(
-                                        #             max_year, max_month, 1),
-                                        #         start_date=date(2011, 2, 2),
-                                        #         end_date=date(
-                                        #             max_year, max_month, max_day)
-                                        # ),
-
 
                                         dcc.Graph(id="btc_price_log", figure={},
                                                   config={'displayModeBar': False}),
@@ -201,6 +180,32 @@ app.layout = dbc.Container([
 
 # bitcoin price
 
+@app.callback(
+    Output(component_id="date_range_price",
+           component_property="max_date_allowed"),
+    Input(component_id="df-update", component_property="n_intervals")
+)
+def set_max_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_price",
+           component_property="end_date"),
+    Input(component_id="df-update", component_property="n_intervals")
+)
+def set_end_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
 
 @app.callback(
     [
