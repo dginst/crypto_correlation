@@ -185,15 +185,11 @@ app.layout = dbc.Container([
                                     html.Br(),
 
                                     dcc.DatePickerRange(
-                                        id='date-picker-range',
+                                        id='date_range_corr',
                                         min_date_allowed=date(2017, 1, 1),
-                                        max_date_allowed=date(
-                                            max_year, max_month, max_day),
                                         initial_visible_month=date(
                                             max_year, max_month, 1),
-                                        start_date=date(max_year, 1, 1),
-                                        end_date=date(
-                                            max_year, max_month, max_day)
+                                        start_date=date(max_year, 1, 1)
                                     ),
 
                                     html.Hr(),
@@ -256,6 +252,21 @@ app.layout = dbc.Container([
     Input(component_id="time_window_dropdown", component_property="value")
 )
 def set_as_of_option(selected_time_window):
+
+    yesterday = yesterday_str()
+    last_quarter_ = last_quarter_end()
+
+    all_options = {
+        '5Y': [yesterday, last_quarter_],
+        '3Y': [yesterday, last_quarter_],
+        '2Y': [yesterday, last_quarter_],
+        '1Y': [yesterday, last_quarter_],
+        '6M': [yesterday, last_quarter_],
+        '3M': [yesterday, last_quarter_],
+        '1M': [yesterday, last_quarter_],
+        '1W': [yesterday, last_quarter_],
+        'YTD': [yesterday, last_quarter_],
+    }
 
     return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
 
@@ -329,6 +340,33 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
 # crypto-assets correlation with bictoin
 
 
+@app.callback(
+    Output(component_id="date_range_corr",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_corr",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
+
 @ app.callback(
     [
         Output(component_id="btc_corr_line", component_property="figure"),
@@ -336,9 +374,9 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     ],
     [
         Input(component_id="my_alt_dropdown", component_property="value"),
-        Input(component_id='date-picker-range',
+        Input(component_id='date_range_corr',
               component_property='start_date'),
-        Input(component_id='date-picker-range', component_property='end_date'),
+        Input(component_id='date_range_corr', component_property='end_date'),
         Input(component_id="my_alt_check", component_property="value"),
         Input(component_id="yahoo-update", component_property="n_intervals")
     ]
