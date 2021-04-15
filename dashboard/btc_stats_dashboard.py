@@ -69,8 +69,6 @@ app.layout = dbc.Container([
                                                 id='date_range_price',
                                                 min_date_allowed=date(
                                                     2011, 2, 1),
-                                                initial_visible_month=date(
-                                                    max_year, max_month, 1),
                                                 start_date=date(2011, 2, 1),
                                             ),
 
@@ -179,6 +177,19 @@ app.layout = dbc.Container([
 # Callbacks part
 
 # bitcoin price
+
+@app.callback(
+    Output(component_id="date_range_price",
+           component_property="initial_visible_month"),
+    Input(component_id="df-update", component_property="n_intervals")
+)
+def set_max_date(n):
+
+    max_y, max_m, _ = date_elements()
+
+    initial_visible_month_=date(max_y, max_m, 1)
+
+    return initial_visible_month_
 
 @app.callback(
     Output(component_id="date_range_price",
