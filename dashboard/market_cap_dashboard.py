@@ -118,7 +118,7 @@ app.layout = dbc.Container([
 
 @ app.callback(
     Output(component_id="mkt_cap_graph", component_property="figure"),
-    #Input(component_id="mkt_cap_check", component_property="value"),
+    # Input(component_id="mkt_cap_check", component_property="value"),
     Input(component_id="yahoo-update", component_property="n_intervals")
 )
 def update_graph_bar_exc(n):
@@ -145,7 +145,15 @@ def update_graph_bar_exc(n):
                 'Name': 'Exchange'},
         height=700,
         color_discrete_map={
-            "BTC": "#FEAF16",
+            "Coinbase": "#FEAF16",
+            "HK Exchange": "#86CE00",
+            "CME": "#228B22",
+            "Int Exchange": "#CCCC00",
+            "London Stock Exchange": "#000080",
+            "Deutsche Borse": "#0000FF",
+            "Nasdaq": "#006400",
+            "CBOE": "#4D4203"
+
         }
     )
 
@@ -154,7 +162,8 @@ def update_graph_bar_exc(n):
     return fig_mkt_cap
 
 
-@ app.callback(
+@app.callback(
+
     Output(component_id="mkt_cap_best_graph", component_property="figure"),
     #Input(component_id="mkt_cap_check", component_property="value"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -183,6 +192,12 @@ def update_graph_bar_best(n):
         height=700,
         color_discrete_map={
             "BTC": "#FEAF16",
+            "Tesla": "#86CE00",
+            "Amazon": "#F58518",
+            "Apple": "#BAB0AC",
+            "Netflix": "#FD3216",
+            "Google": "#0000FF",
+            "Microsoft": "#A9A9A9"
         }
     )
 
