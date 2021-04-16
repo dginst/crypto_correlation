@@ -570,7 +570,7 @@ TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
 
 NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
-                    "Hong Kong Exchanges", "COIN", "CME", "Intercontinental Exchange",
+                    "HK Exchanges", "Coinbase", "CME", "Int. Exchange",
                     "London Stock Exchange", "Deutsche Borse", "Nasdaq", "CBOE"]
 
 COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",

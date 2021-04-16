@@ -62,17 +62,17 @@ app.layout = dbc.Container([
                                 dbc.Row([
                                     dbc.Col([
 
-                                        dcc.Checklist(
-                                            id='mkt_cap_check',
-                                            options=[
-                                                {'label': x, 'value': x} for x in COMPARED_MKT_CAP
-                                            ],
-                                            value=COMPARED_MKT_CAP,
-                                            labelStyle={
-                                                'display': 'inline-block'},
-                                            inputStyle={"margin-right": "10px",
-                                                        "margin-left": "10px"}
-                                        ),
+                                        # dcc.Checklist(
+                                        #     id='mkt_cap_check',
+                                        #     options=[
+                                        #         {'label': x, 'value': x} for x in COMPARED_MKT_CAP
+                                        #     ],
+                                        #     value=COMPARED_MKT_CAP,
+                                        #     labelStyle={
+                                        #         'display': 'inline-block'},
+                                        #     inputStyle={"margin-right": "10px",
+                                        #                 "margin-left": "10px"}
+                                        # ),
 
                                         dcc.Graph(
                                             id='mkt_cap_graph', figure={}),
@@ -103,8 +103,8 @@ app.layout = dbc.Container([
 
 @ app.callback(
     Output(component_id="mkt_cap_graph", component_property="figure"),
-    [Input(component_id="mkt_cap_check", component_property="value"),
-     Input(component_id="yahoo-update", component_property="n_intervals")]
+    #Input(component_id="mkt_cap_check", component_property="value"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
 )
 def update_graph_bar(n):
 
