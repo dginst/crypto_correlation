@@ -129,30 +129,209 @@ def update_graph_vola(window_selection):
 
     hovertext = [[f'corr_mat({column_set[i]}, {column_set[j]})= {corr_mat[i][j]:.2f}' if i >=
                   j else '' for j in range(N)] for i in range(N)]
-    print(hovertext)
-    heat = go.Heatmap(z=corr_mat,
-                      x=column_set,
-                      y=column_set,
-                      xgap=2, ygap=2,
-                      colorscale=STATIC_COLORSCALE,
-                      colorbar_thickness=20,
-                      colorbar_ticklen=4,
-                      hovertext=hovertext,
 
-                      hoverinfo='text'
-                      )
+    fig = go.Figure()
 
-    title = 'Correlation Matrix'
+    fig.add_trace(
+        go.Heatmap(z=corr_mat,
+                   x=column_set,
+                   y=column_set,
+                   xgap=2, ygap=2,
+                   colorscale=STATIC_COLORSCALE,
+                   colorbar_thickness=20,
+                   colorbar_ticklen=4,
+                   hovertext=hovertext,
+                   hoverinfo='text'
+                   )
+    )
 
-    layout = go.Layout(title_text=title, title_x=0.5,
-                       width=1000, height=1000,
-                       xaxis_showgrid=False,
-                       yaxis_showgrid=False,
-                       yaxis_autorange='reversed',
-                       template='plotly_dark')
+    fig.add_trace(
+        go.Scatter(xaxis='x2',
+                   yaxis='y2'
+                   )
+    )
 
-    fig = go.Figure(data=[heat], layout=layout)
+    fig.add_trace(
+        go.Scatter(xaxis='x3',
+                   yaxis='y3'
+                   )
+    )
+
+    fig.add_trace(
+        go.Scatter(xaxis='x4',
+                   yaxis='y4'
+                   )
+    )
+
+    fig.add_trace(
+        go.Scatter(xaxis='x5',
+                   yaxis='y5'
+                   )
+    )
+
+    fig.update_layout(
+        title_text='Correlation Matrix',
+        title_x=0.5,
+        width=1000,
+        height=1000,
+        xaxis_showgrid=False,
+        yaxis_showgrid=False,
+        yaxis_autorange='reversed',
+        template='plotly_dark'
+
+    )
+    fig.update_layout(
+        xaxis=dict(
+            range=[0, N],
+            tickfont=dict(color="#FFA500"),
+            tickmode='array',
+            tickvals=[0, 1, 2, 3],
+            ticktext=['BTC', 'ETH', 'LTC', 'XRP'],
+        ),
+        xaxis2=dict(
+            range=[0, N],
+            tickfont=dict(color="#228B22"),
+            tickmode='array',
+            tickvals=[4.5, 5.5, 6.5, 7.5],
+            ticktext=['GOLD', 'COPPER', 'CRUDE OIL', 'CORN'],
+            overlaying="x",
+            side="bottom",
+        ),
+        xaxis3=dict(
+            range=[0, N],
+            tickfont=dict(color="#4169E1"),
+            tickmode='array',
+            tickvals=[8.5, 9.5, 10.5, 11.5],
+            ticktext=['EUR', 'GBP', 'JPY', 'CHF'],
+            overlaying="x",
+            side="bottom",
+        ),
+        xaxis4=dict(
+            range=[0, N],
+            tickfont=dict(color="#A9A9A9"),
+            tickmode='array',
+            tickvals=[12.5, 13.5, 14.5, 15.5],
+            ticktext=['NASDAQ', 'S&P500', 'EUROSTOXX50', 'VIX'],
+            overlaying="x",
+            side="bottom",
+        ),
+        xaxis5=dict(
+            range=[0, N],
+            tickfont=dict(color="#C0C0C0"),
+            tickmode='array',
+            tickvals=[16.5, 17.5],
+            ticktext=['US TREASURY', 'PAN EUR'],
+            overlaying="x",
+            side="bottom",
+        ),
+        yaxis=dict(
+            range=[0, N],
+            tickfont=dict(color="#FFA500"),
+            tickmode='array',
+            tickvals=[17, 16, 15, 14],
+            ticktext=['BTC', 'ETH', 'LTC', 'XRP'],
+            # overlaying="y",
+            side="bottom",
+
+        ),
+        yaxis2=dict(
+            range=[0, N],
+            tickfont=dict(color="#228B22"),
+            tickmode='array',
+            tickvals=[4.5, 5.5, 6.5, 7.5],
+            ticktext=['GOLD', 'COPPER', 'CRUDE OIL', 'CORN'],
+            overlaying="y",
+            side="left",
+        ),
+        yaxis3=dict(
+            range=[0, N],
+            tickfont=dict(color="#4169E1"),
+            tickmode='array',
+            tickvals=[8.5, 9.5, 10.5, 11.5],
+            ticktext=['EUR', 'GBP', 'JPY', 'CHF'],
+            overlaying="y",
+            side="bottom",
+        ),
+        yaxis4=dict(
+            range=[0, N],
+            tickfont=dict(color="#A9A9A9"),
+            tickmode='array',
+            tickvals=[12.5, 13.5, 14.5, 15.5],
+            ticktext=['NASDAQ', 'S&P500', 'EUROSTOXX50', 'VIX'],
+            overlaying="y",
+            side="bottom",
+        ),
+        yaxis5=dict(
+            range=[0, N],
+            tickfont=dict(color="#C0C0C0"),
+            tickmode='array',
+            tickvals=[16.5, 17.5],
+            ticktext=['US TREASURY', 'PAN EUR'],
+            overlaying="y",
+            side="bottom",
+        ),
+    )
+    # heat = go.Heatmap(z=corr_mat,
+    #                   x=column_set,
+    #                   y=column_set,
+    #                   xgap=2, ygap=2,
+    #                   colorscale=STATIC_COLORSCALE,
+    #                   colorbar_thickness=20,
+    #                   colorbar_ticklen=4,
+    #                   hovertext=hovertext,
+    #                   hoverinfo='text'
+    #                   )
+
+    # layout = go.Layout(title_text=title, title_x=0.5,
+    #                    width=1000, height=1000,
+    #                    xaxis_showgrid=False,
+    #                    yaxis_showgrid=False,
+    #                    yaxis_autorange='reversed',
+    #                    template='plotly_dark')
+
+    # fig = go.Figure(data=[heat], layout=layout)
     fig.update_traces(text=corr_mat, selector=dict(type='heatmap'))
+
+    fig.update_yaxes(ticks="outside",
+                     tickfont=dict(
+                         family='Rockwell',
+                         # color='crimson',
+                         size=14)
+                     )
+
+    fig.update_xaxes(ticks="outside",
+                     tickangle=45,
+                     tickfont=dict(
+                         family='Rockwell',
+                         # color='crimson',
+                         size=14)
+                     )
+
+    # model_price.update_layout(
+    #     annotations=[dict(
+    #         # Don't specify y position, because yanchor="middle" should do it
+    #         x=1.02,
+    #         align="right",
+    #         valign="top",
+    #         text='Days until next halving',
+    #         showarrow=False,
+    #         xref="paper",
+    #         yref="paper",
+    #         xanchor="right",
+    #         yanchor="middle",
+    #         # Parameter textangle allow you to rotate annotation how you want
+    #         textangle=-90
+    #     )
+    #     ]
+    # )
+
+    # model_price.update_yaxes(
+    #     tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
+    #     tickprefix="$",
+    #     title_text="BTC Price(USD)",
+    #     type="log",
+    # )
+    # model_price.update_xaxes(nticks=20)
 
     csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \

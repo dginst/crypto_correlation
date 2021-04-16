@@ -7,6 +7,7 @@ import pandas as pd
 import requests
 import yfinance as yf
 from pandas_datareader import data
+from dateutil.relativedelta import relativedelta
 
 from btc_analysis.calc import date_gen, date_gen_TS
 from btc_analysis.config import (GOLD_OUNCES_SUPPLY, INDEX_DB_NAME,
@@ -639,3 +640,73 @@ def ewm_volatility(return_df, square_root=252):
     ewm_vola_df["Date"] = date
 
     return ewm_vola_df
+
+
+# --------------------------
+# BTC Derivatives
+
+def CME_futures_download(start_date, end_date):
+
+    df = single_series_download("BTC=F", start_date, end_date)
+
+    return df
+
+# def derivatives_rearrange(initial_df):
+
+#     initial_df["Date"] = [datetime.strptime(x, "%Y-%m-%d") for x in initial_df["Date"]]
+
+#     initial_df["Year"] = [d.year for d in initial_df["Date"]]
+
+#     initial_df["Month"] = [d.month for d in initial_df["Date"]]
+
+#     initial_df["Month-Year"] =
+
+
+#     return final_df
+
+
+def quarter_date_start(initial_year):
+
+    yesterday_ = yesterday_str()
+    yesterday_date = datetime.strptime(yesterday_, "%Y-%m-%d")
+    current_year = int(yesterday_date.year)
+
+    q_list = yearly_quarter_start(int(initial_year))
+
+    if int(initial_year) < current_year:
+
+        for y in range(int(initial_year) + 1, current_year + 1):
+
+            new_list = yearly_quarter_start(y)
+            q_list.extend(new_list)
+
+    return start_q_list
+
+
+def quarter_date_end(start_q_list):
+
+    delta = relativedelta(days=-1)
+
+    start_q_list_ = [datetime.strptime(x, "%Y-%m-%d") for x in start_q_list]
+
+    end_q_list_ = [d + delta for d in start_q_list_]
+
+    end_q_list = [x.strftime("%Y-%m-%d") for x in end_q_list_]
+
+    return end_q_list
+
+
+def yearly_quarter_start(year):
+
+    first = "01-01-" + str(year)
+    second = "01-04-" + str(year)
+    third = "01-07-" + str(year)
+    fourth = "01-10-" + str(year)
+
+    yearly_q_list = [first, second, third, fourth]
+
+    return yearly_q_list
+
+
+# ---------------------------
+# Stablecoin
