@@ -149,6 +149,8 @@ def update_graph_bar_exc(n):
         }
     )
 
+    fig_mkt_cap.update_layout(showlegend=False)
+
     return fig_mkt_cap
 
 
@@ -173,8 +175,9 @@ def update_graph_bar_best(n):
         y="Market Cap",
         template='plotly_dark',
         title='Best Performing Assets Market Capitalization',
-        hover_data=['Market Cap'],
-        color='Market Cap',
+        # hover_data=['Market Cap'],
+        color="Name",
+        # color='Market Cap',
         labels={'Market Cap': 'Market Cap (USD)',
                 'Name': 'Asset'},
         height=700,
@@ -182,6 +185,8 @@ def update_graph_bar_best(n):
             "BTC": "#FEAF16",
         }
     )
+
+    fig_mkt_cap_best.update_layout(showlegend=False)
 
     return fig_mkt_cap_best
 
