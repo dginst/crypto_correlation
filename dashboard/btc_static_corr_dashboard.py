@@ -121,7 +121,9 @@ def update_graph_vola(window_selection):
     dff_window = dff_static.loc[dff_static.Window == window_selection]
     dff_window = dff_window.drop(columns=["Window"])
 
-    N = 17
+    N = len(list(dff_window.columns)) - 1
+    print(N)
+    # N = 17
     corr_mat = [[dff_window.iloc[i, j] if i >= j else None for j in range(N)]
                 for i in range(N)]
 
