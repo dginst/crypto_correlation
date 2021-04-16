@@ -30,7 +30,7 @@ app.css.append_css(
 # -------------------
 # Data
 
-window_list = ["3Y", "1Y", "1Q", "1M"]
+window_list = ["all", "3Y", "1Y", "1Q", "1M"]
 
 
 # ----------------
