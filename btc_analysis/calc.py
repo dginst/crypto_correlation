@@ -456,13 +456,11 @@ def static_corr(return_df, time_window=None, comp_set=None):
         df_to_compute = return_df.loc[return_df.Date.between(
             delta_date, first_date, inclusive=True)]
 
-    print(df_to_compute)
-
     if comp_set is None:
         pass
 
     else:
-        df_to_compute = df_to_compute[[comp_set]]
+        df_to_compute = df_to_compute[comp_set]
 
     corr_matrix = df_to_compute.corr()
 
