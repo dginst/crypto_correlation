@@ -145,8 +145,8 @@ def update_graph_bar_exc(n):
                 'Name': 'Exchange'},
         height=700,
         color_discrete_map={
-            "Coinbase": "#FD3216",
-            "HK Exchange": "#86CE00",
+            "Coinbase": "#FEAF16",
+            "HK Exchange": "#FD3216",
             "CME": "#228B22",
             "Int Exchange": "#006400",
             "London Stock Exchange": "#000080",
