@@ -570,14 +570,14 @@ TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
 
 NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
-                    "HK Exchanges", "Coinbase", "CME", "Int. Exchange",
+                    "HK Exchanges", "Coinbase", "CME", "Int Exchange",
                     "London Stock Exchange", "Deutsche Borse", "Nasdaq", "CBOE"]
 
 COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
                     "USD", "Gold", "Silver", "BTC"]
 
-COMPARED_MKT_CAP = ["HK Exchanges", "Coinbase", "CME", "Int. Exchange",
+COMPARED_MKT_CAP = ["HK Exchanges", "Coinbase", "CME", "Int Exchange",
                     "London Stock Exchange", "Deutsche Borse", "Nasdaq",
                     "CBOE", "BTC"]
 
