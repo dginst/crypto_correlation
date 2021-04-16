@@ -440,7 +440,7 @@ def dynamic_corr_op(return_df, corr_set):
 # --------------------------
 
 
-def static_corr(return_df, time_window=None):
+def static_corr(return_df, time_window=None, comp_set=None):
 
     if time_window is None:
 
@@ -456,18 +456,24 @@ def static_corr(return_df, time_window=None):
         df_to_compute = return_df.loc[return_df.Date.between(
             delta_date, first_date, inclusive=True)]
 
+    if column_set is None:
+        pass
+
+    else:
+        df_to_compute = df_to_compute[[comp_set]]
+
     corr_matrix = df_to_compute.corr()
 
     return corr_matrix
 
 
-def static_corr_op(return_df):
+def static_corr_op(return_df, comp_set=None):
 
-    static_all = static_corr(return_df)
-    static_3Y = static_corr(return_df, "3Y")
-    static_1Y = static_corr(return_df, "1Y")
-    static_1Q = static_corr(return_df, "1Q")
-    static_1M = static_corr(return_df, "1M")
+    static_all = static_corr(return_df, comp_set=comp_set)
+    static_3Y = static_corr(return_df, "3Y", comp_set)
+    static_1Y = static_corr(return_df, "1Y", comp_set)
+    static_1Q = static_corr(return_df, "1Q", comp_set)
+    static_1M = static_corr(return_df, "1M", comp_set)
 
     return static_all, static_3Y, static_1Y, static_1Q, static_1M
 
