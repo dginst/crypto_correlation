@@ -137,10 +137,7 @@ def update_graph_bar_exc(n):
         y="Market Cap",
         template='plotly_dark',
         title='Main Exchanges Market Capitalization',
-        # hover_data=['Market Cap'],
         color="Name",
-        color_continuous_scale=[("Coinbase", "red")],
-        # color='Market Cap',
         labels={'Market Cap': 'Market Cap (USD)',
                 'Name': 'Exchange'},
         height=700,
@@ -163,7 +160,6 @@ def update_graph_bar_exc(n):
                              tickangle=45,
                              tickfont=dict(
                                  family='Rockwell',
-                                 # color='crimson',
                                  size=14))
 
     return fig_mkt_cap
@@ -191,9 +187,7 @@ def update_graph_bar_best(n):
         y="Market Cap",
         template='plotly_dark',
         title='Best Performing Assets Market Capitalization',
-        # hover_data=['Market Cap'],
         color="Name",
-        # color='Market Cap',
         labels={'Market Cap': 'Market Cap (USD)',
                 'Name': 'Asset'},
         height=700,
@@ -214,7 +208,6 @@ def update_graph_bar_best(n):
                                   tickangle=45,
                                   tickfont=dict(
                                       family='Rockwell',
-                                      # color='crimson',
                                       size=14))
 
     return fig_mkt_cap_best
