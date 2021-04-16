@@ -111,20 +111,22 @@ def update_graph_bar(n):
     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
     dff_mkt_cap = df_mkt_cap.copy()
     dff_mkt_cap = dff_mkt_cap[COMPARED_MKT_CAP]
-    print(dff_mkt_cap)
 
     mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
     mkt_cap_df["Name"] = np.array(COMPARED_MKT_CAP)
-    print(mkt_cap_df)
     mkt_cap_df["Market Cap"] = np.array(dff_mkt_cap).T
-    print(mkt_cap_df)
 
     fig_mkt_cap = px.bar(
         data_frame=mkt_cap_df,
         x="Name",
         y="Market Cap",
         template='plotly_dark',
-        title='Market Capitalization',
+        title='Main Exchanges Market Capitalization',
+        hover_data=['Market Cap'],
+        color='Market Cap',
+        labels={'Market Cap': 'Market Cap (USD)',
+                'Name': 'Exchange'},
+        height=400,
         color_discrete_map={
             "BTC": "#FEAF16",
         }
