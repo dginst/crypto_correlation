@@ -456,7 +456,7 @@ def static_corr(return_df, time_window=None, comp_set=None):
         df_to_compute = return_df.loc[return_df.Date.between(
             delta_date, first_date, inclusive=True)]
 
-    if column_set is None:
+    if comp_set is None:
         pass
 
     else:
