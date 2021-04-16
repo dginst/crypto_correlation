@@ -122,8 +122,7 @@ def update_graph_vola(window_selection):
     dff_window = dff_window.drop(columns=["Window"])
 
     N = len(list(dff_window.columns)) - 1
-    print(N)
-    # N = 17
+
     corr_mat = [[dff_window.iloc[i, j] if i >= j else None for j in range(N)]
                 for i in range(N)]
 
@@ -136,7 +135,10 @@ def update_graph_vola(window_selection):
         go.Heatmap(z=corr_mat,
                    x=column_set,
                    y=column_set,
-                   xgap=2, ygap=2,
+                   xgap=2,
+                   ygap=2,
+                   zmin=-1,
+                   zmax=1,
                    colorscale=STATIC_COLORSCALE,
                    colorbar_thickness=20,
                    colorbar_ticklen=4,
@@ -177,6 +179,7 @@ def update_graph_vola(window_selection):
         xaxis_showgrid=False,
         yaxis_showgrid=False,
         yaxis_autorange='reversed',
+        xaxis_autorange=True,
         template='plotly_dark'
 
     )
