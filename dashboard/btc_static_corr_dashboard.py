@@ -271,25 +271,7 @@ def update_graph_vola(window_selection):
             side="bottom",
         ),
     )
-    # heat = go.Heatmap(z=corr_mat,
-    #                   x=column_set,
-    #                   y=column_set,
-    #                   xgap=2, ygap=2,
-    #                   colorscale=STATIC_COLORSCALE,
-    #                   colorbar_thickness=20,
-    #                   colorbar_ticklen=4,
-    #                   hovertext=hovertext,
-    #                   hoverinfo='text'
-    #                   )
 
-    # layout = go.Layout(title_text=title, title_x=0.5,
-    #                    width=1000, height=1000,
-    #                    xaxis_showgrid=False,
-    #                    yaxis_showgrid=False,
-    #                    yaxis_autorange='reversed',
-    #                    template='plotly_dark')
-
-    # fig = go.Figure(data=[heat], layout=layout)
     fig.update_traces(text=corr_mat, selector=dict(type='heatmap'))
 
     fig.update_yaxes(ticks="outside",
@@ -307,32 +289,6 @@ def update_graph_vola(window_selection):
                          size=14)
                      )
 
-    # model_price.update_layout(
-    #     annotations=[dict(
-    #         # Don't specify y position, because yanchor="middle" should do it
-    #         x=1.02,
-    #         align="right",
-    #         valign="top",
-    #         text='Days until next halving',
-    #         showarrow=False,
-    #         xref="paper",
-    #         yref="paper",
-    #         xanchor="right",
-    #         yanchor="middle",
-    #         # Parameter textangle allow you to rotate annotation how you want
-    #         textangle=-90
-    #     )
-    #     ]
-    # )
-
-    # model_price.update_yaxes(
-    #     tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000, 10000000],
-    #     tickprefix="$",
-    #     title_text="BTC Price(USD)",
-    #     type="log",
-    # )
-    # model_price.update_xaxes(nticks=20)
-
     csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
@@ -343,4 +299,4 @@ def update_graph_vola(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=9000, host='0.0.0.0')
+    app.run_server(debug=True, port=9000, host='0.0.0.0')
