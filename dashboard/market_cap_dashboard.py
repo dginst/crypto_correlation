@@ -12,6 +12,7 @@ import plotly.graph_objects as go
 from btc_analysis.calc import last_quarter_end, window_period_back
 from btc_analysis.config import (BEST_PERFORMING_LIST,
                                  BEST_PERFORMING_LIST_VOL, COMPARED_MKT_CAP,
+                                 BEST_MKT_CAP,
                                  COMPLETE_MKT_CAP, CRYPTO_LIST, DB_NAME,
                                  YAHOO_DASH_LIST, YAHOO_DASH_LIST_W_BTC)
 from btc_analysis.dashboard_func import (btc_total_dfs, date_elements,
@@ -62,20 +63,34 @@ app.layout = dbc.Container([
                                 dbc.Row([
                                     dbc.Col([
 
-                                        # dcc.Checklist(
-                                        #     id='mkt_cap_check',
-                                        #     options=[
-                                        #         {'label': x, 'value': x} for x in COMPARED_MKT_CAP
-                                        #     ],
-                                        #     value=COMPARED_MKT_CAP,
-                                        #     labelStyle={
-                                        #         'display': 'inline-block'},
-                                        #     inputStyle={"margin-right": "10px",
-                                        #                 "margin-left": "10px"}
-                                        # ),
-
                                         dcc.Graph(
                                             id='mkt_cap_graph', figure={}),
+
+                                    ])
+
+                                ]),
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
+
+                                        dcc.Graph(
+                                            id='mkt_cap_best_graph', figure={}),
 
                                     ])
 
@@ -106,7 +121,7 @@ app.layout = dbc.Container([
     #Input(component_id="mkt_cap_check", component_property="value"),
     Input(component_id="yahoo-update", component_property="n_intervals")
 )
-def update_graph_bar(n):
+def update_graph_bar_exc(n):
 
     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
     dff_mkt_cap = df_mkt_cap.copy()
@@ -126,13 +141,47 @@ def update_graph_bar(n):
         color='Market Cap',
         labels={'Market Cap': 'Market Cap (USD)',
                 'Name': 'Exchange'},
-        height=1000,
+        height=700,
         color_discrete_map={
             "BTC": "#FEAF16",
         }
     )
 
     return fig_mkt_cap
+
+
+@ app.callback(
+    Output(component_id="mkt_cap_best_graph", component_property="figure"),
+    #Input(component_id="mkt_cap_check", component_property="value"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def update_graph_bar_best(n):
+
+    df_mkt_cap = query_mongo(DB_NAME, "market_cap")
+    dff_mkt_cap_b = df_mkt_cap.copy()
+    dff_mkt_cap_b = dff_mkt_cap_b[BEST_MKT_CAP]
+
+    mkt_cap_df_b = pd.DataFrame(columns=["Name", "Market Cap"])
+    mkt_cap_df_b["Name"] = np.array(BEST_MKT_CAP)
+    mkt_cap_df_b["Market Cap"] = np.array(dff_mkt_cap_b).T
+
+    fig_mkt_cap_best = px.bar(
+        data_frame=mkt_cap_df_b,
+        x="Name",
+        y="Market Cap",
+        template='plotly_dark',
+        title='Best Performing Assets Market Capitalization',
+        hover_data=['Market Cap'],
+        color='Market Cap',
+        labels={'Market Cap': 'Market Cap (USD)',
+                'Name': 'Asset'},
+        height=700,
+        color_discrete_map={
+            "BTC": "#FEAF16",
+        }
+    )
+
+    return fig_mkt_cap_best
 
 
 print("Done")

@@ -577,9 +577,12 @@ COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
                     "USD", "Gold", "Silver", "BTC"]
 
-COMPARED_MKT_CAP = ["HK Exchanges", "Coinbase", "CME", "Int Exchange",
+COMPARED_MKT_CAP = ["HK Exchanges", "CME", "Int Exchange", "Coinbase",
                     "London Stock Exchange", "Deutsche Borse", "Nasdaq",
                     "CBOE"]
+
+BEST_MKT_CAP = ["Apple", "Google", "Microsoft", "Amazon",
+                "Tesla", "Netflix", "BTC"]
 
 USD_SUPPLY = 19632088542000
 
