@@ -110,6 +110,8 @@ def update_graph_bar(n):
 
     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
     dff_mkt_cap = df_mkt_cap.copy()
+    dff_mkt_cap = dff_mkt_cap[COMPARED_MKT_CAP]
+    print(dff_mkt_cap)
 
     mkt_cap_df = pd.DataFrame(columns=["Name", "Market Cap"])
     mkt_cap_df["Name"] = np.array(COMPARED_MKT_CAP)
