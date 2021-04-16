@@ -159,6 +159,13 @@ def update_graph_bar_exc(n):
 
     fig_mkt_cap.update_layout(showlegend=False)
 
+    fig_mkt_cap.update_xaxes(ticks="outside",
+                             tickangle=45,
+                             tickfont=dict(
+                                 family='Rockwell',
+                                 # color='crimson',
+                                 size=14))
+
     return fig_mkt_cap
 
 
@@ -202,6 +209,13 @@ def update_graph_bar_best(n):
     )
 
     fig_mkt_cap_best.update_layout(showlegend=False)
+
+    fig_mkt_cap_best.update_xaxes(ticks="outside",
+                                  tickangle=45,
+                                  tickfont=dict(
+                                      family='Rockwell',
+                                      # color='crimson',
+                                      size=14))
 
     return fig_mkt_cap_best
 
