@@ -1,21 +1,16 @@
-import numpy as np
+import urllib.parse
+
 import dash
+import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
-import urllib.parse
+import numpy as np
 import plotly.graph_objects as go
 import plotly.io as pio
-from btc_analysis.mongo_func import (
-    query_mongo
-)
-from btc_analysis.config import (
-    DB_NAME, STATIC_COLORSCALE
-)
-from btc_analysis.dashboard_func import (
-    static_corr_df
-)
+from btc_analysis.config import DB_NAME, STATIC_COLORSCALE
+from btc_analysis.dashboard_func import static_corr_df
+from btc_analysis.mongo_func import query_mongo
+from dash.dependencies import Input, Output
 
 pio.templates.default = "none"
 
@@ -24,7 +19,7 @@ stat_corr = query_mongo(DB_NAME, "stat_yahoo_correlation_1M")
 column_set = list(stat_corr.columns)
 
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SOLAR],
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}])
 server = app.server
@@ -52,34 +47,60 @@ app.layout = dbc.Container([
     ]),
 
 
+    # asset classes performance
+
     dbc.Row([
-        dbc.Col([
+            dbc.Col([
 
-            html.Label(['Correlation Window']),
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+                                dbc.Row([
+                                    dbc.Col([
 
-            dcc.Dropdown(
-                id='my_static_dropdown',
-                options=[
-                    {'label': w, 'value': w} for w in window_list
-                ],
-                multi=False,
-                value="3Y",
-                style={"width": "50%"},
-                clearable=False
-            ),
+                                        html.Label(['Correlation Window']),
 
-            dcc.Graph(id='my_corr_heatmap', figure={}),
+                                        dcc.Dropdown(
+                                            id='my_static_dropdown',
+                                            options=[
+                                                {'label': w, 'value': w} for w in window_list
+                                            ],
+                                            multi=False,
+                                            value="3Y",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
 
-            html.A(
-                'Download Data',
-                id='download-link_static',
-                download="static_corr.csv",
-                href='',
-                target="_blank"
-            )
-        ])
+                                        dcc.Graph(
+                                            id='my_corr_heatmap', figure={}),
 
-    ]),
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_static',
+                                            download="static_corr.csv",
+                                            href='',
+                                            target="_blank"
+                                        )
+                                    ])
+
+                                ]),
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
+
+
+
+    dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
+
+    dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
 ])
 
 # --------------------------
@@ -131,6 +152,7 @@ def update_graph_vola(window_selection):
     fig = go.Figure(data=[heat], layout=layout)
     fig.update_traces(text=corr_mat, selector=dict(type='heatmap'))
 
+
     csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
@@ -141,4 +163,4 @@ def update_graph_vola(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=5000)  # host='0.0.0.0')
+    app.run_server(debug=False, port=5000, host='0.0.0.0')
