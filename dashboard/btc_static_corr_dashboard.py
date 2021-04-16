@@ -152,7 +152,6 @@ def update_graph_vola(window_selection):
     fig = go.Figure(data=[heat], layout=layout)
     fig.update_traces(text=corr_mat, selector=dict(type='heatmap'))
 
-
     csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
@@ -163,4 +162,4 @@ def update_graph_vola(window_selection):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=False, port=5000, host='0.0.0.0')
+    app.run_server(debug=False, port=9000, host='0.0.0.0')
