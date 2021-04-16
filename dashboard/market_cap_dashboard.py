@@ -126,7 +126,7 @@ def update_graph_bar(n):
         color='Market Cap',
         labels={'Market Cap': 'Market Cap (USD)',
                 'Name': 'Exchange'},
-        height=400,
+        height=1000,
         color_discrete_map={
             "BTC": "#FEAF16",
         }
