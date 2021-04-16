@@ -564,14 +564,21 @@ STATIC_COLORSCALE = [[0.0, "rgb(49,54,149)"],
 # ----------------------
 
 TICKERS_FOR_MKT_CAP = ["AAPL", "GOOG", "2222.SR", "MSFT",
-                       "AMZN", "TSLA", "NFLX", "PYPL", "MA", "TCEHY", "V"]
+                       "AMZN", "TSLA", "NFLX", "PYPL", "MA", "TCEHY", "V",
+                       "HKXCF", "COIN", "CME", "ICE", "LNSTY", "DBOEF", "NDAQ",
+                       "CBOE"]
 
 NAME_FOR_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
-                    "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa"]
+                    "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
+                    "Hong Kong Exchanges", "COIN", "CME", "Intercontinental Exchange",
+                    "London Stock Exchange", "Deutsche Borse", "Nasdaq", "CBOE"]
 
 COMPLETE_MKT_CAP = ["Apple", "Google", "Saudi Aramco", "Microsoft", "Amazon",
                     "Tesla", "Netflix", "Paypal", "MasterCard", "Tencent", "Visa",
                     "USD", "Gold", "Silver", "BTC"]
+
+COMPARED_MKT_CAP = ["Hong Kong Exchanges", "COIN", "CME", "Intercontinental Exchange",
+                    "London Stock Exchange", "Deutsche Borse", "Nasdaq", "CBOE", "BTC"]
 
 USD_SUPPLY = 19632088542000
 

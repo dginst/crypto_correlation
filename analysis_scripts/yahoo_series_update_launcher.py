@@ -22,10 +22,3 @@ yesterday_str = yesterday_str()
 
 mkt_data_op(YAHOO_TO_DOWNLOAD_CODE, YAHOO_TO_DOWNLOAD_NAME,
             YAHOO_TO_RETURN, "2015-12-31", yesterday_str)
-
-# -----------------------
-# market cap update
-
-# mongo_coll_drop("market_cap")
-
-# mkt_cap_op(TICKERS_FOR_MKT_CAP, NAME_FOR_MKT_CAP, yesterday_str)
