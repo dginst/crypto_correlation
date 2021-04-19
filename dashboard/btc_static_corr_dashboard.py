@@ -17,8 +17,12 @@ from dash.dependencies import Input, Output
 pio.templates.default = "none"
 
 stat_corr = query_mongo(DB_NAME, "stat_yahoo_correlation_1M")
+stat_corr = stat_corr.rename(
+    {"EUR Aggregate Bond": "PAN EUR"}, axis="columns")
 
 column_set = list(stat_corr.columns)
+
+print(column_set)
 
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CYBORG],
@@ -187,8 +191,10 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
     # as of selection
     dff_corr_as_of = dff_window.loc[dff_window["As Of"] == as_of_selection]
     dff_corr_as_of = dff_corr_as_of.drop(columns=["As Of"])
+    dff_corr_as_of = dff_corr_as_of.rename(
+        {"EUR Aggregate Bond": "PAN EUR"}, axis="columns")
 
-    N = len(list(dff_corr_as_of.columns)) - 1
+    N = len(list(dff_corr_as_of.columns))
 
     corr_mat = [[dff_corr_as_of.iloc[i, j] if i >= j else None for j in range(N)]
                 for i in range(N)]
@@ -298,7 +304,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
             range=[0, N],
             tickfont=dict(color="#FFA500"),
             tickmode='array',
-            tickvals=[17, 16, 15, 14],
+            tickvals=[0, 1, 2, 3],
             ticktext=['BTC', 'ETH', 'LTC', 'XRP'],
             # overlaying="y",
             side="bottom",
@@ -308,7 +314,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
             range=[0, N],
             tickfont=dict(color="#228B22"),
             tickmode='array',
-            tickvals=[4.5, 5.5, 6.5, 7.5],
+            tickvals=[13.5, 12.5, 11.5, 10.5],
             ticktext=['GOLD', 'COPPER', 'CRUDE OIL', 'CORN'],
             overlaying="y",
             side="left",
@@ -317,7 +323,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
             range=[0, N],
             tickfont=dict(color="#4169E1"),
             tickmode='array',
-            tickvals=[8.5, 9.5, 10.5, 11.5],
+            tickvals=[9.5, 8.5, 7.5, 6.5],
             ticktext=['EUR', 'GBP', 'JPY', 'CHF'],
             overlaying="y",
             side="bottom",
@@ -326,7 +332,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
             range=[0, N],
             tickfont=dict(color="#A9A9A9"),
             tickmode='array',
-            tickvals=[12.5, 13.5, 14.5, 15.5],
+            tickvals=[5.5, 4.5, 3.5, 2.5],
             ticktext=['NASDAQ', 'S&P500', 'EUROSTOXX50', 'VIX'],
             overlaying="y",
             side="bottom",
@@ -335,7 +341,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
             range=[0, N],
             tickfont=dict(color="#C0C0C0"),
             tickmode='array',
-            tickvals=[16.5, 17.5],
+            tickvals=[1.5, 0.5],
             ticktext=['US TREASURY', 'PAN EUR'],
             overlaying="y",
             side="bottom",
