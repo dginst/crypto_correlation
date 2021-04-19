@@ -102,6 +102,12 @@ def mongo_indexing():
     db.stat_yahoo_correlation_1Y.create_index([("id", -1)])
     db.stat_yahoo_correlation_1Q.create_index([("id", -1)])
     db.stat_yahoo_correlation_1M.create_index([("id", -1)])
+    # ---
+    db.stat_yahoo_correlation_all_quarter.create_index([("id", -1)])
+    db.stat_yahoo_correlation_3Y_quarter.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1Y_quarter.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1Q_quarter.create_index([("id", -1)])
+    db.stat_yahoo_correlation_1M_quarter.create_index([("id", -1)])
 
     # dynamic SP500 correlation collections
     db.dyn_SP500_correlation_3Y.create_index([("id", -1)])
@@ -245,6 +251,12 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_1Y_stat_yahoo": db.stat_yahoo_correlation_1Y,
             "collection_1Q_stat_yahoo": db.stat_yahoo_correlation_1Q,
             "collection_1M_stat_yahoo": db.stat_yahoo_correlation_1M,
+            # -----------
+            "collection_all_stat_yahoo_quarter": db.stat_yahoo_correlation_all_quarter,
+            "collection_3Y_stat_yahoo_quarter": db.stat_yahoo_correlation_3Y_quarter,
+            "collection_1Y_stat_yahoo_quarter": db.stat_yahoo_correlation_1Y_quarter,
+            "collection_1Q_stat_yahoo_quarter": db.stat_yahoo_correlation_1Q_quarter,
+            "collection_1M_stat_yahoo_quarter": db.stat_yahoo_correlation_1M_quarter,
 
             # static altcoins correlation collections
             "collection_all_stat_alt": db.stat_alt_correlation_all,
@@ -404,6 +416,12 @@ def mongo_coll_drop(corr_type):
         db.stat_yahoo_correlation_1Y.drop()
         db.stat_yahoo_correlation_1Q.drop()
         db.stat_yahoo_correlation_1M.drop()
+        # ---
+        db.stat_yahoo_correlation_all_quarter.drop()
+        db.stat_yahoo_correlation_3Y_quarter.drop()
+        db.stat_yahoo_correlation_1Y_quarter.drop()
+        db.stat_yahoo_correlation_1Q_quarter.drop()
+        db.stat_yahoo_correlation_1M_quarter.drop()
         # ---
         db.dash_static_corr.drop()
 

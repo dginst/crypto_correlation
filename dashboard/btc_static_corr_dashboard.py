@@ -1,5 +1,5 @@
 import urllib.parse
-
+from datetime import datetime
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
@@ -7,8 +7,10 @@ import dash_html_components as html
 import numpy as np
 import plotly.graph_objects as go
 import plotly.io as pio
+from btc_analysis.calc import last_quarter_end
 from btc_analysis.config import DB_NAME, STATIC_COLORSCALE
 from btc_analysis.dashboard_func import static_corr_df
+from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
 
@@ -31,6 +33,23 @@ app.css.append_css(
 # Data
 
 window_list = ["all", "3Y", "1Y", "1Q", "1M"]
+
+yesterday = yesterday_str()
+last_quarter_ = last_quarter_end()
+last_quarter = datetime.strptime(
+    last_quarter_, "%d-%m-%Y").strftime("%Y-%m-%d")
+
+as_of_list = [yesterday, last_quarter_]
+
+all_options = {
+
+    'all': [yesterday, last_quarter_],
+    '3Y': [yesterday, last_quarter_],
+    '1Y': [yesterday, last_quarter_],
+    '1Q': [yesterday, last_quarter_],
+    '1M': [yesterday, last_quarter_],
+
+}
 
 
 # ----------------
@@ -62,15 +81,25 @@ app.layout = dbc.Container([
                                         html.Label(['Correlation Window']),
 
                                         dcc.Dropdown(
-                                            id='my_static_dropdown',
+                                            id='corr_static_dropdown',
                                             options=[
-                                                {'label': w, 'value': w} for w in window_list
+                                                {'label': w, 'value': w} for w in all_options.keys()
                                             ],
                                             multi=False,
                                             value="3Y",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),
+
+                                        html.Hr(),
+
+                                        html.Label(['As of:']),
+
+                                        dcc.Dropdown(id='as_of_dropdown',
+                                                     style={"width": "50%"},
+                                                     ),
+
+                                        html.Hr(),
 
                                         dcc.Graph(
                                             id='my_corr_heatmap', figure={}),
@@ -107,23 +136,61 @@ app.layout = dbc.Container([
 # Callbacks part
 
 
+@app.callback(
+    Output(component_id='as_of_dropdown', component_property='options'),
+    Input(component_id="corr_static_dropdown", component_property="value")
+)
+def set_as_of_option(selected_time_window):
+
+    yesterday = yesterday_str()
+    last_quarter_ = last_quarter_end()
+
+    all_options = {
+
+        'all': [yesterday, last_quarter_],
+        '3Y': [yesterday, last_quarter_],
+        '1Y': [yesterday, last_quarter_],
+        '1Q': [yesterday, last_quarter_],
+        '1M': [yesterday, last_quarter_],
+
+    }
+
+    return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
+
+
+@app.callback(
+    Output(component_id="as_of_dropdown", component_property="value"),
+    Input(component_id="as_of_dropdown", component_property="options")
+)
+def set_as_of_value(available_options):
+
+    return available_options[0]['value']
+
+
 @ app.callback(
     [Output(component_id="my_corr_heatmap", component_property="figure"),
      Output(component_id='download-link_static', component_property='href')],
-    Input(component_id="my_static_dropdown", component_property="value")
+    [Input(component_id="corr_static_dropdown", component_property="value"),
+     Input(component_id="as_of_dropdown", component_property="value"),
+     Input(component_id="yahoo-update", component_property="n_intervals")]
 )
-def update_graph_vola(window_selection):
+def update_corr_matrix(window_selection, as_of_selection, n_intervals):
 
-    df_static = static_corr_df(window_list)
+    df_static = query_mongo(DB_NAME, "dash_static_corr")
 
     dff_static = df_static.copy()
 
+    # window selection
     dff_window = dff_static.loc[dff_static.Window == window_selection]
     dff_window = dff_window.drop(columns=["Window"])
 
-    N = len(list(dff_window.columns)) - 1
+    # as of selection
+    dff_corr_as_of = dff_window.loc[dff_window["As Of"] == as_of_selection]
+    dff_corr_as_of = dff_corr_as_of.drop(columns=["As Of"])
 
-    corr_mat = [[dff_window.iloc[i, j] if i >= j else None for j in range(N)]
+    N = len(list(dff_corr_as_of.columns)) - 1
+
+    corr_mat = [[dff_corr_as_of.iloc[i, j] if i >= j else None for j in range(N)]
                 for i in range(N)]
 
     hovertext = [[f'corr_mat({column_set[i]}, {column_set[j]})= {corr_mat[i][j]:.2f}' if i >=

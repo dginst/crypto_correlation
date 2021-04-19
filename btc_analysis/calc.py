@@ -440,16 +440,31 @@ def dynamic_corr_op(return_df, corr_set):
 # --------------------------
 
 
-def static_corr(return_df, time_window=None, comp_set=None):
+def static_corr(return_df, time_window=None, comp_set=None, quarter="N"):
+
+    last_q = last_quarter_end()
 
     if time_window is None:
 
         df_to_compute = return_df
 
+        if quarter == "Y":
+
+            df_to_compute = df_to_compute.loc[df_to_compute.Date < last_q]
+
+        else:
+            pass
+
     else:
 
-        first_row = return_df.head(1)
-        first_date = str(first_row["Date"].to_numpy()[0])
+        if quarter == "Y":
+
+            first_date = last_q
+
+        else:
+
+            first_row = return_df.head(1)
+            first_date = str(first_row["Date"].to_numpy()[0])
 
         delta_date = roll_single_time(first_date, time_window)
 
@@ -467,13 +482,13 @@ def static_corr(return_df, time_window=None, comp_set=None):
     return corr_matrix
 
 
-def static_corr_op(return_df, comp_set=None):
+def static_corr_op(return_df, comp_set=None, quarter="N"):
 
-    static_all = static_corr(return_df, comp_set=comp_set)
-    static_3Y = static_corr(return_df, "3Y", comp_set)
-    static_1Y = static_corr(return_df, "1Y", comp_set)
-    static_1Q = static_corr(return_df, "1Q", comp_set)
-    static_1M = static_corr(return_df, "1M", comp_set)
+    static_all = static_corr(return_df, comp_set=comp_set, quarter=quarter)
+    static_3Y = static_corr(return_df, "3Y", comp_set, quarter=quarter)
+    static_1Y = static_corr(return_df, "1Y", comp_set, quarter=quarter)
+    static_1Q = static_corr(return_df, "1Q", comp_set, quarter=quarter)
+    static_1M = static_corr(return_df, "1M", comp_set, quarter=quarter)
 
     return static_all, static_3Y, static_1Y, static_1Q, static_1M
 

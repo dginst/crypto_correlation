@@ -1,14 +1,8 @@
-from btc_analysis.mongo_func import (
-    query_mongo, mongo_upload, mongo_coll_drop
-)
-from btc_analysis.config import (
-    DB_NAME, INDEX_DB_NAME, CORR_WINDOW_LIST, CORR_MATRIX_LIST
-)
-from btc_analysis.calc import (
-    return_retrieve, static_corr_op,
-    dynamic_corr_op, price_retrieve
-)
-from btc_analysis.dashboard_func import (dash_correlation_df)
+from btc_analysis.calc import price_retrieve, return_retrieve, static_corr_op
+from btc_analysis.config import (CORR_MATRIX_LIST, DB_NAME, INDEX_DB_NAME,
+                                 STAT_CORR_WINDOW_LIST)
+from btc_analysis.dashboard_func import dash_static_corr_df
+from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload, query_mongo
 
 mongo_coll_drop("static_alt")
 mongo_coll_drop("static_yahoo")
@@ -28,6 +22,19 @@ mongo_upload(static_1Y, "collection_1Y_stat_yahoo")
 mongo_upload(static_1Q, "collection_1Q_stat_yahoo")
 mongo_upload(static_1M, "collection_1M_stat_yahoo")
 
+static_all_q, static_3Y_q, static_1Y_q, static_1Q_q, static_1M_q = static_corr_op(
+    tot_ret, CORR_MATRIX_LIST, quarter="Y")
+
+mongo_upload(static_all_q, "collection_all_stat_yahoo_quarter")
+mongo_upload(static_3Y_q, "collection_3Y_stat_yahoo_quarter")
+mongo_upload(static_1Y_q, "collection_1Y_stat_yahoo_quarter")
+mongo_upload(static_1Q_q, "collection_1Q_stat_yahoo_quarter")
+mongo_upload(static_1M_q, "collection_1M_stat_yahoo_quarter")
+
+# -----------------
+# correlation total dataframes for dash
+
+dash_static_corr_df(STAT_CORR_WINDOW_LIST)
 
 # ------------------------------------------------------------------------
 # BTC correlations with altcoins
@@ -43,6 +50,3 @@ mongo_upload(stat_alt_corr_3Y, "collection_3Y_stat_alt")
 mongo_upload(stat_alt_corr_1Y, "collection_1Y_stat_alt")
 mongo_upload(stat_alt_corr_1Q, "collection_1Q_stat_alt")
 mongo_upload(stat_alt_corr_1M, "collection_1M_stat_alt")
-
-# -----------------
-# correlation total dataframes for dash

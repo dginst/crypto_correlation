@@ -41,7 +41,7 @@ def vola_total_df(days_list):
 
 def static_corr_df(window_list):
 
-    static_df = reunite_df(window_list, "yahoo", "static")
+    static_df = reunite_df(window_list, "yahoo", "static_y", quarter="Y")
 
     return static_df
 
@@ -76,6 +76,11 @@ def retrieve_and_add(window, typology, op, as_of=""):
     elif op == "static":
 
         coll = "stat" + "_" + typology + "_" + "correlation" + "_" + window
+
+    elif op == "static_y":
+
+        coll = "stat" + "_" + typology + "_" + "correlation" + "_" + window + as_of
+        print(coll)
 
     elif op == "btc_denominated":
 
@@ -115,6 +120,10 @@ def column_set_finder(typology, op):
     if op == "correlation":
 
         coll = "dyn" + "_" + typology + "_" + "correlation" + "_1M"
+
+    elif op == "static_y":
+
+        coll = "stat" + "_" + typology + "_" + "correlation" + "_1M"
 
     elif op == "static":
 
