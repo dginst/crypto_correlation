@@ -217,6 +217,33 @@ def last_quarter_end():
 
     return last_q_date_end
 
+
+def last_q_end_word():
+
+    today_month = int(datetime.now().month)
+    today_year = int(datetime.now().year)
+    last_year = today_year - 1
+
+    if today_month <= 3:
+
+        quart = "31 Dec " + str(last_year)
+
+    elif today_month <= 6:
+
+        quart = "31 Mar " + str(today_year)
+
+    elif today_month <= 9:
+
+        quart = "30 Jun " + str(today_year)
+
+    elif today_month <= 12:
+
+        quart = "30 Sep " + str(today_year)
+
+    last_q_date_end = quart
+
+    return last_q_date_end
+
 # ----------------------------------
 # RETURN RETRIEVE AND SETUP OPERATION
 # ----------------------------------

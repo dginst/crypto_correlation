@@ -473,7 +473,7 @@ def mkt_cap_btc(yesterday_human):
     return btc_mkt_cap
 
 # ------------------------
-# BTC SUPPLY AND MARKET CAP
+# BTC NETWORK
 # -----------------------
 
 # function that download data from blockchain.info website
@@ -489,16 +489,22 @@ def blockchain_stats_api():
         response = response.json()
         r = response
         sats_for_btc = 100000000
+        timestamp = r["timestamp"]
         total_supply = r["totalbc"] / sats_for_btc
         total_blocks = r["n_blocks_total"]
         daily_btc = r["n_btc_mined"] / sats_for_btc
         daily_block = r["n_blocks_mined"]
+        hash_rate = r["hash_rate"]
+        difficulty = r["difficulty"]
 
         rawdata = {
+            "Timestamp": timestamp,
             "Supply": total_supply,
             "Block Number": total_blocks,
             "Daily BTC": daily_btc,
             "Daily Block": daily_block,
+            "Hash Rate": hash_rate,
+            "Difficulty": difficulty,
         }
 
         return rawdata
@@ -524,7 +530,7 @@ def blockchain_stats_op():
 
     raw_data_df = pd.DataFrame(raw_data, index=[0])
 
-    mongo_upload(raw_data_df, "collection_btc_supply")
+    mongo_upload(raw_data_df, "collection_btc_network")
 
 
 def check_and_add_supply():
@@ -606,6 +612,29 @@ def btc_supply_op(issuance_df):
     final_df = theoretical_supply(complete_df)
 
     return final_df
+
+# ----
+# hash rate
+
+# ----
+
+
+def check_and_add_daily(new_df, coll_to_look, coll_to_upload):
+
+    yesterday = yesterday_str("%Y-%m-%d")
+
+    df_hist = query_mongo("btc_analysis", coll_to_look)
+    last_day = df_hist.tail(1)
+    last_date = np.array(last_day["Date"])[0]
+
+    if last_date == yesterday:
+
+        pass
+
+    else:
+
+        mongo_upload(new_df, coll_to_upload)
+
 
 # ----------------------
 # HISTORICAL VOLATILITY

@@ -1,9 +1,10 @@
 import pandas as pd
 from datetime import datetime, date
+import numpy as np
 
 from btc_analysis.mongo_func import query_mongo, mongo_upload
 from btc_analysis.market_data import yesterday_str
-from btc_analysis.calc import last_quarter_end
+from btc_analysis.calc import last_quarter_end, last_q_end_word
 
 # -------------------
 
@@ -203,3 +204,133 @@ def date_elements():
     max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
 
     return max_year, max_month, max_day
+
+
+# ------
+# BTC statistics and network functions
+
+def btc_price_min(price_df):
+
+    price_df["Year"] = [int(x.year) for x in price_df["Datetime"]]
+
+    list_of_year = list(np.array(price_df["Year"].unique()))
+
+    minimum_arr = np.array([])
+    date_arr = np.array([])
+    value_arr = np.array([])
+
+    for y in list_of_year:
+
+        y_price = np.array(price_df.loc[price_df.Year == y, "BTC Price"])
+
+        min_val = min(y_price)
+
+        min_date = np.array(price_df.loc[price_df["BTC Price"]
+                                         == min_val, "Datetime"])[0]
+
+        min_date = pd.to_datetime(str(min_date))
+        min_date = min_date.strftime('%Y-%m-%d')
+
+        date_arr = np.append(date_arr, min_date)
+        value_arr = np.append(value_arr, min_val)
+
+    minimum_arr = np.column_stack((date_arr, value_arr))
+
+    minimum_df = pd.DataFrame(minimum_arr, columns=["Date", "BTC Price"])
+    minimum_df["Datetime"] = [datetime.strptime(
+        d, '%Y-%m-%d') for d in minimum_df["Date"]]
+
+    return minimum_df
+
+
+# -------
+# performances for table
+
+def perf_df_creator(initial_df):
+
+    list_of_asset = np.array(list(initial_df.columns))
+
+    first_row = initial_df.head(1)
+    last_row = initial_df.tail(1)
+
+    perf_row = np.array((last_row - first_row) / first_row)
+
+    final_arr = np.column_stack((list_of_asset, perf_row))
+
+    final_df = pd.DataFrame(final_arr, columns=["Crypto-Asset", "Performance"])
+
+    return final_df
+
+
+def btc_yearly_perf(initial_df):
+
+    initial_df["Year"] = [int(d.year) for d in initial_df["Datetime"]]
+
+    yesterday_str_ = yesterday_str("%d-%m-%Y")
+    yesterday_date = datetime.strptime(yesterday_str_, "%d-%m-%Y")
+    day_curr = int(yesterday_date.day)
+    month_curr = int(yesterday_date.month)
+    year_curr = int(yesterday_date.year)
+
+    last_quarter = last_q_end_word()
+    last_q_date = datetime.strptime(last_quarter_end(), "%d-%m-%Y")
+    last_q_date_ = last_q_date.strftime("%d-%m-%Y")
+    print(last_q_date_)
+
+    list_of_year = list(np.array(initial_df["Year"].unique()))
+
+    tot_arr = np.array([])
+    year_arr = np.array([])
+    value_arr = np.array([])
+    perf_arr = np.array([])
+
+    for y in list_of_year:
+
+        y_df = initial_df.loc[initial_df.Year == y, "BTC Price"]
+        y_df_plus = initial_df.loc[initial_df.Year == y]
+
+        if y == year_curr:
+
+            if month_curr <= 3:
+
+                if month_curr == 1:
+
+                    m_ = "Jan"
+
+                elif month_curr == 2:
+
+                    m_ = "Feb"
+
+                elif month_curr == 3:
+
+                    m_ = "Mar"
+
+                date_string = str(day_curr) + " " + m_ + " " + str(y)
+                y_last = np.array(
+                    y_df_plus.loc[y_df_plus.Date == yesterday_str_, "BTC Price"])[0]
+
+            else:
+
+                date_string = last_quarter
+                y_last = np.array(
+                    y_df_plus.loc[y_df_plus.Date == last_q_date_, "BTC Price"])[0]
+
+        else:
+
+            date_string = "31 Dec " + str(y)
+            y_last = np.array(y_df.tail(1))[0]
+
+        y_first = np.array(y_df.head(1))[0]
+
+        y_perf = ((y_last - y_first) / y_first)*100
+
+        year_arr = np.append(year_arr, date_string)
+        value_arr = np.append(value_arr, y_last)
+        perf_arr = np.append(perf_arr, y_perf)
+
+    tot_arr = np.column_stack((year_arr, value_arr, perf_arr))
+
+    final_df = pd.DataFrame(
+        tot_arr, columns=["Date", "Price", "Yearly Performance"])
+
+    return final_df

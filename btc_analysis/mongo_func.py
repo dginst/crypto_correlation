@@ -202,6 +202,13 @@ def mongo_indexing():
 
     # supply
     db.btc_total_supply.create_index([("id", -1)])
+    db.btc_hist_supply.create_index([("id", -1)])
+
+    # btc network info
+    db.btc_network.create_index([("id", -1)])
+
+    # hash rate
+    db.hash_rate.create_index([("id", -1)])
 
     # dash
     db.dash_corr_yahoo.create_index([("id", -1)])
@@ -358,6 +365,13 @@ def mongo_coll(db_name="btc_analysis"):
 
             # supply
             "collection_total_supply": db.btc_total_supply,
+            "collection_hist_supply": db.btc_hist_supply,
+
+            # network information
+            "collection_btc_network": db.btc_network,
+
+            # hash rate
+            "collection_hash_rate": db.hash_rate,
 
             # dashboard total df
             "collection_dash_static_corr": db.dash_static_corr,
@@ -594,6 +608,18 @@ def mongo_coll_drop(corr_type):
 
         db.btc_total_supply.drop()
         db.btc_supply.drop()
+
+    elif corr_type == "hist_supply":
+
+        db.btc_hist_supply.drop()
+
+    elif corr_type == "hash_rate":
+
+        db.hash_rate.drop()
+    
+    elif corr_type == "btc_network":
+
+        db.btc_network.drop()
 
     elif corr_type == "index":
 

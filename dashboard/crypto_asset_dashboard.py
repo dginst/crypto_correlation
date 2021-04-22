@@ -12,7 +12,8 @@ from btc_analysis.config import (BEST_PERFORMING_LIST,
                                  BEST_PERFORMING_LIST_VOL, COMPLETE_MKT_CAP,
                                  CRYPTO_LIST, DB_NAME, YAHOO_DASH_LIST)
 from btc_analysis.dashboard_func import (btc_total_dfs, usd_den_total_df,
-                                         vola_total_df, date_elements)
+                                         vola_total_df, date_elements,
+                                         perf_df_creator)
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
@@ -140,7 +141,14 @@ app.layout = dbc.Container([
                                             href="",
                                             target="_blank"
                                         )
-                                    ])
+                                    ]),
+
+                                    dbc.Col([
+
+                                            dcc.Graph(
+                                                id='crypto_perf', figure={}),
+
+                                            ])
 
                                 ]),
                             ]),
@@ -247,7 +255,7 @@ app.layout = dbc.Container([
 # btc denominated crypto-assets callbacks
 
 
-@app.callback(
+@ app.callback(
     Output(component_id='as_of_dropdown', component_property='options'),
     Input(component_id="time_window_dropdown", component_property="value")
 )
@@ -271,7 +279,7 @@ def set_as_of_option(selected_time_window):
     return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="as_of_dropdown", component_property="value"),
     Input(component_id="as_of_dropdown", component_property="options")
 )
@@ -282,6 +290,7 @@ def set_as_of_value(available_options):
 
 @ app.callback(
     [Output(component_id="crypto_line", component_property="figure"),
+     Output(component_id="crypto_perf", component_property="figure"),
      Output(component_id='download-link_alt', component_property='href')],
     [Input(component_id="time_window_dropdown", component_property="value"),
         Input(component_id="as_of_dropdown", component_property="value"),
@@ -305,6 +314,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     dff_alt_filtered = dff_alt_as_of[asset_selection]
     dff_alt_filtered["Date"] = dff_date_alt
 
+    # perf graph
     fig_alt = px.line(
         data_frame=dff_alt_filtered,
         x="Date",
@@ -330,17 +340,32 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         }
     )
 
+    # performances table
+    dff_for_table = dff_alt_filtered.copy()
+    dff_for_table = dff_for_table.drop(columns="Date")
+
+    perf_df = perf_df_creator(dff_for_table)
+
+    table_perf = go.Figure(data=[go.Table(
+        header=dict(values=list(perf_df.columns),
+                    fill_color='paleturquoise',
+                    align='left'),
+        cells=dict(values=[perf_df["Crypto-Asset"], perf_df.Perfomance],
+                   fill_color='lavender',
+                   align='left'))
+    ])
+
     csv_string_alt = dff_alt_w.to_csv(index=False, encoding='utf-8')
     csv_string_alt = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_alt)
 
-    return fig_alt, csv_string_alt
+    return fig_alt, table_perf, csv_string_alt
 
 
 # crypto-assets correlation with bictoin
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_corr",
            component_property="max_date_allowed"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -354,7 +379,7 @@ def set_max_date(n):
     return max_date
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_corr",
            component_property="end_date"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -366,6 +391,7 @@ def set_end_date(n):
     end_date_ = date(max_y, max_m, max_d)
 
     return end_date_
+
 
 @ app.callback(
     [
@@ -433,4 +459,4 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000, host='0.0.0.0')
+    app.run_server(debug=True, port=4000)#, host='0.0.0.0')
