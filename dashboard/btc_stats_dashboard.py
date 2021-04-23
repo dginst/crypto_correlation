@@ -361,7 +361,7 @@ def update_index_df(start, stop, n):
                    fill_color='black',
                    align=['center', 'right', 'right'],
                    font=dict(color='white', size=11),
-                   format=[None, None, ",.2f%"],
+                   format=[None, ",.2f", ",.2f%"],
                    suffix=[None, '$', '%'],
                    height=25)
     )
@@ -508,7 +508,7 @@ def update_log_price(n):
                    fill_color='black',
                    format=[None, ",.2f"],
                    suffix=[None, '$'],
-                   align=['center', 'left'],
+                   align=['center', 'right'],
                    font=dict(color='white', size=11),
                    height=25)
     )
