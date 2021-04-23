@@ -256,7 +256,7 @@ def perf_df_creator(initial_df):
     num = last_row - first_row
     print(num)
 
-    perf_df = den / first_row
+    perf_df = num / first_row
     print(perf_df)
 
     final_arr = np.column_stack((list_of_asset, perf_row))
