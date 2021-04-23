@@ -459,4 +459,4 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=4000)#, host='0.0.0.0')
+    app.run_server(debug=True, port=4000, host='0.0.0.0')
