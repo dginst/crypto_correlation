@@ -10,8 +10,19 @@ from btc_analysis.market_data import btc_supply_op
 
 mongo_coll_drop("hash_rate")
 mongo_coll_drop("hist_supply")
+mongo_coll_drop("btc_price")
 
 mongo_indexing()
+
+# --------
+# BTC Price
+
+csv_btc_price = pd.read_csv(
+    Path("source_data", "BTC_price.csv"), sep="|")
+
+
+mongo_upload(csv_btc_price, "collection_btc_price")
+
 
 # ----------
 # hash rate

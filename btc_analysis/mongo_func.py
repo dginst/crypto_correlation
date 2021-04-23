@@ -210,6 +210,9 @@ def mongo_indexing():
     # hash rate
     db.hash_rate.create_index([("id", -1)])
 
+    # btc price
+    db.btc_price.create_index([("id", -1)])
+
     # dash
     db.dash_corr_yahoo.create_index([("id", -1)])
     db.dash_corr_crypto.create_index([("id", -1)])
@@ -372,6 +375,9 @@ def mongo_coll(db_name="btc_analysis"):
 
             # hash rate
             "collection_hash_rate": db.hash_rate,
+
+            # btc price
+            "collection_btc_price": db.btc_price,
 
             # dashboard total df
             "collection_dash_static_corr": db.dash_static_corr,
@@ -616,7 +622,11 @@ def mongo_coll_drop(corr_type):
     elif corr_type == "hash_rate":
 
         db.hash_rate.drop()
-    
+
+    elif corr_type == "btc_price":
+
+        db.btc_price.drop()
+
     elif corr_type == "btc_network":
 
         db.btc_network.drop()

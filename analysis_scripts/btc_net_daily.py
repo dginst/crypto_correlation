@@ -13,6 +13,20 @@ mongo_coll_drop("btc_network")
 mongo_indexing()
 
 yesterday = yesterday_str("%Y-%m-%d")
+yesterday_ = yesterday_str("%d-%m-%Y")
+
+# ---
+# btc price collection update
+
+crypto_price_df = query_mongo("index", "crypto_price")
+btc_tot_df = crypto_price_df[["BTC"]]
+btc_last = np.array(btc_tot_df.tail(1))[0]
+
+new_arr = np.column_stack((yesterday_, btc_last))
+
+new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
+
+check_and_add_daily(new_df, "btc_price", "collection_btc_price")
 
 # ---
 # daily blockchain info
@@ -35,6 +49,10 @@ check_and_add_daily(hr_df, "hash_rate", "collection_hash_rate")
 
 supply_df = daily_df.copy()
 supply_df = supply_df[["Daily BTC", "Daily Block"]]
+
+# cum_sum = supply_df.cumsum()
+# last_values = cum_sum.tail(1)
+
 supply_df["Date"] = yesterday
 supply_df = supply_df.rename({"Daily BTC": "BTC Issuance",
                               "Daily Block": "BTC Blocks"
