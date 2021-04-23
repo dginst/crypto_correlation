@@ -93,6 +93,7 @@ app.layout = dbc.Container([
                         dbc.CardBody(
                             [
                                 dbc.Row([
+
                                     dbc.Col([
 
                                         html.Label(['Time Window:']),
@@ -129,7 +130,9 @@ app.layout = dbc.Container([
                                             inputStyle={"margin-right": "10px",
                                                         "margin-left": "10px"}
                                         ),
+                                    ]),
 
+                                    dbc.Col([
 
                                         dcc.Graph(
                                             id='crypto_line', figure={}),
@@ -141,16 +144,16 @@ app.layout = dbc.Container([
                                             href="",
                                             target="_blank"
                                         )
-                                    ]),
+                                    ], width=8),
 
                                     dbc.Col([
 
                                             dcc.Graph(
                                                 id='crypto_perf', figure={}),
 
-                                            ])
+                                            ], width=4)
 
-                                ]),
+                                ], no_gutters=True),
                             ]),
                     ],
                     style={"width": "70rem"},
@@ -349,7 +352,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     print(perf_df)
 
     table_perf = go.Figure(data=[go.Table(
-        columnwidth=[60, 150],
+        columnwidth=[60, 80],
         header=dict(values=["Crypto-Asset", "Performance"],
                     line_color='white',
                     fill_color='black',
