@@ -250,16 +250,16 @@ def perf_df_creator(initial_df):
 
     list_of_asset = np.array(list(initial_df.columns))
 
-    first_row = initial_df.head(1)
-    last_row = initial_df.tail(1)
+    first_row = np.array(initial_df.head(1))
+    last_row = np.array(initial_df.tail(1))
 
     num = last_row - first_row
     print(num)
 
-    perf_df = num / first_row
-    print(perf_df)
+    perf_arr = num / first_row
+    print(perf_arr)
 
-    final_arr = np.column_stack((list_of_asset, perf_row))
+    final_arr = np.column_stack((list_of_asset, perf_arr))
 
     final_df = pd.DataFrame(final_arr, columns=["Crypto-Asset", "Performance"])
     print(final_df)
