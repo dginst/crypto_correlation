@@ -131,6 +131,9 @@ app.layout = dbc.Container([
                                                         "margin-left": "10px"}
                                         ),
                                     ]),
+                                ]),
+
+                                dbc.Row([
 
                                     dbc.Col([
 
