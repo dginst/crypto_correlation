@@ -506,6 +506,8 @@ def update_log_price(n):
         cells=dict(values=[min_point_dff["Year"], min_point_dff["BTC Price"]],
                    line_color='white',
                    fill_color='black',
+                   format=[None, ",.2f"],
+                   suffix=[None, '$'],
                    align=['center', 'left'],
                    font=dict(color='white', size=11),
                    height=25)
