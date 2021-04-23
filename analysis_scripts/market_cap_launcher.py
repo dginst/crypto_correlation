@@ -4,13 +4,13 @@ from btc_analysis.market_data import (mkt_cap_op, yesterday_str
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
                                      )
 
-mongo_indexing()
+mongo_coll_drop("market_cap")
 
+mongo_indexing()
 
 # -----------------------
 # market cap update
 
-mongo_coll_drop("market_cap")
 
 yesterday_str = yesterday_str()
 
