@@ -346,13 +346,16 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         }
     )
 
+    fig_alt.update_layout(
+        height=500,
+    )
+
     # performances table
     dff_for_table = dff_alt_filtered.copy()
     dff_for_table = dff_for_table.drop(columns="Date")
 
     perf_df = perf_df_creator(dff_for_table)
     perf_df = perf_df.loc[perf_df["Crypto-Asset"] != "BTC"]
-    print(perf_df)
 
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[60, 80],
