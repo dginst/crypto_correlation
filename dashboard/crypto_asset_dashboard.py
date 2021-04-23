@@ -345,15 +345,33 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     dff_for_table = dff_for_table.drop(columns="Date")
 
     perf_df = perf_df_creator(dff_for_table)
+    perf_df = perf_df.loc[perf_df["Crypto-Asset"] != "BTC"]
+    print(perf_df)
 
     table_perf = go.Figure(data=[go.Table(
-        header=dict(values=list(perf_df.columns),
-                    fill_color='paleturquoise',
-                    align='left'),
-        cells=dict(values=[perf_df["Crypto-Asset"], perf_df.Perfomance],
-                   fill_color='lavender',
-                   align='left'))
+        columnwidth=[60, 150],
+        header=dict(values=["Crypto-Asset", "Performance"],
+                    line_color='white',
+                    fill_color='black',
+                    align='center',
+                    font=dict(color='white', size=12),
+                    height=35),
+        cells=dict(values=[perf_df["Crypto-Asset"], perf_df["Performance"]],
+                   line_color='white',
+                   fill_color='black',
+                   format=[None, ",.2f"],
+                   suffix=[None, '%'],
+                   align=['center', 'right'],
+                   font=dict(color='white', size=11),
+                   height=25)
+    )
     ])
+
+    table_perf.update_layout(
+        title_text="Crypto-Assets Performances",
+        template='plotly_dark',
+        height=500,
+    )
 
     csv_string_alt = dff_alt_w.to_csv(index=False, encoding='utf-8')
     csv_string_alt = "data:text/csv;charset=utf-8," + \
