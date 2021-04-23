@@ -461,12 +461,13 @@ def mkt_cap_btc(yesterday_human):
     blockchain_stats_op()
 
     btc_supply_df = query_mongo("btc_analysis", "btc_total_supply")
+    btc_supply_df_last = btc_supply_df.tail(1)
 
     query_btc_price = {"Date": yesterday_human}
     all_price_df = query_mongo("index", "crypto_price", query_btc_price)
 
     btc_price = np.array(all_price_df["BTC"])
-    btc_supply = np.array(btc_supply_df["Supply"])
+    btc_supply = np.array(btc_supply_df_last["Supply"])
 
     btc_mkt_cap = btc_price * btc_supply
 
