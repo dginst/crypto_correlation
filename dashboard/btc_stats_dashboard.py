@@ -390,7 +390,6 @@ def update_indicator(timer):
     df_price["Datetime"] = [datetime.strptime(
         d, "%d-%m-%Y") for d in df_price["Date"]]
     dff_p = df_price.copy()
-    dff_p = dff_p.drop(columns=["Days to Halving"])
 
     dff_last_p = dff_p.tail(2)
     dff_ind_y = dff_last_p[dff_last_p['Datetime']
