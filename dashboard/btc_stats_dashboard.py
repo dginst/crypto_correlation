@@ -296,8 +296,9 @@ def set_end_date(n):
 )
 def update_index_df(start, stop, n):
 
-    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
-    df_price = df_price.drop(columns=["Days to Halving"])
+    df_price = query_mongo("btc_analysis", "btc_price")
+    df_price["Datetime"] = [datetime.strptime(
+        d, "%d-%m-%Y") for d in df_price["Date"]]
 
     dff = df_price.copy()
     dff_for_perf = df_price.copy()
@@ -346,7 +347,6 @@ def update_index_df(start, stop, n):
     # table
 
     perf_df = btc_yearly_perf(dff_for_perf)
-    print(perf_df)
 
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[100, 80, 100],
@@ -386,7 +386,9 @@ def update_index_df(start, stop, n):
 )
 def update_indicator(timer):
 
-    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
+    df_price = query_mongo("btc_analysis", "btc_price")
+    df_price["Datetime"] = [datetime.strptime(
+        d, "%d-%m-%Y") for d in df_price["Date"]]
     dff_p = df_price.copy()
     dff_p = dff_p.drop(columns=["Days to Halving"])
 
@@ -424,8 +426,9 @@ def update_indicator(timer):
 )
 def update_log_price(n):
 
-    df_price = query_mongo("btc_analysis", "S2F_BTC_price")
-    df_price = df_price.drop(columns=["Days to Halving"])
+    df_price = query_mongo("btc_analysis", "btc_price")
+    df_price["Datetime"] = [datetime.strptime(
+        d, "%d-%m-%Y") for d in df_price["Date"]]
 
     dff = df_price.copy()
 
