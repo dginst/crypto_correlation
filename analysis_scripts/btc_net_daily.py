@@ -35,6 +35,7 @@ check_and_add_daily(new_df, "btc_price", "collection_btc_price")
 blockchain_stats_op()
 
 daily_df = query_mongo("btc_analysis", "btc_network")
+print(daily_df)
 
 # ---
 # hash rate
@@ -56,13 +57,14 @@ supply_df = supply_df[["Daily BTC", "Daily Block"]]
 # last_values = cum_sum.tail(1)
 
 supply_df["Date"] = yesterday
-supply_df = supply_df.rename({"Daily BTC": "BTC Issuance",
-                              "Daily Block": "BTC Blocks"
-                              })
-print(supply_df)
+supply_dff = supply_df.rename({"Daily BTC": "BTC Issuance",
+                               "Daily Block": "BTC Blocks"
+                               })
+print(supply_dff)
 
 # updating Block Number and BTC Issuance
-check_and_add_daily(supply_df, "btc_hist_supply", "collection_btc_hist_supply")
+check_and_add_daily(supply_dff, "btc_hist_supply",
+                    "collection_btc_hist_supply")
 
 # update supply computation and upload
 
