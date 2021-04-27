@@ -633,7 +633,6 @@ def check_and_add_daily(new_df, coll_to_look, coll_to_upload):
     yesterday = yesterday_str("%Y-%m-%d")
 
     df_hist = query_mongo("btc_analysis", coll_to_look)
-    print(df_hist)
     last_day = df_hist.tail(1)
     last_date = np.array(last_day["Date"])[0]
 
