@@ -631,9 +631,15 @@ def btc_supply_op(issuance_df):
 # ----
 
 
-def check_and_add_daily(new_df, coll_to_look, coll_to_upload):
+def check_and_add_daily(new_df, coll_to_look, coll_to_upload, type_="other"):
 
-    yesterday = yesterday_str("%Y-%m-%d")
+    if type_ == "other":
+
+        yesterday = yesterday_str("%Y-%m-%d")
+
+    elif type_ == "price":
+
+        yesterday = yesterday_str("%d-%m-%Y")
 
     df_hist = query_mongo("btc_analysis", coll_to_look)
     last_day = df_hist.tail(1)
