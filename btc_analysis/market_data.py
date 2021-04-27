@@ -571,9 +571,9 @@ def check_and_add_supply():
 def to_cumulative(issuance_df):
 
     complete_df = issuance_df.copy()
-    complete_df["BTC Issuance"] = [int(x) for x in complete_df["BTC Issuance"]]
-    complete_df["BTC Blocks"] = [int(x) for x in complete_df["BTC Blocks"]]
-    print(complete_df)
+    complete_df["BTC Issuance"] = [float(x)
+                                   for x in complete_df["BTC Issuance"]]
+    complete_df["BTC Blocks"] = [float(x) for x in complete_df["BTC Blocks"]]
     complete_df["Supply"] = complete_df["BTC Issuance"].cumsum()
     complete_df["Total Blocks"] = complete_df["BTC Blocks"].cumsum()
 
