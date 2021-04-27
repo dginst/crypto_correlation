@@ -192,8 +192,8 @@ def mkt_data_op(series_code_list, all_el_list_d,
                                                  end_period)
 
     # price and returns operation
-
-    complete_series_df_price = add_crypto(all_series_df_price)
+    complete_series_df_price = all_series_df_price
+    # complete_series_df_price = add_crypto(all_series_df_price)
     mongo_upload(complete_series_df_price, "collection_prices_y")
 
     all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
@@ -473,6 +473,14 @@ def mkt_cap_btc(yesterday_human):
 
     return btc_mkt_cap
 
+
+def mkt_cap_stable_op(tickers_list, name_list, yesterday_human):
+
+    mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
+
+    mongo_upload(mkt_cap_df_comp, "collection_market_cap")
+
+
 # ------------------------
 # BTC NETWORK
 # -----------------------
@@ -625,6 +633,7 @@ def check_and_add_daily(new_df, coll_to_look, coll_to_upload):
     yesterday = yesterday_str("%Y-%m-%d")
 
     df_hist = query_mongo("btc_analysis", coll_to_look)
+    print(df_hist)
     last_day = df_hist.tail(1)
     last_date = np.array(last_day["Date"])[0]
 

@@ -55,15 +55,18 @@ supply_df = supply_df[["Daily BTC", "Daily Block"]]
 
 # cum_sum = supply_df.cumsum()
 # last_values = cum_sum.tail(1)
+new_btc = np.array(supply_df["Daily BTC"])[0]
+new_block = np.array(supply_df["Daily Block"])[0]
+new_supply_arr = np.column_stack((yesterday, new_btc, new_block))
+new_supply_df = pd.DataFrame(new_supply_arr, columns=["Date", "BTC Issuance", "BTC Blocks"])
 
-supply_df["Date"] = yesterday
-supply_dff = supply_df.rename({"Daily BTC": "BTC Issuance",
-                               "Daily Block": "BTC Blocks"
-                               })
-print(supply_dff)
+# supply_dff = supply_df.rename({"Daily BTC": "BTC Issuance",
+#                                "Daily Block": "BTC Blocks"
+#                                })
+print(new_supply_df)
 
 # updating Block Number and BTC Issuance
-check_and_add_daily(supply_dff, "btc_hist_supply",
+check_and_add_daily(new_supply_df, "btc_hist_supply",
                     "collection_btc_hist_supply")
 
 # update supply computation and upload
