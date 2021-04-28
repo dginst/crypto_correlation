@@ -42,7 +42,7 @@ daily_df = query_mongo("btc_analysis", "btc_network")
 hr_df = daily_df.copy()
 hr_df = hr_df[["Hash Rate"]]
 hr_df["Date"] = yesterday
-hr_df["Hash Rate"] = [float(x) for x in hr_df["Hash Rate"]
+hr_df["Hash Rate"] = [float(x) for x in hr_df["Hash Rate"]]
 
 check_and_add_daily(hr_df, "hash_rate", "collection_hash_rate")
 
@@ -58,8 +58,9 @@ new_supply_arr = np.column_stack((yesterday, new_btc, new_block))
 new_supply_df = pd.DataFrame(new_supply_arr, columns=[
                              "Date", "BTC Issuance", "BTC Blocks"])
 
-new_supply_df["BTC Issuance"] = [float(x) for x in new_supply_df["BTC Issuance"]
-new_supply_df["BTC Blocks"] = [float(x) for x in new_supply_df["BTC Blocks"]
+new_supply_df["BTC Issuance"] = [float(x)
+                                 for x in new_supply_df["BTC Issuance"]]
+new_supply_df["BTC Blocks"] = [float(x) for x in new_supply_df["BTC Blocks"]]
 
 
 # updating Block Number and BTC Issuance
