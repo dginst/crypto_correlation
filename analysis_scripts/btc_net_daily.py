@@ -25,7 +25,7 @@ btc_last = np.array(btc_tot_df.tail(1))[0]
 new_arr = np.column_stack((yesterday_, btc_last))
 
 new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
-new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]
+new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
 
 check_and_add_daily(new_df, "btc_price", "collection_btc_price", type_="price")
 
