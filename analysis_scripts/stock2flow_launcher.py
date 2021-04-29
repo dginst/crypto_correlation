@@ -20,13 +20,14 @@ check_and_add()
 initial_data = pd.read_csv(
     Path("source_data", "initial_data_S2F.csv"), sep="|")
 
-BTC_prices = pd.read_csv(
-    Path("source_data", "BTC_price.csv"), sep="|")
+
+btc_price = query_mongo("btc_analysis", "btc_price")
 
 # adding the day to halving in each days
 
-price_df = days_to_halving(BTC_prices, HALVING_DATE)
+price_df = days_to_halving(btc_price, HALVING_DATE)
 mongo_upload(price_df, "collection_S2F_BTC")
+
 d = query_mongo("btc_analysis", "S2F_BTC_price")
 
 # -----------------------
