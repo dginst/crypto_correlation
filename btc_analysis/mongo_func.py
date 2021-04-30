@@ -213,6 +213,10 @@ def mongo_indexing():
     # btc price
     db.btc_price.create_index([("id", -1)])
 
+    # stabelcoin
+    db.stablecoin_all.create_index([("id", -1)])
+    db.stablecoin_daily.create_index([("id", -1)])
+
     # dash
     db.dash_corr_yahoo.create_index([("id", -1)])
     db.dash_corr_crypto.create_index([("id", -1)])
@@ -378,6 +382,10 @@ def mongo_coll(db_name="btc_analysis"):
 
             # btc price
             "collection_btc_price": db.btc_price,
+
+            # stablecoin
+            "collection_stablecoin_all": db.stablecoin_all,
+            "collection_stablecoin_daily": db.stablecoin_daily,
 
             # dashboard total df
             "collection_dash_static_corr": db.dash_static_corr,
@@ -630,6 +638,14 @@ def mongo_coll_drop(corr_type):
     elif corr_type == "btc_network":
 
         db.btc_network.drop()
+
+    elif corr_type == "stable_daily":
+
+        db.stablecoin_daily.drop()
+
+    elif corr_type == "stable_hist":
+
+        db.stablecoin_all.drop()
 
     elif corr_type == "index":
 

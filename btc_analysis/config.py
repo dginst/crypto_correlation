@@ -463,6 +463,27 @@ YAHOO_TO_DOWNLOAD_CODE = ['^GSPC',
                           'AAPL',
                           'NFLX']
 
+YAHOO_TO_DOWNLOAD_SERV = ['GBTC',
+                          'QBTC.TO',
+                          'DE000A28M8D0.SG',
+                          'ABBA.SW',
+                          'ABCH.SW',
+                          'CH0454664001.SG',
+                          'BTCW.SW',
+                          'DE000A27Z304.SG',
+                          'CH0445689208.SG',
+                          ]
+
+YAHOO_NAME_SERV = ['GBTC',
+                   'The Bitcoin Fund',
+                   'VANECK',
+                   '21Shares Bitcoin Suisse',
+                   '21Shares Bitcoin Cash ETP',
+                   '21Shares Bitcoin (ABTC) ETP',
+                   'WisdomTree Bitcoin',
+                   'BTCetc Bitcoin Exchange Traded',
+                   '21Shares Crypto Basket Index ET'
+                   ]
 
 YAHOO_TO_RETURN = ["BTC",
                    "ETH",
@@ -657,3 +678,10 @@ CORR_MATRIX_LIST = ['BTC',
                     'US TREASURY',
                     'EUR Aggregate Bond',
                     ]
+
+
+# STABLECOIN
+
+STABLECOIN_TICKER = ["USDT-USD", "USDC-USD"]
+
+STABLECOIN_NAME = ["USDT", "USDC"]

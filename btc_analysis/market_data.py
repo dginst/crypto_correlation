@@ -476,10 +476,26 @@ def mkt_cap_btc(yesterday_human):
 
 def mkt_cap_stable_op(tickers_list, name_list, yesterday_human):
 
-    mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
+    mkt_cap_stable = mkt_cap_downloader(tickers_list, name_list)
 
-    mongo_upload(mkt_cap_df_comp, "collection_market_cap")
+    return mkt_cap_stable
 
+
+def ticker_price_downloader(tickers_list, name_list):
+
+    ticker_price_df = pd.DataFrame()
+    i = 0
+
+    for str in tickers_list:
+
+        name = name_list[i]
+        ticker_price = pd.DataFrame(
+            {name: int(data.get_quote_yahoo(str)['price'])}, index=[0])
+        ticker_price_df[name] = ticker_price[name]
+
+        i = i+1
+
+    return ticker_price_df
 
 # ------------------------
 # BTC NETWORK

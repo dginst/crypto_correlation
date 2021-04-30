@@ -245,6 +245,71 @@ app.layout = dbc.Container([
     ], justify='center'),
 
 
+    # stablecoin supply
+
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+                            dbc.Row([
+                                dbc.Col([
+
+
+                                    html.Hr(),
+
+                                    html.Label(['Date Range:']),
+
+                                    html.Br(),
+
+                                    dcc.DatePickerRange(
+                                        id='date_range_stable',
+                                        min_date_allowed=date(2017, 1, 1),
+                                        initial_visible_month=date(
+                                            max_year, max_month, 1),
+                                        start_date=date(max_year, 1, 1)
+                                    ),
+
+                                    # html.Hr(),
+
+                                    # dcc.Checklist(
+                                    #     id='my_alt_check',
+                                    #     options=[
+                                    #         {'label': x, 'value': x} for x in df_alt_col
+                                    #     ],
+                                    #     value=["ETH", "XRP", "LTC", "BCH"],
+                                    #     labelStyle={
+                                    #         'display': 'inline-block'},
+                                    #     inputStyle={"margin-right": "10px",
+                                    #                 "margin-left": "10px"}
+                                    # ),
+
+
+                                    dcc.Graph(
+                                        id='stable_supply_line', figure={}),
+
+                                    # html.A(
+                                    #     'Download Data',
+                                    #     id='download-link_alt_corr',
+                                    #     download="altcoin_rawdata.csv",
+                                    #     href="",
+                                    #     target="_blank"
+                                    # )
+                                ])
+
+                            ]),
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
+
+        ]),
+
+    ], justify='center'),
+
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
     dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
@@ -481,6 +546,78 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
         urllib.parse.quote(csv_string)
 
     return fig_corr, csv_string
+
+
+# syablecoin supply
+
+
+@ app.callback(
+    Output(component_id="date_range_stable",
+           component_property="max_date_allowed"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_max_date_stable(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    max_date = date(max_y, max_m, max_d)
+
+    return max_date
+
+
+@ app.callback(
+    Output(component_id="date_range_stable",
+           component_property="end_date"),
+    Input(component_id="yahoo-update", component_property="n_intervals")
+)
+def set_end_date_stable(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
+
+
+@ app.callback(
+    [
+        Output(component_id="stable_supply_line", component_property="figure")
+    ],
+    [
+        Input(component_id='date_range_stable',
+              component_property='start_date'),
+        Input(component_id='date_range_stable', component_property='end_date'),
+        Input(component_id="yahoo-update", component_property="n_intervals")
+    ]
+)
+def update_graph_stable_supply(start, stop, n):
+
+    df_stable = query_mongo(DB_NAME, "stablecoin_all")
+    dff_stable = df_stable.copy()
+
+    dff_stable["Datetime"] = [datetime.strptime(
+        x, "%Y-%m-%d") for x in dff_stable["Date"]]
+
+    dff_range = dff_stable.loc[dff_stable.Datetime.between(
+        start, stop, inclusive=True)]
+    dff_range.reset_index(drop=True, inplace=True)
+
+    fig_stable = px.line(
+        data_frame=dff_range,
+        x="Datetime",
+        y=["USDT Supply", "USDC Supply"],
+        template='plotly_dark',
+        labels={"value": "Number of Coins",
+                "variable": "",
+                "Datetime": "Date"},
+        title='Stablecoins Supply',
+        color_discrete_map={
+            "USDT Supply": "#86CE00",
+            "USDC Supply": "#511CFB",
+        }
+    )
+
+    return fig_stable
 
 
 print("Done")
