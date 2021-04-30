@@ -602,6 +602,8 @@ def update_graph_stable_supply(start, stop, n):
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
 
+    print(dff_range)
+
     fig_stable = px.line(
         data_frame=dff_range,
         x="Datetime",
