@@ -268,8 +268,8 @@ app.layout = dbc.Container([
                                         id='date_range_stable',
                                         min_date_allowed=date(2017, 1, 1),
                                         initial_visible_month=date(
-                                            max_year, max_month, 1),
-                                        start_date=date(max_year, 1, 1)
+                                            max_year - 1, max_month, 1),
+                                        start_date=date(max_year - 1, 1, 1)
                                     ),
 
                                     # html.Hr(),
@@ -621,7 +621,7 @@ def update_graph_stable_supply(start, stop, n):
         ))
 
     fig_stable.update_layout(
-        title_text="Bitcoin Price",
+        title_text="Stablecoins Supply",
         template='plotly_dark'
     )
 
