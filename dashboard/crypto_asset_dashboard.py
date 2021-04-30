@@ -602,21 +602,49 @@ def update_graph_stable_supply(start, stop, n):
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
 
-    print(dff_range)
+    fig_stable = go.Figure()
 
-    fig_stable = px.line(
-        data_frame=dff_range,
-        x="Datetime",
-        y=["USDT Supply", "USDC Supply"],
-        template='plotly_dark',
-        labels={"value": "Number of Coins",
-                "variable": "",
-                "Datetime": "Date"},
-        title='Stablecoins Supply',
-        color_discrete_map={
-            "USDT Supply": "#86CE00",
-            "USDC Supply": "#511CFB",
-        }
+    fig_stable.add_trace(
+        go.Scatter(
+            x=dff_range["Datetime"],
+            y=dff_range["USDT Supply"],
+            name="USDT Supply",
+            mode='lines',
+            line_color="#86CE00",
+        ))
+
+    fig_stable.add_trace(
+        go.Scatter(
+            x=dff_range["Datetime"],
+            y=dff_range["USDC Supply"],
+            name="USDC Supply",
+            mode='lines',
+            line_color="#511CFB",
+        ))
+
+    fig_stable.update_layout(
+        title_text="Bitcoin Price",
+        template='plotly_dark'
+    )
+
+    fig_stable.update_layout(legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+    ),
+        height=600
+    )
+
+    fig_stable.update_yaxes(
+        # tickprefix="$",
+        title_text="Number of Coins",
+        fixedrange=True
+    )
+
+    fig_stable.update_xaxes(
+        title_text="Date",
     )
 
     return fig_stable
