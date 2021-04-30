@@ -580,9 +580,7 @@ def set_end_date_stable(n):
 
 
 @ app.callback(
-    [
-        Output(component_id="stable_supply_line", component_property="figure")
-    ],
+    Output(component_id="stable_supply_line", component_property="figure"),
     [
         Input(component_id='date_range_stable',
               component_property='start_date'),
