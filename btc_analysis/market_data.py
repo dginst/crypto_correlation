@@ -193,7 +193,7 @@ def mkt_data_op(series_code_list, all_el_list_d,
 
     # price and returns operation
     complete_series_df_price = all_series_df_price
-    # complete_series_df_price = add_crypto(all_series_df_price)
+    complete_series_df_price = add_crypto(all_series_df_price)
     mongo_upload(complete_series_df_price, "collection_prices_y")
 
     all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
