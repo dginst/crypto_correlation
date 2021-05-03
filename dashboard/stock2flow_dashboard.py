@@ -252,7 +252,7 @@ def update_S2F_regression(n):
 def update_S2F(typology, n):
 
     df = query_mongo("btc_analysis", "S2F_model")
-    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
+    price_df = query_mongo("btc_analysis", "btc_price")
 
     dff = df.copy()
     price_dff = price_df.copy()
@@ -341,7 +341,7 @@ def update_S2F(typology, n):
 )
 def update_S2F_perf(n):
 
-    price_df = query_mongo("btc_analysis", "S2F_BTC_price")
+    price_df = query_mongo("btc_analysis", "btc_price")
     perf_df = query_mongo("btc_analysis", "S2F_halving_performance")
 
     perf_dff = perf_df.copy()
