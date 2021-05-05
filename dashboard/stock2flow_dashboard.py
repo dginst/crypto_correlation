@@ -256,7 +256,6 @@ def update_S2F(typology, n):
 
     dff = df.copy()
     price_dff = price_df.copy()
-    print(price_dff)
 
     dff = dff.tail(len(dff.index) - 400)
 
@@ -264,6 +263,9 @@ def update_S2F(typology, n):
 
     dff["Date"] = [datetime.strptime(
         x, "%d-%m-%Y") for x in dff["Date"]]
+
+    price_dff["Datetime"] = [datetime.strptime(
+        x, "%d-%m-%Y") for x in price_dff["Date"]]
 
     model_price = go.Figure()
 
@@ -346,6 +348,9 @@ def update_S2F_perf(n):
 
     perf_dff = perf_df.copy()
     price_dff = price_df.copy()
+
+    price_dff["Datetime"] = [datetime.strptime(
+        x, "%d-%m-%Y") for x in price_dff["Date"]]
 
     price_dff = price_dff.loc[price_dff.Datetime >= last_h_date]
 
