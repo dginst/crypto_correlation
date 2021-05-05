@@ -630,7 +630,7 @@ def set_end_date_hash(n):
 @ app.callback(
     Output(component_id='hash_rate', component_property='figure'),
     [
-        Input(component_id='date_range_price',
+        Input(component_id='date_range_hash',
               component_property='start_date'),
         Input(component_id="date_range_hash",
               component_property="end_date"),
@@ -643,14 +643,6 @@ def update_hash_rate(start, stop, n):
 
     hr_dff["Datetime"] = [datetime.strptime(
         date, "%Y-%m-%d") for date in hr_dff["Date"]]
-
-    # try:
-
-    #     hr_dff["Date"] = [datetime.strptime(
-    #         date, "%Y-%m-%d") for date in hr_dff["Date"]]
-
-    # except TypeError:
-    #     pass
 
     hr_dff_range = hr_dff.loc[hr_dff.Datetime.between(
         start, stop, inclusive=True)]
