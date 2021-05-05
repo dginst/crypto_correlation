@@ -27,12 +27,6 @@ server = app.server
 # ----------
 # Date variables
 
-# yesterday = yesterday_str()
-# max_year = int(datetime.strptime(yesterday, "%Y-%m-%d").year)
-# max_month = int(datetime.strptime(yesterday, "%Y-%m-%d").month)
-# max_day = int(datetime.strptime(yesterday, "%Y-%m-%d").day)
-
-# last_h_date = datetime.strptime("11-05-2020", "%d-%m-%Y")
 S2F_list = ["S2F price 365d average", "S2F price"]
 # ----------------
 # app layout: bootstrap
@@ -647,15 +641,18 @@ def update_hash_rate(start, stop, n):
     hr_df = query_mongo("btc_analysis", "hash_rate")
     hr_dff = hr_df.copy()
 
-    try:
+    hr_dff["Datetime"] = [datetime.strptime(
+        date, "%Y-%m-%d") for date in hr_dff["Date"]]
 
-        hr_dff["Date"] = [datetime.strptime(
-            date, "%Y-%m-%d") for date in hr_dff["Date"]]
+    # try:
 
-    except TypeError:
-        pass
+    #     hr_dff["Date"] = [datetime.strptime(
+    #         date, "%Y-%m-%d") for date in hr_dff["Date"]]
 
-    hr_dff_range = hr_dff.loc[hr_dff.Date.between(
+    # except TypeError:
+    #     pass
+
+    hr_dff_range = hr_dff.loc[hr_dff.Datetime.between(
         start, stop, inclusive=True)]
     hr_dff_range.reset_index(drop=True, inplace=True)
 
@@ -663,7 +660,7 @@ def update_hash_rate(start, stop, n):
 
     hr_graph.add_trace(
         go.Scatter(
-            x=hr_dff_range["Date"],
+            x=hr_dff_range["Datetime"],
             y=hr_dff_range["Hash Rate"],
             name="BTC Hash Rate",
             mode='lines',
