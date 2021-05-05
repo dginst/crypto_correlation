@@ -587,20 +587,6 @@ def update_supply(n):
 
 @app.callback(
     Output(component_id="date_range_hash",
-           component_property="end_date"),
-    Input(component_id="df-update", component_property="n_intervals")
-)
-def set_end_date_hash(n):
-
-    max_y, max_m, max_d = date_elements()
-
-    end_date_ = date(max_y, max_m, max_d)
-
-    return end_date_
-
-
-@app.callback(
-    Output(component_id="date_range_hash",
            component_property="initial_visible_month"),
     Input(component_id="df-update", component_property="n_intervals")
 )
@@ -625,6 +611,20 @@ def set_max_date_hash(n):
     max_date = date(max_y, max_m, max_d)
 
     return max_date
+
+
+@app.callback(
+    Output(component_id="date_range_hash",
+           component_property="end_date"),
+    Input(component_id="df-update", component_property="n_intervals")
+)
+def set_end_date_hash(n):
+
+    max_y, max_m, max_d = date_elements()
+
+    end_date_ = date(max_y, max_m, max_d)
+
+    return end_date_
 
 
 @ app.callback(
