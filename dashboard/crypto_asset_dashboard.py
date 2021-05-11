@@ -390,7 +390,8 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        #template='plotly_dark',
+        template='plotly_white',
         labels={"value": "Performance",
                 "variable": ""
                 },
@@ -444,6 +445,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     table_perf.update_layout(
         title_text="Crypto-Assets Performances",
         # template='plotly_dark',
+        template='plotly_white',
         height=500,
     )
 
@@ -521,6 +523,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
+        template='plotly_white',
         labels={"value": "Correlation",
                 "variable": ""},
         title='Crypto-Assets: Correlation with Bitcoin',
@@ -622,7 +625,8 @@ def update_graph_stable_supply(start, stop, n):
 
     fig_stable.update_layout(
         title_text="Stablecoins Supply",
-        # template='plotly_dark'
+        # template='plotly_dark',
+        template='plotly_white',
     )
 
     fig_stable.update_layout(legend=dict(
