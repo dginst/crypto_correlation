@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import pandas as pd
@@ -9,6 +10,14 @@ from btc_analysis.stock2flow_func import (S2F_complete_model, S2F_definition,
                                           check_and_add, days_to_halving,
                                           halving_performace)
 
+# logging configuration
+logging.basicConfig(filename='log_file.log', filemode='a',
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logging.info('stock2flow_launcher.py start')
+
+# mongo collections operations
 mongo_coll_drop("S2F")
 
 mongo_indexing()
@@ -17,6 +26,7 @@ mongo_indexing()
 # data gathering
 # ---------
 check_and_add()
+
 initial_data = pd.read_csv(
     Path("source_data", "initial_data_S2F.csv"), sep="|")
 
@@ -47,3 +57,5 @@ slope_, intercept_ = S2FX_definition(initial_data, 4)
 final_df_ = S2FX_complete_model(slope_, intercept_)
 
 mongo_upload(final_df_, "collection_S2FX")
+
+logging.info('stock2flow_launcher.py end')

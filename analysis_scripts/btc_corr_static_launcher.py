@@ -1,11 +1,24 @@
+import logging
+
 from btc_analysis.calc import price_retrieve, return_retrieve, static_corr_op
 from btc_analysis.config import (CORR_MATRIX_LIST, DB_NAME, INDEX_DB_NAME,
                                  STAT_CORR_WINDOW_LIST)
 from btc_analysis.dashboard_func import dash_static_corr_df
-from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload, query_mongo
+from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
+                                     mongo_upload, query_mongo)
 
+
+# logging configuration
+logging.basicConfig(filename='log_file.log', filemode='a',
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logging.info('btc_corr_static_launcher.py start')
+
+# mongo collections operations
 mongo_coll_drop("static_alt")
 mongo_coll_drop("static_yahoo")
+mongo_indexing()
 
 # --------------------------------------------
 # BTC correlation with yahoo assets
@@ -50,3 +63,6 @@ mongo_upload(stat_alt_corr_3Y, "collection_3Y_stat_alt")
 mongo_upload(stat_alt_corr_1Y, "collection_1Y_stat_alt")
 mongo_upload(stat_alt_corr_1Q, "collection_1Q_stat_alt")
 mongo_upload(stat_alt_corr_1M, "collection_1M_stat_alt")
+
+
+logging.info('btc_corr_static_launcher.py end')

@@ -1,9 +1,21 @@
-from btc_analysis.config import DB_NAME, VOLA_DAY_LIST
-from btc_analysis.market_data import historical_vola, ewm_volatility
-from btc_analysis.mongo_func import mongo_coll_drop, mongo_upload, query_mongo
-from btc_analysis.dashboard_func import dash_volatility_df
+import logging
 
+from btc_analysis.config import DB_NAME, VOLA_DAY_LIST
+from btc_analysis.dashboard_func import dash_volatility_df
+from btc_analysis.market_data import ewm_volatility, historical_vola
+from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
+                                     mongo_upload, query_mongo)
+
+# logging configuration
+logging.basicConfig(filename='log_file.log', filemode='a',
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logging.info('series_volatility_launcher.py start')
+
+# mongo collections operations
 mongo_coll_drop("vola")
+mongo_indexing()
 
 return_df = query_mongo(DB_NAME, "all_returns_y")
 logret_df = query_mongo(DB_NAME, "all_logreturns_y")
@@ -20,5 +32,8 @@ mongo_upload(ewm_vola, "collection_volatility_ewm")
 
 
 # --------
-
+# dataframes unification for dashboard
 dash_volatility_df(VOLA_DAY_LIST)
+
+
+logging.info('series_volatility_launcher.py end')
