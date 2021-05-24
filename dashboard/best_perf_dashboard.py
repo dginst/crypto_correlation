@@ -77,19 +77,42 @@ app.layout = dbc.Container([
                 width=12)
 
     ]),
-    dbc.Row([
-        html.Label(['Mode:']),
 
-        dcc.Dropdown(
-            id='color_mode',
-            options=[
-                {'label': x, 'value': x} for x in ['Light Mode', 'Dark Mode']
-            ],
-            multi=False,
-            value="Dark Mode",
-            style={"width": "50%"},
-            clearable=False
-        ),
+    dbc.Row([
+
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+
+                            dbc.Row([
+
+                                dbc.Col([
+
+
+                                    html.Label(['Mode:']),
+
+                                    dcc.Dropdown(
+                                        id='color_mode',
+                                        options=[
+                                            {'label': 'Light Mode',
+                                                'value': 'plotly_white'},
+                                            {'label': 'Dark Mode',
+                                                'value': 'plotly_dark'}
+
+                                        ],
+                                        multi=False,
+                                        value="Dark Mode",
+                                        style={"width": "50%"},
+                                        clearable=False
+                                    ),
+                                ]),
+                            ]),
+                        ]),
+                ]),
+        ]),
     ]),
     # best performing asset performances
 
@@ -513,7 +536,7 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
 
 # volatility
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_vola",
            component_property="max_date_allowed"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -527,7 +550,7 @@ def set_max_date_vola(n):
     return max_date
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_vola",
            component_property="end_date"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -603,7 +626,7 @@ def update_graph_vola(days_selection, start, stop, asset_selection):
 
 # volume
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_vol",
            component_property="max_date_allowed"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -617,7 +640,7 @@ def set_max_date_vol(n):
     return max_date
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_vol",
            component_property="end_date"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -689,7 +712,7 @@ def update_graph_volume(start, stop, asset_selection):
 
 # correlation with btc
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_best_corr",
            component_property="max_date_allowed"),
     Input(component_id="yahoo-update", component_property="n_intervals")
@@ -703,7 +726,7 @@ def set_max_date_corr(n):
     return max_date
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_best_corr",
            component_property="end_date"),
     Input(component_id="yahoo-update", component_property="n_intervals")
