@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import logging
 
 import numpy as np
 import pandas as pd
@@ -69,7 +70,11 @@ def index_coll_check(collection_name):
 
 # ----------------------------
 # MARKET DATA OPERATIONS
+
+# this set of functions are used to download and aggregate
+# data from Yahoo Finance API
 # ---------------------------
+
 
 def all_series_download(series_code_list, all_el_list,
                         start_period, end_period):
@@ -111,7 +116,15 @@ def single_series_download(series_code, start_period, end_period):
 
     print(series_code)
     # creatre object
-    series_obj = yf.Ticker(series_code)
+    try:
+
+        series_obj = yf.Ticker(series_code)
+
+    except Exception:
+
+        logging.error("Exception occurred", exc_info=True)
+        logging.info(
+            'The aseet with code {series_code} failed to download')
 
     # create the complete array of date
     date_arr = np.array(date_gen(start_period, end_period, holiday="N"))
@@ -211,7 +224,17 @@ def mkt_data_op(series_code_list, all_el_list_d,
 
     df_all_pair = query_mongo("index", "index_data_feed")
 
-    no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+    try:
+
+        no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+
+    except Exception:
+
+        logging.error("Exception occurred", exc_info=True)
+        logging.info(
+            'The collection with all the exchanges values of volume\
+             may be not updated')
+
     complete_series_df_volume = add_no_stable(
         complete_series_df_volume, no_stable_vol_df)
     date_arr = complete_series_df_volume["Date"]
@@ -641,11 +664,6 @@ def btc_supply_op(issuance_df):
 
     return final_df
 
-# ----
-# hash rate
-
-# ----
-
 
 def check_and_add_daily(new_df, coll_to_look, coll_to_upload, type_="other"):
 
@@ -670,6 +688,27 @@ def check_and_add_daily(new_df, coll_to_look, coll_to_upload, type_="other"):
         mongo_upload(new_df, coll_to_upload)
 
 
+def check_missing_days(coll_to_look, type_="other"):
+
+    if type_ == "other":
+
+        yesterday = yesterday_str("%Y-%m-%d")
+
+    elif type_ == "price":
+
+        yesterday = yesterday_str("%d-%m-%Y")
+
+    df_hist = query_mongo("btc_analysis", coll_to_look)
+
+    last_day = df_hist.tail(1)
+    last_date = np.array(last_day["Date"])[0]
+
+    list_of_days = date_gen(last_date, yesterday)
+    list_of_days.pop(0)
+
+    return list_of_days
+
+    
 # ----------------------
 # HISTORICAL VOLATILITY
 # ----------------------
@@ -708,11 +747,42 @@ def ewm_volatility(return_df, square_root=252):
 # --------------------------
 # BTC Derivatives
 
-def CME_futures_download(start_date, end_date):
+def daily_btc_fut_download():
 
-    df = single_series_download("BTC=F", start_date, end_date)
+    y_str = yesterday_str()
+    CME_df = single_series_download("BTC=F", "2021-01-01", y_str)
+    print(CME_df)
+    CME_vol = np.array(CME_df["Volume"])[0]
+    Bakkt_df = single_series_download("BTM=F", "2021-01-01", y_str)
+    print(Bakkt_df)
+    Bakkt_vol = np.array(Bakkt_df["Volume"])[0]
 
-    return df
+    fut_arr = np.column_stack((y_str, CME_vol, Bakkt_vol))
+    final_df = pd.DataFrame(fut_arr, columns=["Date", "CME", "Bakkt"])
+
+    return final_df
+
+
+def btc_fut_downloader(tickers_list, name_list):
+
+    fut_df = pd.DataFrame()
+    yesterday = yesterday_str()
+
+    i = 0
+
+    for str in tickers_list:
+
+        name = name_list[i]
+        returned = pd.DataFrame(
+            {name: int(data.get_data_yahoo(str, start=yesterday_str_,
+                                           end=yesterday_str_)["Volume"])}, index=[0])
+        print(returned)
+        fut_df[name] = returned[name]
+
+        i = i+1
+
+    return fut_df
+
 
 # def derivatives_rearrange(initial_df):
 
@@ -772,4 +842,25 @@ def yearly_quarter_start(year):
 
 
 # ---------------------------
-# Stablecoin
+# Derivatives
+
+def btc_der_op(series_code_list, all_el_list_d,
+               all_el_list_r,
+               start_period, end_period):
+
+    _, series_df_volume = all_series_download(series_code_list,
+                                              all_el_list_d,
+                                              start_period,
+                                              end_period)
+
+    # volume operation
+
+    no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+    complete_series_df_volume = add_no_stable(
+        complete_series_df_volume, no_stable_vol_df)
+    date_arr = complete_series_df_volume["Date"]
+    complete_series_df_volume = complete_series_df_volume.drop(columns="Date")
+
+    complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
+    complete_series_df_vol_rolling["Date"] = date_arr
+    mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")

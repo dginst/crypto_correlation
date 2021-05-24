@@ -4,7 +4,8 @@ import numpy as np
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
                                      mongo_upload, query_mongo)
 from btc_analysis.market_data import (
-    btc_supply_op, check_and_add_daily, blockchain_stats_op, yesterday_str)
+    btc_supply_op, check_and_add_daily, blockchain_stats_op, yesterday_str,
+    check_missing_days)
 
 
 mongo_coll_drop("supply")
@@ -20,14 +21,29 @@ yesterday_ = yesterday_str("%d-%m-%Y")
 
 crypto_price_df = query_mongo("index", "crypto_price")
 btc_tot_df = crypto_price_df[["BTC"]]
-btc_last = np.array(btc_tot_df.tail(1))[0]
 
-new_arr = np.column_stack((yesterday_, btc_last))
+list_of_missing = check_missing_days("btc_price", type_="price")
+lenght_missing = len(list_of_missing)
 
-new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
-new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
+if lenght_missing > 1:
 
-check_and_add_daily(new_df, "btc_price", "collection_btc_price", type_="price")
+    btc_missing = np.array(btc_tot_df.tail(lenght_missing))
+    new_arr = np.column_stack((list_of_missing, btc_missing))
+    new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
+    new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
+    mongo_upload(new_df, "collection_btc_price")
+
+elif lenght_missing == 1:
+
+    btc_last = np.array(btc_tot_df.tail(1))[0]
+    new_arr = np.column_stack((yesterday_, btc_last))
+    new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
+    new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
+    mongo_upload(new_df, "collection_btc_price")
+
+elif lenght_missing == 0:
+
+    pass
 
 # ---
 # daily blockchain info

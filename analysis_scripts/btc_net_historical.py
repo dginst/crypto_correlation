@@ -1,12 +1,11 @@
 from pathlib import Path
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
+from btc_analysis.market_data import (btc_supply_op, check_missing_days,
+                                      yesterday_str)
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
                                      mongo_upload, query_mongo)
-from btc_analysis.market_data import btc_supply_op
-
 
 mongo_coll_drop("hash_rate")
 mongo_coll_drop("hist_supply")
@@ -17,11 +16,40 @@ mongo_indexing()
 # --------
 # BTC Price
 
+# upload the oldest values
 csv_btc_price = pd.read_csv(
     Path("source_data", "BTC_price.csv"), sep="|")
 
 
 mongo_upload(csv_btc_price, "collection_btc_price")
+
+# upload the latest values
+yesterday_ = yesterday_str("%d-%m-%Y")
+crypto_price_df = query_mongo("index", "crypto_price")
+btc_tot_df = crypto_price_df[["BTC"]]
+
+list_of_missing = check_missing_days("btc_price", type_="price")
+lenght_missing = len(list_of_missing)
+
+if lenght_missing > 1:
+
+    btc_missing = np.array(btc_tot_df.tail(lenght_missing))
+    new_arr = np.column_stack((list_of_missing, btc_missing))
+    new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
+    new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
+    mongo_upload(new_df, "collection_btc_price")
+
+elif lenght_missing == 1:
+
+    btc_last = np.array(btc_tot_df.tail(1))[0]
+    new_arr = np.column_stack((yesterday_, btc_last))
+    new_df = pd.DataFrame(new_arr, columns=["Date", "BTC Price"])
+    new_df["BTC Price"] = [float(x) for x in new_df["BTC Price"]]
+    mongo_upload(new_df, "collection_btc_price")
+
+elif lenght_missing == 0:
+
+    pass
 
 
 # ----------
