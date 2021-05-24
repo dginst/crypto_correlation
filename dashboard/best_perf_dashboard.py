@@ -77,8 +77,22 @@ app.layout = dbc.Container([
                 width=12)
 
     ]),
+    dbc.Row([
+        html.Label(['Mode:']),
 
-    # best perfomring asset performances
+        dcc.Dropdown(
+            id='color_mode',
+            options=[
+                'Light Mode',
+                'Dark Mode'
+            ],
+            multi=False,
+            value="Dark Mode",
+            style={"width": "50%"},
+            clearable=False
+        ),
+    ]),
+    # best performing asset performances
 
     dbc.Row([
             dbc.Col([
@@ -378,8 +392,6 @@ app.layout = dbc.Container([
 
             ], justify='center'),
 
-
-
     dcc.Interval(id='update', n_intervals=0, interval=1000 * 5),
 
     dcc.Interval(id='yahoo-update', interval=100000, n_intervals=0)
@@ -397,7 +409,7 @@ app.layout = dbc.Container([
 # best perfomring asset performances
 
 
-@app.callback(
+@ app.callback(
     Output(component_id='as_of_dropdown', component_property='options'),
     Input(component_id="time_window_dropdown", component_property="value")
 )
@@ -430,7 +442,7 @@ def set_as_of_option(selected_time_window):
 #     return [{'label': i, 'value': i} for i in all_options[selected_time_window]]
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="as_of_dropdown", component_property="value"),
     Input(component_id="as_of_dropdown", component_property="options")
 )
@@ -444,9 +456,10 @@ def set_as_of_value(available_options):
      Output(component_id='download-link_yahoo_norm', component_property='href')],
     [Input(component_id="time_window_dropdown", component_property="value"),
         Input(component_id="as_of_dropdown", component_property="value"),
-     Input(component_id="usd_best_check", component_property="value")]
+     Input(component_id="usd_best_check", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_usd_best(window_selection, as_of_selection, asset_selection):
+def update_graph_usd_best(window_selection, as_of_selection, asset_selection, sel_col):
 
     df_usd_norm = query_mongo(DB_NAME, "dash_usd_den")
 
@@ -470,7 +483,8 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        # template='plotly_white',
+        template=sel_col,
         labels={"value": "Performance",
                 "variable": ""},
         title='Best Performing Asset: USD denominated performances',
