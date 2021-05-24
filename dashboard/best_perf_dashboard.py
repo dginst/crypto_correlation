@@ -83,8 +83,7 @@ app.layout = dbc.Container([
         dcc.Dropdown(
             id='color_mode',
             options=[
-                'Light Mode',
-                'Dark Mode'
+                {'label': x, 'value': x} for x in ['Light Mode', 'Dark Mode']
             ],
             multi=False,
             value="Dark Mode",
