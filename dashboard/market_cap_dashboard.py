@@ -50,6 +50,43 @@ app.layout = dbc.Container([
 
     ]),
 
+    dbc.Row([
+
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+
+                                    dbc.Col([
+
+
+                                        html.Label(['Mode:']),
+
+                                        dcc.Dropdown(
+                                            id='color_mode',
+                                            options=[
+                                                {'label': 'Light Mode',
+                                                 'value': 'plotly_white'},
+                                                {'label': 'Dark Mode',
+                                                 'value': 'plotly_dark'}
+
+                                            ],
+                                            multi=False,
+                                            value="plotly_dark",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+                                    ]),
+                                ]),
+                            ]),
+                    ]),
+            ]),
+            ]),
+
 
     # asset classes performance
 
@@ -119,9 +156,10 @@ app.layout = dbc.Container([
 @ app.callback(
     Output(component_id="mkt_cap_graph", component_property="figure"),
     # Input(component_id="mkt_cap_check", component_property="value"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
+    [Input(component_id="yahoo-update", component_property="n_intervals"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_bar_exc(n):
+def update_graph_bar_exc(n, sel_col):
 
     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
     dff_mkt_cap = df_mkt_cap.copy()
@@ -135,7 +173,7 @@ def update_graph_bar_exc(n):
         data_frame=mkt_cap_df,
         x="Name",
         y="Market Cap",
-        template='plotly_dark',
+        template=sel_col,
         title='Main Exchanges Market Capitalization',
         color="Name",
         labels={'Market Cap': 'Market Cap (USD)',
@@ -169,9 +207,11 @@ def update_graph_bar_exc(n):
 
     Output(component_id="mkt_cap_best_graph", component_property="figure"),
     #Input(component_id="mkt_cap_check", component_property="value"),
-    Input(component_id="yahoo-update", component_property="n_intervals")
+    [Input(component_id="yahoo-update", component_property="n_intervals"),
+     Input(component_id="color_mode", component_property="value")
+     ]
 )
-def update_graph_bar_best(n):
+def update_graph_bar_best(n, sel_col):
 
     df_mkt_cap = query_mongo(DB_NAME, "market_cap")
     dff_mkt_cap_b = df_mkt_cap.copy()
@@ -185,7 +225,7 @@ def update_graph_bar_best(n):
         data_frame=mkt_cap_df_b,
         x="Name",
         y="Market Cap",
-        template='plotly_dark',
+        template=sel_col,
         title='Best Performing Assets Market Capitalization',
         color="Name",
         labels={'Market Cap': 'Market Cap (USD)',
