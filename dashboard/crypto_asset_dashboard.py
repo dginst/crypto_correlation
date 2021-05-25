@@ -84,6 +84,43 @@ app.layout = dbc.Container([
 
     ]),
 
+    dbc.Row([
+
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+
+                            dbc.Row([
+
+                                dbc.Col([
+
+
+                                    html.Label(['Mode:']),
+
+                                    dcc.Dropdown(
+                                        id='color_mode',
+                                        options=[
+                                            {'label': 'Light Mode',
+                                             'value': 'plotly_white'},
+                                            {'label': 'Dark Mode',
+                                             'value': 'plotly_dark'}
+
+                                        ],
+                                        multi=False,
+                                        value="plotly_dark",
+                                        style={"width": "50%"},
+                                        clearable=False
+                                    ),
+                                ]),
+                            ]),
+                        ]),
+                ]),
+        ]),
+    ]),
+
     # btc denominated crypto-assets
     dbc.Row([
             dbc.Col([
@@ -365,9 +402,10 @@ def set_as_of_value(available_options):
      Output(component_id='download-link_alt', component_property='href')],
     [Input(component_id="time_window_dropdown", component_property="value"),
         Input(component_id="as_of_dropdown", component_property="value"),
-     Input(component_id="crypto_checklist", component_property="value")]
+     Input(component_id="crypto_checklist", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
+def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel_col):
 
     df_alt = query_mongo(DB_NAME, "dash_btc_den_crypto")
     dff_alt = df_alt.copy()
@@ -390,8 +428,8 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
-        #template='plotly_dark',
-        template='plotly_white',
+        # template='plotly_dark',
+        template=sel_col,
         labels={"value": "Performance",
                 "variable": ""
                 },
@@ -445,7 +483,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection):
     table_perf.update_layout(
         title_text="Crypto-Assets Performances",
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         height=500,
     )
 
@@ -498,10 +536,11 @@ def set_end_date(n):
               component_property='start_date'),
         Input(component_id='date_range_corr', component_property='end_date'),
         Input(component_id="my_alt_check", component_property="value"),
-        Input(component_id="yahoo-update", component_property="n_intervals")
+        Input(component_id="yahoo-update", component_property="n_intervals"),
+        Input(component_id="color_mode", component_property="value")
     ]
 )
-def update_graph_corr(window_selection, start, stop, asset_selection, n):
+def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col):
 
     df_alt = query_mongo(DB_NAME, "dash_corr_crypto")
     dff_alt = df_alt.copy()
@@ -523,7 +562,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         labels={"value": "Correlation",
                 "variable": ""},
         title='Crypto-Assets: Correlation with Bitcoin',
@@ -588,10 +627,11 @@ def set_end_date_stable(n):
         Input(component_id='date_range_stable',
               component_property='start_date'),
         Input(component_id='date_range_stable', component_property='end_date'),
-        Input(component_id="yahoo-update", component_property="n_intervals")
+        Input(component_id="yahoo-update", component_property="n_intervals"),
+        Input(component_id="color_mode", component_property="value")
     ]
 )
-def update_graph_stable_supply(start, stop, n):
+def update_graph_stable_supply(start, stop, n, sel_col):
 
     df_stable = query_mongo(DB_NAME, "stablecoin_all")
     dff_stable = df_stable.copy()
@@ -626,7 +666,7 @@ def update_graph_stable_supply(start, stop, n):
     fig_stable.update_layout(
         title_text="Stablecoins Supply",
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
     )
 
     fig_stable.update_layout(legend=dict(

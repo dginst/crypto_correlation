@@ -79,7 +79,42 @@ app.layout = dbc.Container([
 
     ]),
 
+    dbc.Row([
 
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+
+                                    dbc.Col([
+
+
+                                        html.Label(['Mode:']),
+
+                                        dcc.Dropdown(
+                                            id='color_mode',
+                                            options=[
+                                                {'label': 'Light Mode',
+                                                 'value': 'plotly_white'},
+                                                {'label': 'Dark Mode',
+                                                 'value': 'plotly_dark'}
+
+                                            ],
+                                            multi=False,
+                                            value="plotly_dark",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+                                    ]),
+                                ]),
+                            ]),
+                    ]),
+            ]),
+            ]),
     # asset classes performance
 
     dbc.Row([
@@ -436,9 +471,10 @@ def set_as_of_value(available_options):
      Output(component_id='download-link_yahoo', component_property='href')],
     [Input(component_id="time_window_dropdown", component_property="value"),
         Input(component_id="as_of_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_check", component_property="value")]
+     Input(component_id="my_yahoo_check", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_asset(window_selection, as_of_selection, asset_selection):
+def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_col):
 
     df_usd_norm = query_mongo(DB_NAME, "dash_usd_den")
 
@@ -462,7 +498,7 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         labels={"value": "Performnace",
                 "variable": ""},
         title='Asset Classes: USD denominated performances',
@@ -517,17 +553,18 @@ def set_end_date(n):
     return end_date_
 
 
-@ app.callback(
+@app.callback(
     [Output(component_id="volume_graph", component_property="figure"),
      Output(component_id='download-link_yahoo_volume', component_property='href')],
     [Input(component_id='date_range_as_corr',
            component_property='start_date'),
      Input(component_id='date_range_as_corr',
            component_property='end_date'),
-     Input(component_id="asset_volume_check", component_property="value")
+     Input(component_id="asset_volume_check", component_property="value"),
+     Input(component_id="color_mode", component_property="value")
      ]
 )
-def update_graph_volume(start, stop, asset_selection):
+def update_graph_volume(start, stop, asset_selection, sel_col):
 
     df_volume = query_mongo(DB_NAME, "all_volume_y")
     dff_volume = df_volume.copy()
@@ -546,7 +583,7 @@ def update_graph_volume(start, stop, asset_selection):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         title='Asset Classes: Volume',
         labels={"value": "Volume (USD)",
                 "variable": ""},
@@ -613,10 +650,11 @@ def set_end_date_corr(n):
         Input(component_id='date_range_as_corr',
               component_property='end_date'),
         Input(component_id="corr_check", component_property="value"),
-        Input(component_id="yahoo-update", component_property="n_intervals")
+        Input(component_id="yahoo-update", component_property="n_intervals"),
+        Input(component_id="color_mode", component_property="value")
     ]
 )
-def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
+def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, sel_col):
 
     df_yahoo = query_mongo(DB_NAME, "dash_corr_yahoo")
     dff_yahoo = df_yahoo.copy()
@@ -641,7 +679,7 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         labels={"value": "Correlation Value",
                 "variable": ""},
         title='Asset Class correlation with Bitcoin',
@@ -705,9 +743,10 @@ def set_end_date_vola(n):
     [Input(component_id="vola_dropdown", component_property="value"),
      Input(component_id='date_range_as_vola', component_property='start_date'),
      Input(component_id='date_range_as_vola', component_property='end_date'),
-     Input(component_id="vola_checklist", component_property="value")]
+     Input(component_id="vola_checklist", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_vola(days_selection, start, stop, asset_selection):
+def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
 
     df_vola = query_mongo(DB_NAME, "dash_vola")
     dff_vola = df_vola.copy()
@@ -731,7 +770,7 @@ def update_graph_vola(days_selection, start, stop, asset_selection):
         x="Date",
         y=asset_selection,
         # template='plotly_dark',
-        template='plotly_white',
+        template=sel_col,
         title='Annualized Volatility',
         labels={"value": "Volatility",
                 "variable": ""},
