@@ -41,6 +41,43 @@ app.layout = dbc.Container([
     ]),
 
     dbc.Row([
+
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+
+                                    dbc.Col([
+
+
+                                        html.Label(['Mode:']),
+
+                                        dcc.Dropdown(
+                                            id='color_mode',
+                                            options=[
+                                                {'label': 'Light Mode',
+                                                 'value': 'plotly_white'},
+                                                {'label': 'Dark Mode',
+                                                 'value': 'plotly_dark'}
+
+                                            ],
+                                            multi=False,
+                                            value="plotly_dark",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+                                    ]),
+                                ]),
+                            ]),
+                    ]),
+            ]),
+            ]),
+
+    dbc.Row([
             dbc.Col([
 
                 dbc.Card(
@@ -286,9 +323,10 @@ def set_end_date(n):
               component_property='start_date'),
         Input(component_id='date_range_price', component_property='end_date'),
         Input(component_id='df-update', component_property='n_intervals'),
+        Input(component_id="color_mode", component_property="value")
     ]
 )
-def update_index_df(start, stop, n):
+def update_index_df(start, stop, n, sel_col):
 
     df_price = query_mongo("btc_analysis", "btc_price")
     df_price["Datetime"] = [datetime.strptime(
@@ -315,7 +353,7 @@ def update_index_df(start, stop, n):
 
     price_.update_layout(
         title_text="Bitcoin Price",
-        template='plotly_dark'
+        template=sel_col
     )
 
     price_.update_layout(legend=dict(
@@ -342,17 +380,24 @@ def update_index_df(start, stop, n):
 
     perf_df = btc_yearly_perf(dff_for_perf)
 
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[100, 80, 100],
         header=dict(values=list(perf_df.columns),
-                    line_color='white',
-                    fill_color='black',
+                    line_color=table_line,
+                    fill_color=table_fill,
                     align='center',
                     font=dict(color='white', size=12),
                     height=35),
         cells=dict(values=[perf_df.Date, perf_df.Price, perf_df["Yearly Performance"]],
-                   line_color='white',
-                   fill_color='black',
+                   line_color=table_line,
+                   fill_color=table_fill,
                    align=['center', 'right', 'right'],
                    font=dict(color='white', size=11),
                    format=[None, ",.2f", ",.2f%"],
@@ -363,7 +408,7 @@ def update_index_df(start, stop, n):
 
     table_perf.update_layout(
         title_text="Bitcoin Yearly Performances",
-        template='plotly_dark',
+        template=sel_col,
         height=600,
     )
 
@@ -414,10 +459,12 @@ def update_indicator(timer):
     [Output(component_id='btc_price_log', component_property='figure'),
      Output(component_id='btc_log_perf', component_property='figure'),
      ],
-    Input(component_id='df-update', component_property='n_intervals')
+    [Input(component_id='df-update', component_property='n_intervals'),
+     Input(component_id="color_mode", component_property="value")
+     ]
 
 )
-def update_log_price(n):
+def update_log_price(n, sel_col):
 
     df_price = query_mongo("btc_analysis", "btc_price")
     df_price["Datetime"] = [datetime.strptime(
@@ -454,7 +501,7 @@ def update_log_price(n):
 
     model_cap.update_layout(
         title_text="Bitcoin Price Log Scale",
-        template='plotly_dark'
+        template=sel_col
     )
 
     # model_cap.add_annotation(x=min_point["Datetime"],
@@ -486,6 +533,14 @@ def update_log_price(n):
     )
 
     # table
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+        table_font = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+        table_font = "white"
 
     min_point_dff = min_point.copy()
     min_point_dff["Year"] = [int(d.year) for d in min_point_dff["Datetime"]]
@@ -494,25 +549,25 @@ def update_log_price(n):
     table_log_perf = go.Figure(data=[go.Table(
         columnwidth=[60, 150],
         header=dict(values=["Year", "Min Price"],
-                    line_color='white',
-                    fill_color='black',
+                    line_color=table_line,
+                    fill_color=table_fill,
                     align='center',
-                    font=dict(color='white', size=12),
+                    font=dict(color=table_font, size=12),
                     height=35),
         cells=dict(values=[min_point_dff["Year"], min_point_dff["BTC Price"]],
-                   line_color='white',
-                   fill_color='black',
+                   line_color=table_line,
+                   fill_color=table_fill,
                    format=[None, ",.2f"],
                    suffix=[None, '$'],
                    align=['center', 'right'],
-                   font=dict(color='white', size=11),
+                   font=dict(color=table_font, size=11),
                    height=25)
     )
     ])
 
     table_log_perf.update_layout(
         title_text="Bitcoin Minimum Prices",
-        template='plotly_dark',
+        template=sel_col,
         height=500,
     )
 
@@ -523,11 +578,14 @@ def update_log_price(n):
 
 @ app.callback(
     Output('supply', 'figure'),
-    Input('df-update', 'n_intervals')
+    [
+        Input('df-update', 'n_intervals'),
+        Input(component_id="color_mode", component_property="value")
+    ]
 
 
 )
-def update_supply(n):
+def update_supply(n, sel_col):
 
     supply_df = query_mongo("btc_analysis", "btc_total_supply")
     supply_dff = supply_df.copy()
@@ -542,13 +600,18 @@ def update_supply(n):
 
     supply_graph = go.Figure()
 
+    if sel_col == "plotly_white":
+        line_col = "grey"
+    else:
+        line_col = '#FFFFFF'
+
     supply_graph.add_trace(
         go.Scatter(
             x=supply_dff["Date"],
             y=supply_dff["Supply"],
             name="BTC Effective Supply",
             mode='lines',
-            line_color='#FFFFFF',
+            line_color=line_col,
         ))
 
     supply_graph.add_trace(
@@ -562,7 +625,7 @@ def update_supply(n):
 
     supply_graph.update_layout(
         title_text="Bitcoin Supply",
-        template='plotly_dark'
+        template=sel_col
     )
 
     supply_graph.update_layout(legend=dict(
@@ -588,7 +651,7 @@ def update_supply(n):
 @app.callback(
     Output(component_id="date_range_hash",
            component_property="initial_visible_month"),
-    Input(component_id="df-update", component_property="n_intervals")
+    Input(component_id="df-update", component_property="n_intervals"),
 )
 def set_initial_date_hash(n):
 
@@ -634,9 +697,11 @@ def set_end_date_hash(n):
               component_property='start_date'),
         Input(component_id="date_range_hash",
               component_property="end_date"),
-        Input(component_id='df-update', component_property='n_intervals')]
+        Input(component_id='df-update', component_property='n_intervals'),
+        Input(component_id="color_mode", component_property="value")
+    ]
 )
-def update_hash_rate(start, stop, n):
+def update_hash_rate(start, stop, n, sel_col):
 
     hr_df = query_mongo("btc_analysis", "hash_rate")
     hr_dff = hr_df.copy()
@@ -650,18 +715,23 @@ def update_hash_rate(start, stop, n):
 
     hr_graph = go.Figure()
 
+    if sel_col == "plotly_white":
+        line_col = "grey"
+    else:
+        line_col = '#FFFFFF'
+
     hr_graph.add_trace(
         go.Scatter(
             x=hr_dff_range["Datetime"],
             y=hr_dff_range["Hash Rate"],
             name="BTC Hash Rate",
             mode='lines',
-            line_color='#FFFFFF',
+            line_color=line_col,
         ))
 
     hr_graph.update_layout(
         title_text="Bitcoin Hash Rate",
-        template='plotly_dark'
+        template=sel_col
     )
 
     hr_graph.update_layout(legend=dict(
