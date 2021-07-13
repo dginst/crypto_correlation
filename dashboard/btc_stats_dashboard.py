@@ -383,9 +383,11 @@ def update_index_df(start, stop, n, sel_col):
     if sel_col == "plotly_white":
         table_fill = "white"
         table_line = "black"
+        table_font = "black"
     else:
         table_fill = "black"
         table_line = "white"
+        table_font = "white"
 
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[100, 80, 100],
@@ -393,13 +395,13 @@ def update_index_df(start, stop, n, sel_col):
                     line_color=table_line,
                     fill_color=table_fill,
                     align='center',
-                    font=dict(color='white', size=12),
+                    font=dict(color=table_font, size=12),
                     height=35),
         cells=dict(values=[perf_df.Date, perf_df.Price, perf_df["Yearly Performance"]],
                    line_color=table_line,
                    fill_color=table_fill,
                    align=['center', 'right', 'right'],
-                   font=dict(color='white', size=11),
+                   font=dict(color=table_font, size=11),
                    format=[None, ",.2f", ",.2f%"],
                    suffix=[None, '$', '%'],
                    height=25)
