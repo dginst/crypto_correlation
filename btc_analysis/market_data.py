@@ -703,8 +703,8 @@ def check_missing_days(coll_to_look, type_="other"):
 
     last_day = df_hist.tail(1)
     last_date = np.array(last_day["Date"])[0]
-    print((last_date))
-    print((yesterday))
+    last_date = datetime.strptime(last_date, "%d-%m-%Y")
+    yesterday = datetime.strptime(yesterday, "%d-%m-%Y")
     list_of_days = date_gen(last_date, yesterday)
     print(list_of_days)
     list_of_days.pop(0)
