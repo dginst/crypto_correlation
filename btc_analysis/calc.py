@@ -64,6 +64,7 @@ def date_gen(start_date, end_date, holiday="Y"):
     else:
 
         date_index = pd.date_range(start_date, end_date)
+        print(date_index)
         date_list = [datetime.strftime(date, "%Y-%m-%d")
                      for date in date_index]
 
