@@ -217,6 +217,9 @@ def mongo_indexing():
     db.stablecoin_all.create_index([("id", -1)])
     db.stablecoin_daily.create_index([("id", -1)])
 
+    # derivatives
+    db.btc_future_rawdata.create_index([("id", -1)])
+
     # dash
     db.dash_corr_yahoo.create_index([("id", -1)])
     db.dash_corr_crypto.create_index([("id", -1)])

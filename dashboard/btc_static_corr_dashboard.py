@@ -13,6 +13,7 @@ from btc_analysis.dashboard_func import static_corr_df
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.mongo_func import query_mongo
 from dash.dependencies import Input, Output
+import plotly.figure_factory as ff
 
 pio.templates.default = "none"
 
@@ -201,6 +202,8 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
 
     hovertext = [[f'corr_mat({column_set[i]}, {column_set[j]})= {corr_mat[i][j]:.2f}' if i >=
                   j else '' for j in range(N)] for i in range(N)]
+    print(hovertext)
+    print(corr_mat)
 
     fig = go.Figure()
 
@@ -219,6 +222,9 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
                    hoverinfo='text'
                    )
     )
+
+    fig.add_trace(
+        go.Scatter(x=column_set, y=column_set, text=hovertext, mode="text"))
 
     fig.add_trace(
         go.Scatter(xaxis='x2',
@@ -375,4 +381,4 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=9000, host='0.0.0.0')
+    app.run_server(debug=True, port=9000)  # , host='0.0.0.0')

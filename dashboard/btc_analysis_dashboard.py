@@ -48,6 +48,43 @@ app.layout = dbc.Container([
     ]),
 
     dbc.Row([
+
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                dbc.Row([
+
+                                    dbc.Col([
+
+
+                                        html.Label(['Mode:']),
+
+                                        dcc.Dropdown(
+                                            id='color_mode',
+                                            options=[
+                                                {'label': 'Light Mode',
+                                                 'value': 'plotly_white'},
+                                                {'label': 'Dark Mode',
+                                                 'value': 'plotly_dark'}
+
+                                            ],
+                                            multi=False,
+                                            value="plotly_dark",
+                                            style={"width": "50%"},
+                                            clearable=False
+                                        ),
+                                    ]),
+                                ]),
+                            ]),
+                    ]),
+            ]),
+            ]),
+
+    dbc.Row([
             dbc.Col([
 
                 dbc.Card(
@@ -414,10 +451,11 @@ def update_price_yahoo(n):
     [Output(component_id="my_multi_line", component_property="figure"),
      Output(component_id='download-link_alt', component_property='href')],
     [Input(component_id="my_alt_dropdown", component_property="value"),
-     Input(component_id="my_alt_check", component_property="value")
+     Input(component_id="my_alt_check", component_property="value"),
+     Input(component_id="color_mode", component_property="value")
      ]
 )
-def update_graph_alt(window_selection, asset_selection):
+def update_graph_alt(window_selection, asset_selection, sel_col):
 
     df_alt, _ = btc_total_dfs(window_list, "btc_denominated")
 
@@ -432,7 +470,7 @@ def update_graph_alt(window_selection, asset_selection):
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        template=sel_col,
         title='Altcoin performances BTC denominated',
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -479,16 +517,14 @@ def update_graph_alt(window_selection, asset_selection):
     [Output(component_id="my_multi_line_2", component_property="figure"),
      Output(component_id='download-link_yahoo', component_property='href')],
     [Input(component_id="my_yahoo_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_check", component_property="value")]
+     Input(component_id="my_yahoo_check", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_yahoo(window_selection, asset_selection):
+def update_graph_yahoo(window_selection, asset_selection, sel_col):
 
     _, df_yahoo = btc_total_dfs(window_list, "btc_denominated")
 
     df_yahoo = df_yahoo.drop(columns=["ETH", "XRP", "LTC", "BCH"])
-    # df_yahoo = df_yahoo.rename(
-    #     columns={'BBG Barclays PAN EURO Aggregate': 'EUR Aggregate Bond',
-    #              'PETROL': 'CRUDE OIL'})
 
     dff_yahoo = df_yahoo.copy()
     dff_y_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
@@ -501,7 +537,7 @@ def update_graph_yahoo(window_selection, asset_selection):
         data_frame=dff_y_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        template=sel_col,
         title='Asset Class performances BTC denominated',
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -551,9 +587,10 @@ def update_graph_yahoo(window_selection, asset_selection):
     [Output(component_id="my_multi_line_3", component_property="figure"),
      Output(component_id='download-link_yahoo_norm', component_property='href')],
     [Input(component_id="my_norm_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_norm", component_property="value")]
+     Input(component_id="my_yahoo_norm", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_norm(window_selection, asset_selection):
+def update_graph_norm(window_selection, asset_selection, sel_col):
 
     df_usd_norm = usd_den_total_df(window_list)
 
@@ -570,7 +607,7 @@ def update_graph_norm(window_selection, asset_selection):
         data_frame=dff_filtered_norm,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        template=sel_col,
         title='Performances denominated in USD',
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -592,9 +629,10 @@ def update_graph_norm(window_selection, asset_selection):
     [Output(component_id="my_multi_line_4", component_property="figure"),
      Output(component_id='download-link_yahoo_vola', component_property='href')],
     [Input(component_id="my_vola_dropdown", component_property="value"),
-     Input(component_id="my_yahoo_vola", component_property="value")]
+     Input(component_id="my_yahoo_vola", component_property="value"),
+     Input(component_id="color_mode", component_property="value")]
 )
-def update_graph_vola(days_selection, asset_selection):
+def update_graph_vola(days_selection, asset_selection, sel_col):
 
     df_vola = vola_total_df(vola_days_list)
 
@@ -612,7 +650,7 @@ def update_graph_vola(days_selection, asset_selection):
         data_frame=dff_vola_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        template=sel_col,
         title='Annualized Volatility',
         labels={"value": "volatility"},
         color_discrete_map={
@@ -634,9 +672,10 @@ def update_graph_vola(days_selection, asset_selection):
 @ app.callback(
     [Output(component_id="my_multi_line_5", component_property="figure"),
      Output(component_id='download-link_yahoo_volume', component_property='href')],
-    Input(component_id="my_yahoo_volume", component_property="value")
+    Input(component_id="my_yahoo_volume", component_property="value"),
+    Input(component_id="color_mode", component_property="value")
 )
-def update_graph_volume(asset_selection):
+def update_graph_volume(asset_selection, sel_col):
 
     df_volume = query_mongo(DB_NAME, "all_volume_y")
 
@@ -650,7 +689,7 @@ def update_graph_volume(asset_selection):
         data_frame=dff_vol_filtered,
         x="Date",
         y=asset_selection,
-        template='plotly_dark',
+        template=sel_col,
         title='Volume in USD',
         labels={"value": "volume"},
         color_discrete_map={
@@ -668,6 +707,7 @@ def update_graph_volume(asset_selection):
         urllib.parse.quote(csv_string_volume)
 
     return fig_yahoo_volume, csv_string_volume
+
 
 print("Done")
 # --------------------

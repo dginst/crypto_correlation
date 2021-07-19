@@ -75,7 +75,6 @@ EQUITY = ["NASDAQ", "EUROSTOXX50", "S&P500",
           "MSCI BRIC ", "VIX Index"]
 
 EQUITY_YAHOO = ['NASDAQ',
-                'DOWJONES',
                 'S&P500',
                 'EUROSTOXX50',
                 'VIX']
@@ -84,19 +83,19 @@ BOND = ["Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
         "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
 BOND_YAHOO = ['US TREASURY',
-              'EUR Aggregate Bond',
-              'US Aggregate Bond']
+              'EUR Aggregate Bond'
+]
 
-CURRENCY = ["EUR", "CHF", "GBP", "JPY"]
+CURRENCY = ["EUR", "GBP", "JPY", "CHF"]
 
 COMMODITY = ["GOLD", "IND_METALS", "WTI",
              "GRAIN"]
 
 COMMODITY_YAHOO = ['GOLD',
                    'COPPER',
-                   'NATURAL_GAS',
                    'CRUDE OIL',
-                   'CORN', ]
+                   'CORN'
+                   ]
 
 CRYPTO_FOR_STATIC = ["BITCOIN", "ETH",
                      "LTC", "XRP"]
@@ -162,6 +161,27 @@ VAR_STATIC_LIST_Y = ["Date",
                      'US TREASURY',
                      'EUR Aggregate Bond',
                      'US Aggregate Bond']
+
+CORR_MATRIX_LIST = ["Date",
+                     "BTC",
+                     "ETH",
+                     "LTC",
+                     "XRP",
+                     'GOLD',
+                     'COPPER',
+                     'CRUDE OIL',
+                     'CORN',
+                     'EUR',
+                     'GBP',
+                     'JPY',
+                     'CHF',
+                     'NASDAQ',
+                     'S&P500',
+                     'EUROSTOXX50',
+                     'VIX',
+                     'US TREASURY',
+                     'EUR Aggregate Bond'
+                     ]
 
 GRAPH_LINE_WIDTH = 2
 
@@ -439,7 +459,7 @@ YAHOO_TO_DOWNLOAD_NAME = ['S&P500',
                           'APPLE',
                           'NETFLIX']
 
-YAHOO_TO_DOWNLOAD_CODE = ['^GSPC',
+YAHOO_TO_DOWNLOAD_CODE = ["^GSPC",
                           '^DJI',
                           'GC=F',
                           'SI=F',
@@ -463,7 +483,7 @@ YAHOO_TO_DOWNLOAD_CODE = ['^GSPC',
                           'AAPL',
                           'NFLX']
 
-YAHOO_TO_DOWNLOAD_SERV = ['GBTC',
+YAHOO_TO_DOWNLOAD_SERV = ["GBTC",
                           'QBTC.TO',
                           'DE000A28M8D0.SG',
                           'ABBA.SW',
@@ -676,7 +696,7 @@ CORR_MATRIX_LIST = ['BTC',
                     'EUROSTOXX50',
                     'VIX',
                     'US TREASURY',
-                    'EUR Aggregate Bond',
+                    'EUR Aggregate Bond'
                     ]
 
 

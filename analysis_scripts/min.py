@@ -70,9 +70,27 @@ import pandas as pd
 # plt.ylabel("Silhouette Coefficient")
 # plt.show()
 
-ret = query_mongo("btc_analysis", "all_returns_y")
-span = len(np.array(ret["BTC"]))
+def encrypt(text, s):
 
-print(span)
-vola = ret.ewm(span=span).std()*np.sqrt(252)
-print(vola)
+    result = ""
+    # transverse the plain text
+    for i in range(len(text)):
+        char = text[i]
+        # Encrypt uppercase characters in plain text
+
+        if (char.isupper()):
+            result += chr((ord(char) + s-65) % 26 + 65)
+        # Encrypt lowercase characters in plain text
+        else:
+            result += chr((ord(char) + s - 97) % 26 + 97)
+
+    return result
+
+
+# check the above function
+text = "Birkenstock"
+s = 120
+
+print("Plain Text : " + text)
+print("Shift pattern : " + str(s))
+print("Cipher: " + encrypt(text, s))
