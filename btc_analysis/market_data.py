@@ -703,14 +703,15 @@ def check_missing_days(coll_to_look, type_="other"):
 
     last_day = df_hist.tail(1)
     last_date = np.array(last_day["Date"])[0]
-    print(last_date)
+    print(type(last_date))
+    print(type(yesterday))
     list_of_days = date_gen(last_date, yesterday)
     print(list_of_days)
     list_of_days.pop(0)
 
     return list_of_days
 
-    
+
 # ----------------------
 # HISTORICAL VOLATILITY
 # ----------------------
