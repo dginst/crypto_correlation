@@ -5,7 +5,7 @@ import xlsxwriter
 
 from btc_analysis.calc import price_retrieve, return_retrieve
 from btc_analysis.config import (ASSET_CATEGORY, BOND, BOND_YAHOO, COMMODITY,
-                                 COMMODITY_YAHOO, CRYPTO, CRYPTO_FOR_STATIC,
+                                 COMMODITY_YAHOO, CORR_MATRIX_LIST, CRYPTO, CRYPTO_FOR_STATIC,
                                  CRYPTO_FOR_STATIC_YAHOO, CRYPTO_GRAPH_LIST,
                                  CRYPTO_LIST, CRYPTO_STATIC_LIST, CURRENCY,
                                  DB_NAME, EQUITY, EQUITY_YAHOO, FORMAT_DICT,
@@ -280,22 +280,32 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
     space = 5
     space_left = 2
 
-    price_df = price_retrieve("all_prices_y")
-    price_df = price_df.drop(columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
-    return_df = return_retrieve("all_returns_y")
-    return_df = return_df.drop(columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
+    try:
+        price_df = price_retrieve("all_prices_y")
+        price_df = price_df.drop(
+            columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
+        return_df = return_retrieve("all_returns_y")
+        return_df = return_df.drop(
+            columns=["AMAZON", "APPLE", "TESLA", "NETFLIX"])
+    except AttributeError:
+        pass
 
     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
-        price_df.to_excel(
-            writer, sheet_name='Prices', index=False)
-        date_reformat(price_df, writer, 'Prices')
-        format_header_yahoo(writer, 'Prices', dyn_ret_list, 0, 1)
+        try:
 
-        return_df.to_excel(
-            writer, sheet_name='Returns', index=False)
-        date_reformat(return_df, writer, 'Returns')
-        format_header_yahoo(writer, 'Returns', dyn_ret_list, 0, 1)
+            price_df.to_excel(
+                writer, sheet_name='Prices', index=False)
+            date_reformat(price_df, writer, 'Prices')
+            format_header_yahoo(writer, 'Prices', dyn_ret_list, 0, 1)
+
+            return_df.to_excel(
+                writer, sheet_name='Returns', index=False)
+            date_reformat(return_df, writer, 'Returns')
+            format_header_yahoo(writer, 'Returns', dyn_ret_list, 0, 1)
+
+        except UnboundLocalError:
+            pass
 
         dyn_yahoo_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
         date_reformat(dyn_yahoo_corr_3Y, writer, '3Y RW')
@@ -326,6 +336,7 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
                   graph_name='Correlation with Bitcoin on a 1 month rolling window')
 
         # static correlation matrix
+
         stat_yahoo_corr_all.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 1),
@@ -388,7 +399,7 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
             space_left, set_="yahoo")
 
         static_sheet(writer, 'Correlation Matrix', space, space_left,
-                     TIME_WINDOW, VAR_STATIC_LIST_Y, "yahoo")
+                     TIME_WINDOW, CORR_MATRIX_LIST, "yahoo")
         format_sheets(writer, 'Correlation Matrix')
 
 

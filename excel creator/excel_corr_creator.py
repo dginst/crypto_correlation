@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from btc_analysis.config import (CRYPTO_LIST, CRYPTO_STATIC_LIST, DB_NAME,
-                                 VAR_STATIC_LIST_Y, VARIOUS_LIST_Y)
+                                 VAR_STATIC_LIST_Y, VARIOUS_LIST_Y, CORR_MATRIX_LIST)
 from btc_analysis.excel_func import alt_to_excel, yahoo_to_excel
 from btc_analysis.mongo_func import query_mongo
 
@@ -9,7 +9,7 @@ from btc_analysis.mongo_func import query_mongo
 # ----------------------
 # define the current end of quarter date
 
-date = "31_03_2021"
+date = "30_06_2021"
 
 # -------------------------------------
 # downloading from MongoDB
@@ -32,26 +32,27 @@ dyn_yahoo_corr_1Y = query_mongo(DB_NAME, "dyn_yahoo_correlation_1Y")
 dyn_yahoo_corr_1Q = query_mongo(DB_NAME, "dyn_yahoo_correlation_1Q")
 dyn_yahoo_corr_1M = query_mongo(DB_NAME, "dyn_yahoo_correlation_1M")
 
-stat_yahoo_corr_all = query_mongo(DB_NAME, "stat_yahoo_correlation_all")
-stat_yahoo_corr_3Y = query_mongo(DB_NAME, "stat_yahoo_correlation_3Y")
-stat_yahoo_corr_1Y = query_mongo(DB_NAME, "stat_yahoo_correlation_1Y")
-stat_yahoo_corr_1Q = query_mongo(DB_NAME, "stat_yahoo_correlation_1Q")
-stat_yahoo_corr_1M = query_mongo(DB_NAME, "stat_yahoo_correlation_1M")
+stat_yahoo_corr_all = query_mongo(
+    DB_NAME, "stat_yahoo_correlation_all_quarter")
+stat_yahoo_corr_3Y = query_mongo(DB_NAME, "stat_yahoo_correlation_3Y_quarter")
+stat_yahoo_corr_1Y = query_mongo(DB_NAME, "stat_yahoo_correlation_1Y_quarter")
+stat_yahoo_corr_1Q = query_mongo(DB_NAME, "stat_yahoo_correlation_1Q_quarter")
+stat_yahoo_corr_1M = query_mongo(DB_NAME, "stat_yahoo_correlation_1M_quarter")
 
 # dropping some dataframe columns out of scope
-list_to_drop = ["AMAZON", "SILVER", "US index", "APPLE", "TESLA", "NETFLIX"]
-index_to_drop = [7, 22, 23, 24, 25, 26]
+# list_to_drop = ["AMAZON", "SILVER", "US index", "APPLE", "TESLA", "NETFLIX"]
+# index_to_drop = [7, 22, 23, 24, 25, 26]
 
-stat_yahoo_corr_all = stat_yahoo_corr_all.drop(
-    index=index_to_drop, columns=list_to_drop)
-stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(
-    index=index_to_drop, columns=list_to_drop)
-stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(
-    index=index_to_drop, columns=list_to_drop)
-stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(
-    index=index_to_drop, columns=list_to_drop)
-stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(
-    index=index_to_drop, columns=list_to_drop)
+# stat_yahoo_corr_all = stat_yahoo_corr_all.drop(
+#     index=index_to_drop, columns=list_to_drop)
+# stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(
+#     index=index_to_drop, columns=list_to_drop)
+# stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(
+#     index=index_to_drop, columns=list_to_drop)
+# stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(
+#     index=index_to_drop, columns=list_to_drop)
+# stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(
+#     index=index_to_drop, columns=list_to_drop)
 
 # --------------------
 # excel creation
@@ -59,7 +60,7 @@ stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(
 file_name = "yahoo_correlation_" + date + ".xlsx"
 spec_path = Path("excel creator", "output", file_name)
 
-yahoo_to_excel(spec_path, VARIOUS_LIST_Y, VAR_STATIC_LIST_Y,
+yahoo_to_excel(spec_path, VARIOUS_LIST_Y, CORR_MATRIX_LIST,
                dyn_yahoo_corr_3Y, dyn_yahoo_corr_1Y, dyn_yahoo_corr_1Q,
                dyn_yahoo_corr_1M, stat_yahoo_corr_all, stat_yahoo_corr_3Y,
                stat_yahoo_corr_1Y, stat_yahoo_corr_1Q, stat_yahoo_corr_1M)
