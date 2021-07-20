@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -30,6 +31,10 @@ btc_tot_df = crypto_price_df[["BTC"]]
 
 list_of_missing = check_missing_days("btc_price", type_="price")
 lenght_missing = len(list_of_missing)
+
+list_of_missing = [datetime.strptime(
+    d, "%Y-%m-%d") for d in list_of_missing]
+list_of_missing = [d.strftime("%d-%m-%Y") for d in list_of_missing]
 
 if lenght_missing > 1:
 
