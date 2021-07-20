@@ -63,39 +63,39 @@ app.layout = dbc.Container([
                                         dcc.Location(id='url', refresh=False),
 
                                         dcc.Link(
-                                            'Navigate to "Crypto-Index" dashboard', href='http://http://18.116.30.116:3000/', style={'font-size': font_size}),
+                                            'Navigate to "Crypto-Index" dashboard', href='http://18.116.30.116:3000/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Bitcoin & Blockchain Statistics" dashboard', href='http://http://18.116.30.116:3500/', style={'font-size': font_size}),
+                                            'Navigate to "Bitcoin & Blockchain Statistics" dashboard', href='http://18.116.30.116:3500/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Crypto-Assets Analysis" dashboard', href='http://http://18.116.30.116:4000/', style={'font-size': font_size}),
+                                            'Navigate to "Crypto-Assets Analysis" dashboard', href='http://18.116.30.116:4000/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Asset Classes Analysis" dashboard', href='http://http://18.116.30.116:4500/', style={'font-size': font_size}),
+                                            'Navigate to "Asset Classes Analysis" dashboard', href='http://18.116.30.116:4500/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Best Performing Asset Analysis" dashboard', href='http://http://18.116.30.116:5000/', style={'font-size': font_size}),
+                                            'Navigate to "Best Performing Asset Analysis" dashboard', href='http://18.116.30.116:5000/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Capital Asset Pricing Model" dashboard', href='http://http://18.116.30.116:5500/', style={'font-size': font_size}),
+                                            'Navigate to "Capital Asset Pricing Model" dashboard', href='http://18.116.30.116:5500/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Stock to Flow" dashboard', href='http://http://18.116.30.116:7000/', style={'font-size': font_size}),
+                                            'Navigate to "Stock to Flow" dashboard', href='http://18.116.30.116:7000/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Market Capitalization" dashboard', href='http://http://18.116.30.116:8500/', style={'font-size': font_size}),
+                                            'Navigate to "Market Capitalization" dashboard', href='http://18.116.30.116:8500/', style={'font-size': font_size}),
                                         html.Br(),
 
                                         dcc.Link(
-                                            'Navigate to "Static Correlation" dashboard', href='http://http://18.116.30.116:9000/', style={'font-size': font_size}),
+                                            'Navigate to "Static Correlation" dashboard', href='http://18.116.30.116:9000/', style={'font-size': font_size}),
                                         html.Br(),
 
                                     ])
