@@ -38,7 +38,7 @@ try:
 
     list_of_missing = [datetime.strptime(
         d, "%Y-%m-%d") for d in list_of_missing]
-    list_of_missing = [d.strftime("%d-%m-%d") for d in list_of_missing]
+    list_of_missing = [d.strftime("%d-%m-%Y") for d in list_of_missing]
 
     if lenght_missing > 1:
 
