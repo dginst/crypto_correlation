@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 import pandas as pd
 import numpy as np
@@ -34,6 +35,10 @@ try:
 
     list_of_missing = check_missing_days("btc_price", type_="price")
     lenght_missing = len(list_of_missing)
+
+    list_of_missing = [datetime.strptime(
+        d, "%Y-%m-%d") for d in list_of_missing]
+    list_of_missing = [d.strftime("%d-%m-%d") for d in list_of_missing]
 
     if lenght_missing > 1:
 
