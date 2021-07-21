@@ -3,7 +3,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from btc_analysis.market_data import (btc_supply_op, check_missing_days,
+from btc_analysis.market_data import (check_missing_days,
                                       yesterday_str)
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
                                      mongo_upload, query_mongo)
