@@ -191,7 +191,7 @@ def window_period_back(date_df, time_window, quarter="N"):
     return first_date, last_date
 
 
-def last_quarter_end():
+def last_quarter_end(out="string"):
 
     today_month = int(datetime.now().month)
     today_year = int(datetime.now().year)
@@ -213,8 +213,17 @@ def last_quarter_end():
 
         quart = "30-09-" + str(today_year)
 
-    last_q_date_end = quart
-    # datetime.strptime(quart, "%d-%m-%Y")
+    if out == "string":
+
+        last_q_date_end = quart
+
+    elif out == "date":
+
+        last_q_date_end = datetime.strptime(quart, "%d-%m-%Y")
+
+    elif out == "str_excel":
+
+        last_q_date_end = quart[:2] + "_" + quart[3:5] + "_" + quart[6:]
 
     return last_q_date_end
 
