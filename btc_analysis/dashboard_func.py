@@ -240,6 +240,10 @@ def btc_price_min(price_df):
     minimum_df["Datetime"] = [datetime.strptime(
         d, '%Y-%m-%d') for d in minimum_df["Date"]]
 
+    minimum_df["Year"] = [int(x.year) for x in minimum_df["Datetime"]]
+    minimum_df = minimum_df.drop_duplicates(subset=["Year"])
+    minimum_df = minimum_df.drop(columns=["Year"])
+
     return minimum_df
 
 
