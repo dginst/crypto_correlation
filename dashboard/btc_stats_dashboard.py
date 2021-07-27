@@ -1,3 +1,4 @@
+from os import X_OK
 import urllib.parse
 from datetime import datetime, date
 
@@ -633,6 +634,7 @@ def update_quarter_perf(n, sel_col):
     dff_price = df_price.copy()
 
     performance = quarter_perfomance(dff_price)
+    performance["Quarter Performance"] = performance["Quarter Performance"] * 100
     sub_perf = performance.tail(12)
 
     # df_price["Datetime"] = [datetime.strptime(
@@ -642,22 +644,36 @@ def update_quarter_perf(n, sel_col):
 
     quarter_fig.add_trace(
         go.Bar(
-            x=sub_perf["Year-Quarter"],
-            y=sub_perf["Quarter Performance"],
+            y=sub_perf["Year-Quarter"],
+            x=sub_perf["Quarter Performance"],
             # name="BTC Quarter Perfomances",
-            line_color="#FEAF16",
             orientation='h',
             marker=dict(color="#FEAF16")
         ))
 
     quarter_fig.update_layout(
         title_text="BTC Quarter Perfomances",
-        template=sel_col
+        template=sel_col,
+        height=600,
     )
 
-    # model_cap.update_xaxes(
-    #     title_text="Date",
-    # )
+    annotations = []
+
+    for xd, yd in zip(sub_perf["Year-Quarter"], sub_perf["Quarter Performance"]):
+
+        annotations.append(dict(xref='x', yref='y',
+                                x=yd, y=xd,
+                                text=str(round(yd)) + '%',
+                                font=dict(family='Arial',
+                                          size=13,
+                                          color='white'),
+                                showarrow=False))
+
+    quarter_fig.update_layout(annotations=annotations)
+
+    quarter_fig.update_traces(textposition='outside')
+
+    quarter_fig.update_xaxes(ticksuffix="%")
 
     # table
     if sel_col == "plotly_white":
@@ -669,22 +685,22 @@ def update_quarter_perf(n, sel_col):
         table_line = "white"
         table_font = "white"
 
-    table_perf = sub_perf[["Quarter", "BTC Price", "Quarter Performance"]]
+    table_perf = sub_perf[["Year-Quarter", "BTC Price", "Quarter Performance"]]
 
     table_q_perf = go.Figure(data=[go.Table(
-        columnwidth=[60, 150],
-        header=dict(values=["Quarter", "BTC Price", "Quarter Performance"],
+        columnwidth=[250, 300],
+        header=dict(values=["Quarter", "Performance"],
                     line_color=table_line,
                     fill_color=table_fill,
                     align='center',
                     font=dict(color=table_font, size=12),
                     height=35),
-        cells=dict(values=[table_perf["Quarter"], table_perf["BTC Price"], table_perf["Quarter Performance"]],
+        cells=dict(values=[table_perf["Year-Quarter"], table_perf["Quarter Performance"]],
                    line_color=table_line,
                    fill_color=table_fill,
-                   format=[None, ",.2f", ",.3f%"],
-                   suffix=[None, '$'],
-                   align=['center', 'right', 'right'],
+                   format=[None, ",.2f"],
+                   suffix=[None, '%'],
+                   align=['center', 'right'],
                    font=dict(color=table_font, size=11),
                    height=25)
     )
@@ -692,7 +708,7 @@ def update_quarter_perf(n, sel_col):
 
     table_q_perf.update_layout(
         template=sel_col,
-        height=500,
+        height=600,
     )
 
     return quarter_fig, table_q_perf
@@ -772,7 +788,7 @@ def update_supply(n, sel_col):
 
 # hash rate
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_hash",
            component_property="initial_visible_month"),
     Input(component_id="df-update", component_property="n_intervals"),
@@ -786,7 +802,7 @@ def set_initial_date_hash(n):
     return initial_visible_month_
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_hash",
            component_property="max_date_allowed"),
     Input(component_id="df-update", component_property="n_intervals")
@@ -800,7 +816,7 @@ def set_max_date_hash(n):
     return max_date
 
 
-@app.callback(
+@ app.callback(
     Output(component_id="date_range_hash",
            component_property="end_date"),
     Input(component_id="df-update", component_property="n_intervals")
@@ -879,4 +895,4 @@ def update_hash_rate(start, stop, n, sel_col):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=3500, host='0.0.0.0')
+    app.run_server(debug=False, port=3500, host='0.0.0.0')
