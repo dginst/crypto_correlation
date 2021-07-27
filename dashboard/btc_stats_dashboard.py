@@ -12,6 +12,7 @@ from dash.dependencies import Input, Output
 from btc_analysis.market_data import yesterday_str
 from btc_analysis.dashboard_func import (
     date_elements, btc_price_min, btc_yearly_perf)
+from btc_analysis.calc import quarter_perfomance
 
 # start app
 
@@ -183,6 +184,45 @@ app.layout = dbc.Container([
         ]),
 
     ], justify='center'),
+
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                html.Hr(),
+
+                                dbc.Row(
+                                    [
+                                        dbc.Col([
+
+                                            dcc.Graph(id="btc_quart", figure={},
+                                                      config={'displayModeBar': False}),
+
+
+                                        ], width=8),
+
+                                        dbc.Col([
+
+                                            dcc.Graph(
+                                                id='btc_quart_perf', figure={}),
+
+                                        ], width=4)
+                                    ], no_gutters=True),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
 
 
     dbc.Row([
@@ -574,6 +614,88 @@ def update_log_price(n, sel_col):
     )
 
     return model_cap, table_log_perf
+
+
+# btc quarter performaces
+
+@ app.callback(
+    [Output(component_id='btc_quart', component_property='figure'),
+     Output(component_id='btc_quart_perf', component_property='figure'),
+     ],
+    [Input(component_id='df-update', component_property='n_intervals'),
+     Input(component_id="color_mode", component_property="value")
+     ]
+
+)
+def update_quarter_perf(n, sel_col):
+
+    df_price = query_mongo("btc_analysis", "btc_price")
+    dff_price = df_price.copy()
+
+    performance = quarter_perfomance(dff_price)
+    sub_perf = performance.tail(12)
+
+    # df_price["Datetime"] = [datetime.strptime(
+    #     d, "%d-%m-%Y") for d in df_price["Date"]]
+
+    quarter_fig = go.Figure()
+
+    quarter_fig.add_trace(
+        go.Bar(
+            x=sub_perf["Year-Quarter"],
+            y=sub_perf["Quarter Performance"],
+            # name="BTC Quarter Perfomances",
+            line_color="#FEAF16",
+            orientation='h',
+            marker=dict(color="#FEAF16")
+        ))
+
+    quarter_fig.update_layout(
+        title_text="BTC Quarter Perfomances",
+        template=sel_col
+    )
+
+    # model_cap.update_xaxes(
+    #     title_text="Date",
+    # )
+
+    # table
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+        table_font = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+        table_font = "white"
+
+    table_perf = sub_perf[["Quarter", "BTC Price", "Quarter Performance"]]
+
+    table_q_perf = go.Figure(data=[go.Table(
+        columnwidth=[60, 150],
+        header=dict(values=["Quarter", "BTC Price", "Quarter Performance"],
+                    line_color=table_line,
+                    fill_color=table_fill,
+                    align='center',
+                    font=dict(color=table_font, size=12),
+                    height=35),
+        cells=dict(values=[table_perf["Quarter"], table_perf["BTC Price"], table_perf["Quarter Performance"]],
+                   line_color=table_line,
+                   fill_color=table_fill,
+                   format=[None, ",.2f", ",.3f%"],
+                   suffix=[None, '$'],
+                   align=['center', 'right', 'right'],
+                   font=dict(color=table_font, size=11),
+                   height=25)
+    )
+    ])
+
+    table_q_perf.update_layout(
+        template=sel_col,
+        height=500,
+    )
+
+    return quarter_fig, table_q_perf
 
 # bitcoin supply
 

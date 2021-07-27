@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
+from pymongo.collection import ReturnDocument
 
 from btc_analysis.config import (CRYPTO_LIST, DB_NAME, INDEX_DB_NAME,
                                  METAL_LIST, REF_CRYPTO, REF_SP500,
@@ -253,6 +254,90 @@ def last_q_end_word():
     last_q_date_end = quart
 
     return last_q_date_end
+
+
+def quarter_from_date(df, col_name):
+
+    dff = df.copy()
+    dff[col_name] = [datetime.strptime(d, "%d-%m-%Y") for d in dff[col_name]]
+
+    first_date = np.array(dff[col_name].head(1))[0]
+    last_date = np.array(dff[col_name].tail(1))[0]
+
+    year_list = [d.year for d in dff[col_name]]
+    year_list = list(dict.fromkeys(year_list))
+
+    all_quarter = quarter_list(year_list)
+
+    sel_quarter = all_quarter.loc[all_quarter.Quarter > first_date]
+    sel_quarter = sel_quarter.loc[sel_quarter.Quarter < last_date]
+
+    return sel_quarter
+
+
+def quarter_list(year_list):
+
+    quarter_array = np.array([])
+
+    for y in year_list:
+
+        q1 = "31-03-" + str(y)
+        quarter_array = np.append(quarter_array, q1)
+        q2 = "30-06-" + str(y)
+        quarter_array = np.append(quarter_array, q2)
+        q3 = "30-09-" + str(y)
+        quarter_array = np.append(quarter_array, q3)
+        q4 = "31-12-" + str(y)
+        quarter_array = np.append(quarter_array, q4)
+
+    quarter_df_date = pd.DataFrame(quarter_array, columns=["Quarter"])
+    quarter_df_date["Quarter"] = [datetime.strptime(
+        d, "%d-%m-%Y") for d in quarter_df_date["Quarter"]]
+
+    return quarter_df_date
+
+
+def add_quarter(df, col_name):
+
+    new_df = df.copy()
+
+    try:
+
+        new_df[col_name] = [datetime.strptime(
+            d, "%d-%m-%Y") for d in new_df[col_name]]
+
+    except TypeError:
+        pass
+
+    quarter_arr = np.array([])
+
+    for el in new_df[col_name]:
+
+        if el.month <= 3:
+            quarter_arr = np.append(quarter_arr, "Q1")
+
+        elif el.month <= 6:
+            quarter_arr = np.append(quarter_arr, "Q2")
+
+        elif el.month <= 9:
+            quarter_arr = np.append(quarter_arr, "Q3")
+
+        else:
+            quarter_arr = np.append(quarter_arr, "Q4")
+
+    new_df["Quarter String"] = quarter_arr
+    try:
+
+        new_df["Year-Quarter"] = new_df["Year"].astype(
+            str) + "-" + new_df["Quarter String"]
+
+    except KeyError:
+
+        new_df["Year"] = [int(x.year) for x in new_df[col_name]]
+        new_df["Year-Quarter"] = new_df["Year"].astype(
+            str) + "-" + new_df["Quarter String"]
+
+    return new_df
 
 # ----------------------------------
 # RETURN RETRIEVE AND SETUP OPERATION
@@ -862,3 +947,23 @@ def usd_normalized_total(yahoo_price_df):
 
     mongo_upload(yahoo_df_1W_quarter,
                  "collection_normalized_prices_1W_quarter")
+
+
+# ---
+# Quarter Performances
+
+def quarter_perfomance(price_df):
+
+    dff_for_list = price_df.copy()
+    dff = price_df.copy()
+
+    quarter_list = quarter_from_date(dff_for_list, "Date")
+    quarter_list["Quarter"] = [d.strftime(
+        "%d-%m-%Y") for d in quarter_list["Quarter"]]
+    dff = dff.rename(columns={"Date": "Quarter"})
+
+    quarter_price = pd.merge(quarter_list, dff, on="Quarter", how="left")
+    quarter_price["Quarter Performance"] = quarter_price["BTC Price"].pct_change()
+    quarter_price = add_quarter(quarter_price, "Quarter")
+
+    return quarter_price
