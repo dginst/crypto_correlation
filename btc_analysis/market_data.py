@@ -13,12 +13,19 @@ from dateutil.relativedelta import relativedelta
 from btc_analysis.calc import date_gen, date_gen_TS
 from btc_analysis.config import (GOLD_OUNCES_SUPPLY, INDEX_DB_NAME,
                                  SILVER_OUNCES_SUPPLY, START_DATE, USD_SUPPLY)
-from btc_analysis.mongo_func import mongo_upload, query_mongo, mongo_coll_drop
+from btc_analysis.mongo_func import mongo_upload, query_mongo, mongo_coll_drop, mongo_delete
 from btc_analysis.statistics import hist_std_dev
 
 # -----------------------
 # TIME FUNCTIONS
 # -----------------------
+
+
+def today_str(format_="%Y-%m-%d"):
+
+    today_str_ = datetime.now().strftime(format_)
+
+    return today_str_
 
 
 def yesterday_str(format_="%Y-%m-%d"):
@@ -33,9 +40,22 @@ def yesterday_str(format_="%Y-%m-%d"):
     return yesterday
 
 
+def day_before_str(format_="%Y-%m-%d"):
+
+    yesterday_str_ = yesterday_str(format_)
+    yesterday = datetime.strptime(yesterday_str_, format_)
+    yesterday_TS = int(yesterday.replace(tzinfo=timezone.utc).timestamp())
+    before_TS = yesterday_TS - 86400
+    before_date = datetime.fromtimestamp(int(before_TS))
+    before = before_date.strftime(format_)
+
+    return before
+
+
 # ----------------------------
 # INDEX COLLECTIONS CHECKING
 # ---------------------------
+
 
 def index_coll_check(collection_name):
 
@@ -124,7 +144,7 @@ def single_series_download(series_code, start_period, end_period):
 
         logging.error("Exception occurred", exc_info=True)
         logging.info(
-            'The aseet with code {series_code} failed to download')
+            'The asset with code {series_code} failed to download')
 
     # create the complete array of date
     date_arr = np.array(date_gen(start_period, end_period, holiday="N"))
@@ -194,9 +214,12 @@ def all_series_to_logret(all_price_df):
     return log_ret_df
 
 
-def mkt_data_op(series_code_list, all_el_list_d,
+def mkt_data_op(series_code_list,
+                all_el_list_d,
                 all_el_list_r,
-                start_period, end_period):
+                start_period,
+                end_period,
+                daily="N"):
 
     (all_series_df_price,
      all_series_df_volume) = all_series_download(series_code_list,
@@ -204,10 +227,23 @@ def mkt_data_op(series_code_list, all_el_list_d,
                                                  start_period,
                                                  end_period)
 
+    if daily == "Y":
+        mongo_delete("collection_prices_y", {"Date": start_period})
+        mongo_delete("collection_prices_y", {"Date": end_period})
+        old_price_df = query_mongo("btc_analysis", "collection_prices_y")
+        complete_series_df_price = old_price_df.append(all_series_df_price)
+    else:
+        complete_series_df_price = all_series_df_price
+
     # price and returns operation
-    complete_series_df_price = all_series_df_price
     complete_series_df_price = add_crypto(all_series_df_price)
-    mongo_upload(complete_series_df_price, "collection_prices_y")
+
+    if daily == "Y":
+        to_upload = complete_series_df_price.tail(2)
+        to_upload = to_upload.head(1)
+        mongo_upload(to_upload, "collection_prices_y")
+    else:
+        mongo_upload(complete_series_df_price, "collection_prices_y")
 
     all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
 
@@ -243,6 +279,7 @@ def mkt_data_op(series_code_list, all_el_list_d,
     complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
     complete_series_df_vol_rolling["Date"] = date_arr
     mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
+
 
 # -----------------------------
 # ADDING CRYPTOCURRENCIES DATA TO DATAFRAME

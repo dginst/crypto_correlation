@@ -671,3 +671,11 @@ def mongo_upload(data_to_upload, where_to_upload,
     collection_dict = mongo_coll("btc_analysis")
     data_to_dict = data_to_upload.to_dict(orient="records")
     collection_dict.get(where_to_upload).insert_many(data_to_dict)
+
+
+def mongo_delete(coll_where_del, query_to_del):
+
+    collection_dict = mongo_coll()
+    collection_dict.get(coll_where_del).delete_many(query_to_del)
+
+    return None
