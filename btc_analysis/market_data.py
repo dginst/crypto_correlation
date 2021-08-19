@@ -240,6 +240,7 @@ def mkt_data_op(series_code_list,
 
     if daily == "Y":
         to_upload = complete_series_df_price.tail(2)
+        print(to_upload)
         to_upload = to_upload.head(1)
         mongo_upload(to_upload, "collection_prices_y")
     else:
