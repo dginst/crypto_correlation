@@ -154,14 +154,14 @@ def single_series_download(series_code, start_period, end_period):
     # get historical market data
     df = series_obj.history(start=start_period, end=end_period)
     df.reset_index(inplace=True)
-    print(df)
 
     # modifying date format
     df["Date"] = [x.strftime("%Y-%m-%d") for x in df["Date"]]
     df = df[["Date", "Close", "Volume"]]
 
     merged = pd.merge(date_df, df, how="left", on="Date")
-
+    print(merged)
+    
     return merged
 
 
