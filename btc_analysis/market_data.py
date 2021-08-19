@@ -160,8 +160,9 @@ def single_series_download(series_code, start_period, end_period):
     df = df[["Date", "Close", "Volume"]]
 
     merged = pd.merge(date_df, df, how="left", on="Date")
+    merged = merged.head(1)
     print(merged)
-    
+
     return merged
 
 
