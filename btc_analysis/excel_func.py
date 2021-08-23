@@ -1,17 +1,19 @@
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import xlsxwriter
 
 from btc_analysis.calc import price_retrieve, return_retrieve
 from btc_analysis.config import (ASSET_CATEGORY, BOND, BOND_YAHOO, COMMODITY,
-                                 COMMODITY_YAHOO, CORR_MATRIX_LIST, CRYPTO, CRYPTO_FOR_STATIC,
-                                 CRYPTO_FOR_STATIC_YAHOO, CRYPTO_GRAPH_LIST,
-                                 CRYPTO_LIST, CRYPTO_STATIC_LIST, CURRENCY,
-                                 DB_NAME, EQUITY, EQUITY_YAHOO, FORMAT_DICT,
-                                 GRAPH_COLOR, INDEX_DB_NAME, SP500_GRAPH_LIST,
-                                 TIME_WINDOW, VAR_GRAPH_LIST,
-                                 VAR_STATIC_LIST_Y, VS_SP500_LIST)
+                                 COMMODITY_YAHOO, CORR_MATRIX_LIST, CRYPTO,
+                                 CRYPTO_FOR_STATIC, CRYPTO_FOR_STATIC_YAHOO,
+                                 CRYPTO_GRAPH_LIST, CRYPTO_LIST,
+                                 CRYPTO_STATIC_LIST, CURRENCY, DB_NAME, EQUITY,
+                                 EQUITY_YAHOO, FORMAT_DICT, GRAPH_COLOR,
+                                 INDEX_DB_NAME, SP500_GRAPH_LIST, TIME_WINDOW,
+                                 VAR_GRAPH_LIST, VAR_STATIC_LIST_Y,
+                                 VS_SP500_LIST)
 
 # -------------------------
 # TIME FUNCTION
@@ -149,122 +151,96 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
         format_sheets(writer, 'Correlation Matrix')
 
 
-# def var_to_excel(file_name, dyn_ret_list, stat_ret_list,
-#                  dyn_var_corr_3Y, dyn_var_corr_1Y,
-#                  dyn_var_corr_1Q, dyn_var_corr_1M,
-#                  stat_var_corr_all, stat_var_corr_3Y,
-#                  stat_var_corr_1Y,
-#                  stat_var_corr_1Q, stat_var_corr_1M,
-#                  dyn_SP500_corr_3Y
-#                  ):
+def yahoo_csv_to_excel(file_name, stat_ret_list,
+                       stat_corr_all_name, stat_corr_3Y_name,
+                       stat_corr_1Y_name, stat_corr_1Q_name,
+                       stat_corr_1M_name
+                       ):
 
-#     len_corr_mat = stat_var_corr_all.shape[0]
-#     space = 5
-#     space_left = 2
+    stat_yahoo_corr_all = pd.read_csv(
+        Path("excel_creator", "input", stat_corr_all_name))
+    stat_yahoo_corr_3Y = pd.read_csv(
+        Path("excel_creator", "input", stat_corr_3Y_name))
+    stat_yahoo_corr_1Y = pd.read_csv(
+        Path("excel_creator", "input", stat_corr_1Y_name))
+    stat_yahoo_corr_1Q = pd.read_csv(
+        Path("excel_creator", "input", stat_corr_1Q_name))
+    stat_yahoo_corr_1M = pd.read_csv(
+        Path("excel_creator", "input", stat_corr_1M_name))
 
-#     price_df = price_retrieve("all_prices")
-#     return_df = return_retrieve("all_returns")
+    len_corr_mat = stat_yahoo_corr_all.shape[0]
+    print(len_corr_mat)
+    space = 5
+    space_left = 2
 
-#     with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
 
-#         price_df.to_excel(
-#             writer, sheet_name='Prices', index=False)
-#         date_reformat(price_df, writer, 'Prices')
-#         format_header(writer, 'Prices', dyn_ret_list, 0, 1)
+        # static correlation matrix
 
-#         return_df.to_excel(
-#             writer, sheet_name='Returns', index=False)
-#         date_reformat(return_df, writer, 'Returns')
-#         format_header(writer, 'Returns', dyn_ret_list, 0, 1)
+        stat_yahoo_corr_all.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 1) + 1, space_left + 1)
+        format_header_yahoo(writer, 'Correlation Matrix', stat_ret_list,
+                            len(stat_ret_list) + space + 1, space_left)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + space + 2,
+            space_left, set_="yahoo")
 
-#         dyn_var_corr_3Y.to_excel(writer, sheet_name='3Y RW', index=False)
-#         date_reformat(dyn_var_corr_3Y, writer, '3Y RW')
-#         format_sheets(writer, '3Y RW')
-#         format_header(writer, '3Y RW', dyn_ret_list, 0, 1)
-#         put_graph(writer, '3Y RW', dyn_var_corr_3Y,
-#                   graph_name='Correlation with Bitcoin on a 3 years rolling window')
+        stat_yahoo_corr_3Y.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 2 + len_corr_mat * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 2) + 1 + len_corr_mat * 1,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1,
+            space_left, set_="yahoo")
 
-#         dyn_var_corr_1Y.to_excel(writer, sheet_name='1Y RW', index=False)
-#         date_reformat(dyn_var_corr_1Y, writer, '1Y RW')
-#         format_sheets(writer, '1Y RW')
-#         format_header(writer, '1Y RW', dyn_ret_list, 0, 1)
-#         put_graph(writer, '1Y RW', dyn_var_corr_1Y,
-#                   graph_name='Correlation with Bitcoin on a 1 year rolling window')
+        stat_yahoo_corr_1Y.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 3 + len_corr_mat * 2),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 3) + 1 + len_corr_mat * 2,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2,
+            space_left, set_="yahoo")
 
-#         dyn_var_corr_1Q.to_excel(writer, sheet_name='1Q RW', index=False)
-#         date_reformat(dyn_var_corr_1Q, writer, '1Q RW')
-#         format_sheets(writer, '1Q RW')
-#         format_header(writer, '1Q RW', dyn_ret_list, 0, 1)
-#         put_graph(writer, '1Q RW', dyn_var_corr_1Q,
-#                   graph_name='Correlation with Bitcoin on a 1 quarter rolling window')
+        stat_yahoo_corr_1Q.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 4 + len_corr_mat * 3),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 4) + 1 + len_corr_mat * 3,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3,
+            space_left, set_="yahoo")
 
-#         dyn_var_corr_1M.to_excel(writer, sheet_name='1M RW', index=False)
-#         date_reformat(dyn_var_corr_1M, writer, '1M RW')
-#         format_sheets(writer, '1M RW')
-#         format_header(writer, '1M RW', dyn_ret_list, 0, 1)
-#         put_graph(writer, '1M RW', dyn_var_corr_1M,
-#                   graph_name='Correlation with Bitcoin on a 1 month rolling window')
+        stat_yahoo_corr_1M.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 5 + len_corr_mat * 4),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 5) + 1 + len_corr_mat * 4,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4,
+            space_left, set_="yahoo")
 
-#         # static correlation matrix
-#         stat_var_corr_all.to_excel(
-#             writer, sheet_name='Correlation Matrix',
-#             startrow=(space * 1),
-#             startcol=space_left, index=False)
-#         half_matrix_formatter(writer, 'Correlation Matrix',
-#                               stat_ret_list,
-#                               (space * 1) + 1, space_left + 1)
-#         format_header(writer, 'Correlation Matrix', stat_ret_list,
-#                       len(stat_ret_list) + space + 1, space_left)
-#         asset_formatter(writer, 'Correlation Matrix', len(
-#             stat_ret_list) + space + 2, space_left)
-
-#         stat_var_corr_3Y.to_excel(
-#             writer, sheet_name='Correlation Matrix',
-#             startrow=(space * 2 + len_corr_mat * 1),
-#             startcol=space_left, index=False)
-#         half_matrix_formatter(writer, 'Correlation Matrix',
-#                               stat_ret_list,
-#                               (space * 2) + 1 + len_corr_mat * 1,
-#                               space_left + 1)
-#         asset_formatter(writer, 'Correlation Matrix', len(
-#             stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1, space_left)
-
-#         stat_var_corr_1Y.to_excel(
-#             writer, sheet_name='Correlation Matrix',
-#             startrow=(space * 3 + len_corr_mat * 2),
-#             startcol=space_left, index=False)
-#         half_matrix_formatter(writer, 'Correlation Matrix',
-#                               stat_ret_list,
-#                               (space * 3) + 1 + len_corr_mat * 2,
-#                               space_left + 1)
-#         asset_formatter(writer, 'Correlation Matrix', len(
-#             stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2, space_left)
-
-#         stat_var_corr_1Q.to_excel(
-#             writer, sheet_name='Correlation Matrix',
-#             startrow=(space * 4 + len_corr_mat * 3),
-#             startcol=space_left, index=False)
-#         half_matrix_formatter(writer, 'Correlation Matrix',
-#                               stat_ret_list,
-#                               (space * 4) + 1 + len_corr_mat * 3,
-#                               space_left + 1)
-#         asset_formatter(writer, 'Correlation Matrix', len(
-#             stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3, space_left)
-
-#         stat_var_corr_1M.to_excel(
-#             writer, sheet_name='Correlation Matrix',
-#             startrow=(space * 5 + len_corr_mat * 4),
-#             startcol=space_left, index=False)
-#         half_matrix_formatter(writer, 'Correlation Matrix',
-#                               stat_ret_list,
-#                               (space * 5) + 1 + len_corr_mat * 4,
-#                               space_left + 1)
-#         asset_formatter(writer, 'Correlation Matrix', len(
-#             stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4, space_left)
-
-#         static_sheet(writer, 'Correlation Matrix', space, space_left,
-#                      TIME_WINDOW, VAR_STATIC_LIST, "various")
-#         format_sheets(writer, 'Correlation Matrix')
+        static_sheet(writer, 'Correlation Matrix', space, space_left,
+                     TIME_WINDOW, CORR_MATRIX_LIST, "yahoo")
+        format_sheets(writer, 'Correlation Matrix')
 
 
 def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
