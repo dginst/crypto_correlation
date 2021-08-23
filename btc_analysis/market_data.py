@@ -21,6 +21,10 @@ from btc_analysis.statistics import hist_std_dev
 # -----------------------
 
 
+def is_business_day(date):
+    return bool(len(pd.bdate_range(date, date)))
+
+
 def today_str(format_="%Y-%m-%d"):
 
     today_str_ = datetime.now().strftime(format_)
@@ -223,18 +227,27 @@ def mkt_data_op(series_code_list,
                 end_period,
                 daily="N"):
 
-    (all_series_df_price,
-     all_series_df_volume) = all_series_download(series_code_list,
-                                                 all_el_list_d,
-                                                 start_period,
-                                                 end_period)
-
     if daily == "Y":
-        mongo_delete("collection_prices_y", {"Date": start_period})
-        mongo_delete("collection_prices_y", {"Date": end_period})
-        old_price_df = query_mongo("btc_analysis", "collection_prices_y")
-        complete_series_df_price = old_price_df.append(all_series_df_price)
+        if is_business_day(start_period) is True:
+            (all_series_df_price,
+             all_series_df_volume) = all_series_download(series_code_list,
+                                                         all_el_list_d,
+                                                         start_period,
+                                                         end_period)
+            mongo_delete("collection_prices_y", {"Date": start_period})
+            mongo_delete("collection_prices_y", {"Date": end_period})
+            old_price_df = query_mongo("btc_analysis", "collection_prices_y")
+            complete_series_df_price = old_price_df.append(all_series_df_price)
+        else:
+            pass
+        print("passed")
     else:
+        (all_series_df_price,
+         all_series_df_volume) = all_series_download(series_code_list,
+                                                     all_el_list_d,
+                                                     start_period,
+                                                     end_period)
+
         complete_series_df_price = all_series_df_price
 
     # price and returns operation
