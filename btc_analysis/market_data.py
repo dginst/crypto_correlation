@@ -238,9 +238,17 @@ def mkt_data_op(series_code_list,
             mongo_delete("collection_prices_y", {"Date": end_period})
             old_price_df = query_mongo("btc_analysis", "collection_prices_y")
             complete_series_df_price = old_price_df.append(all_series_df_price)
+
+            complete_series_df_price = add_crypto(complete_series_df_price)
+
+            to_upload = complete_series_df_price.tail(2)
+            print(to_upload)
+            to_upload = to_upload.head(1)
+            mongo_upload(to_upload, "collection_prices_y")
         else:
-            pass
-        print("passed")
+            mongo_delete("collection_prices_y", {"Date": start_period})
+            mongo_delete("collection_prices_y", {"Date": end_period})
+            print("passed")
     else:
         (all_series_df_price,
          all_series_df_volume) = all_series_download(series_code_list,
@@ -251,50 +259,51 @@ def mkt_data_op(series_code_list,
         complete_series_df_price = all_series_df_price
 
     # price and returns operation
-    complete_series_df_price = add_crypto(all_series_df_price)
-
     if daily == "Y":
-        to_upload = complete_series_df_price.tail(2)
-        print(to_upload)
-        to_upload = to_upload.head(1)
-        mongo_upload(to_upload, "collection_prices_y")
+        pass
     else:
+
+        complete_series_df_price = add_crypto(all_series_df_price)
+
         mongo_upload(complete_series_df_price, "collection_prices_y")
 
-    all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
+        all_ret_df = all_series_to_return(
+            complete_series_df_price, all_el_list_r)
 
-    mongo_upload(all_ret_df, "collection_returns_y")
+        mongo_upload(all_ret_df, "collection_returns_y")
 
-    all_logret_df = all_series_to_logret(complete_series_df_price)
+        all_logret_df = all_series_to_logret(complete_series_df_price)
 
-    mongo_upload(all_logret_df, "collection_logreturns_y")
+        mongo_upload(all_logret_df, "collection_logreturns_y")
 
-    # volume operation
+        # volume operation
 
-    complete_series_df_volume = add_crypto(
-        all_series_df_volume, collection="crypto_volume")
+        complete_series_df_volume = add_crypto(
+            all_series_df_volume, collection="crypto_volume")
 
-    df_all_pair = query_mongo("index", "index_data_feed")
+        df_all_pair = query_mongo("index", "index_data_feed")
 
-    try:
+        try:
 
-        no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+            no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
 
-    except Exception:
+        except Exception:
 
-        logging.error("Exception occurred", exc_info=True)
-        logging.info(
-            'The collection with all the exchanges values of volume\
-             may be not updated')
+            logging.error("Exception occurred", exc_info=True)
+            logging.info(
+                'The collection with all the exchanges values of volume\
+                may be not updated')
 
-    complete_series_df_volume = add_no_stable(
-        complete_series_df_volume, no_stable_vol_df)
-    date_arr = complete_series_df_volume["Date"]
-    complete_series_df_volume = complete_series_df_volume.drop(columns="Date")
+        complete_series_df_volume = add_no_stable(
+            complete_series_df_volume, no_stable_vol_df)
+        date_arr = complete_series_df_volume["Date"]
+        complete_series_df_volume = complete_series_df_volume.drop(
+            columns="Date")
 
-    complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
-    complete_series_df_vol_rolling["Date"] = date_arr
-    mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
+        complete_series_df_vol_rolling = complete_series_df_volume.rolling(
+            7).sum()
+        complete_series_df_vol_rolling["Date"] = date_arr
+        mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
 
 
 # -----------------------------
