@@ -332,14 +332,21 @@ def add_crypto(initial_df, collection="crypto_price"):
         _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
 
     crypto_df = crypto_df[["Date", "BTC", "ETH", "LTC", "XRP", "BCH"]]
-    crypto_df = crypto_df.rename({"BTC": "BITCOIN"})
+    # crypto_df = crypto_df.rename({"BTC": "BITCOIN"})
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
     print(initial_df)
     print(tot_crypto_df)
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
-
+    complete_df = complete_df.rename(columns={"BTC_x": "BTC",
+                                              "ETH_x": "ETH",
+                                              "LTC_x": "LTC",
+                                              "BCH_x": "BCH",
+                                              "XRP_x": "XRP"})
+    complete_df = complete_df.drop(
+        columns=["BCH_y", "BTC_y", "ETH_y", "LTC_y", "XRP_y"])
+    print(complete_df)
     complete_df = complete_df[["Date",
                                "BTC",
                                "ETH",
