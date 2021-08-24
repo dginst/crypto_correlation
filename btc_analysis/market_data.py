@@ -101,7 +101,7 @@ def index_coll_check(collection_name):
 
 
 def all_series_download(series_code_list, all_el_list,
-                        start_period, end_period):
+                        start_period, end_period, daily="N"):
 
     all_series_df_price = pd.DataFrame(columns=all_el_list)
     all_series_df_volume = pd.DataFrame(columns=all_el_list)
@@ -111,7 +111,7 @@ def all_series_download(series_code_list, all_el_list,
         var = all_el_list[i]
 
         single_series = single_series_download(
-            element, start_period, end_period)
+            element, start_period, end_period, daily=daily)
 
         if "BTC" in all_el_list:
 
@@ -136,7 +136,7 @@ def all_series_download(series_code_list, all_el_list,
     return all_series_df_price, all_series_df_volume
 
 
-def single_series_download(series_code, start_period, end_period):
+def single_series_download(series_code, start_period, end_period, daily="N"):
 
     print(series_code)
     # creatre object
@@ -164,8 +164,10 @@ def single_series_download(series_code, start_period, end_period):
     df = df[["Date", "Close", "Volume"]]
 
     merged = pd.merge(date_df, df, how="left", on="Date")
-    merged = merged.head(1)
-    print(merged)
+    if daily == "Y":
+        merged = merged.head(1)
+    else:
+        pass
 
     return merged
 
@@ -233,7 +235,8 @@ def mkt_data_op(series_code_list,
              all_series_df_volume) = all_series_download(series_code_list,
                                                          all_el_list_d,
                                                          start_period,
-                                                         end_period)
+                                                         end_period,
+                                                         daily=daily)
             mongo_delete("collection_prices_y", {"Date": start_period})
             mongo_delete("collection_prices_y", {"Date": end_period})
             old_price_df = query_mongo("btc_analysis", "collection_prices_y")
@@ -254,7 +257,8 @@ def mkt_data_op(series_code_list,
          all_series_df_volume) = all_series_download(series_code_list,
                                                      all_el_list_d,
                                                      start_period,
-                                                     end_period)
+                                                     end_period,
+                                                     daily=daily)
 
         complete_series_df_price = all_series_df_price
 
@@ -381,7 +385,8 @@ def crypto_old_series_y(start, stop):
     (crypto_df_price,
      crypto_df_volume) = all_series_download(yahoo_code,
                                              yahoo_name,
-                                             start, stop)
+                                             start, stop,
+                                             daily="N")
 
     return crypto_df_price, crypto_df_volume
 
