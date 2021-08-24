@@ -332,7 +332,7 @@ def add_crypto(initial_df, collection="crypto_price"):
         _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
 
     crypto_df = crypto_df[["Date", "BTC", "ETH", "LTC", "XRP", "BCH"]]
-    # crypto_df = crypto_df.rename({"BTC": "BITCOIN"})
+    print(crypto_df)
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
