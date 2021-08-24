@@ -239,10 +239,10 @@ def mkt_data_op(series_code_list,
                                                          daily=daily)
             mongo_delete("collection_prices_y", {"Date": start_period})
             mongo_delete("collection_prices_y", {"Date": end_period})
-            old_price_df = query_mongo("btc_analysis", "collection_prices_y")
-            complete_series_df_price = old_price_df.append(all_series_df_price)
+            old_price_df = query_mongo("btc_analysis", "all_prices_y")
+            updated_price_df = old_price_df.append(all_series_df_price)
 
-            complete_series_df_price = add_crypto(complete_series_df_price)
+            complete_series_df_price = add_crypto(updated_price_df)
 
             to_upload = complete_series_df_price.tail(2)
             print(to_upload)
@@ -336,7 +336,8 @@ def add_crypto(initial_df, collection="crypto_price"):
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
-
+    print(initial_df)
+    print(tot_crypto_df)
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
 
     complete_df = complete_df[["Date",
