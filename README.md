@@ -1,12 +1,35 @@
 # crypto_correlation
 
-The repository allows to compute various statistics related to Bitcoin such as correlations with altcoins, correlations with asset classes, market capitalization, price comparison and creation of Excel file containing graph and values relòated to both dynamic and static correlations.
+The repository allows to compute various statistics related to Bitcoin such as correlations with altcoins, correlations with asset classes, market capitalization, price comparison and creation of Excel files containing graphs and values related to both dynamic and static correlations.
 
 The data storage is managed through MongoDB uploading different collections in the "btc_analysis" database. All cryptocurrencies values, especially prices and volumes, derive from another MongoDB database named "index".
 
-In order to properly use the repository two main actions are needed:
-1) install the requirements.txt file "pip install -U -r requirements.txt"
-2) install the setup.py file that allows to use the functions contained in "btc_analysis" folder 
+Install the repository and its prerequisites into a
+python virtual environment; e.g. from the root folder:
+
+Bash shell
+
+    python -m venv venv
+    source venv/bin/activate
+    pip install --upgrade -r requirements.txt
+    pip install --upgrade -e ./
+
+Windows CMD or PowerShell:
+
+    python -m venv venv
+    .\venv\Scripts\activate
+    pip install --upgrade -r requirements.txt
+    pip install --upgrade -e ./
+
+Windows Git bash shell:
+
+    python -m venv venv
+    cd ./venv/Scripts
+    . activate
+    cd ../..
+    pip install --upgrade -r requirements.txt
+    pip install --upgrade -e ./
+
 
 The repository has the following structure:
 
@@ -14,21 +37,25 @@ CRYPTO_CORRELATION
 |
 |--- btc_analysis --> folder containing all the functions needed in the repository
 |
-|--- analysis scripts -->contains the scripts that upload the data into MongoDB collections
+|--- analysis scripts --> contains the scripts that upload the data into MongoDB collections
 |
 |--- dashboard --> folder containing the scripts that launch the dashbopard app
 |
 |--- excel creator
+    |--- input
+    |--- output
 
 # ---- analysis scripts ----
 
-In order to effectively run the scripts the order of running is relevant. More specifically:
+In order to properly run all the scripts without errors 
+the order is relevant. More specifically:
 
-# 1) yahoo_series_update_launcher.py
+# 1) yahoo_series_daily_launcher.py
 
-    The script downloads the updated financial data from Yahoo Finance using the API and retrieves crypto's prices and volumes from the "index" database; then compiutes returns and logreturns.
+    The script downloads the updated financial data from Yahoo Finance using the API and retrieves daily
+    crypto's prices and volumes from the "index" database; then computes returns and logreturns.
 
-    RELEVANT: In order to work locally the MongoDB database "index" has to exist along with the collections "crypto_price", "crypto_volume" and "index_data_feed".
+    RELEVANT: In order to work locally the MongoDB database "index" has to exist along with the collections "crypto_price", "crypto_volume" and "index_data_feed". 
 
     Once launched, the script updates the MongoDB collection:
     - "all_prices_y"
@@ -182,9 +209,13 @@ In order to effectively run the scripts the order of running is relevant. More s
 
 # ---- dashboard ----
 
-# 1) btc_analysis_dashboard.py
+# 0) link_dashboard.py
 
-    The script creates a dashboard app running on http://18.221.143.32:4000/ that displays:
+# 1) btc_stats_dashboard.py
+
+# 2) crypto_asset_dashboard.py
+
+    The script creates a dashboard app running on port 4000 (and online on http://18.221.143.32:4000/) that displays:
 
     - Altcoins performances denominated in BTC
     - Stocks, bonds, commodity, currencies from Yahoo Finance performances denominated in BTC
@@ -195,7 +226,7 @@ In order to effectively run the scripts the order of running is relevant. More s
     The Dashboard updates autonomously on daily basis and each graph gives the possibility to select differents time windows.
 
 
-# 2) btc_correlation_dashboard.py
+# 3) asset_class_dashboard.py
 
     The script creates a dashboard app running on http://18.221.143.32:4500/ that displays:
 
@@ -204,7 +235,7 @@ In order to effectively run the scripts the order of running is relevant. More s
 
     The Dashboard updates autonomously on daily basis and each graph gives the possibility to select differents time windows.
 
-# 3) btc_static_corr_dashboard.py
+# 4) best_perf_dashboard.py
 
     WIP
 
@@ -214,5 +245,8 @@ In order to effectively run the scripts the order of running is relevant. More s
 
 # 6) stock2flow_cross_dashboard.py
 
-# 7) btc_stats_dashboard.py
+# 7) market_cap_dashboard.py
+
+# 8) btc_static_corr_dashboard.py
+
 
