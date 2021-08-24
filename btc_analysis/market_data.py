@@ -339,13 +339,20 @@ def add_crypto(initial_df, collection="crypto_price"):
     print(initial_df)
     print(tot_crypto_df)
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
-    complete_df = complete_df.rename(columns={"BTC_x": "BTC",
-                                              "ETH_x": "ETH",
-                                              "LTC_x": "LTC",
-                                              "BCH_x": "BCH",
-                                              "XRP_x": "XRP"})
+    # complete_df = complete_df.rename(columns={"BTC_x": "BTC",
+    #                                           "ETH_x": "ETH",
+    #                                           "LTC_x": "LTC",
+    #                                           "BCH_x": "BCH",
+    #                                           "XRP_x": "XRP"})
+    # complete_df = complete_df.drop(
+    #     columns=["BCH_y", "BTC_y", "ETH_y", "LTC_y", "XRP_y"])
+    complete_df = complete_df.rename(columns={"BTC_y": "BTC",
+                                              "ETH_y": "ETH",
+                                              "LTC_y": "LTC",
+                                              "BCH_y": "BCH",
+                                              "XRP_y": "XRP"})
     complete_df = complete_df.drop(
-        columns=["BCH_y", "BTC_y", "ETH_y", "LTC_y", "XRP_y"])
+        columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"])
     print(complete_df)
     complete_df = complete_df[["Date",
                                "BTC",
