@@ -159,14 +159,19 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
 
     stat_yahoo_corr_all = pd.read_csv(
         Path("excel_creator", "input", stat_corr_all_name))
+    stat_yahoo_corr_all = stat_yahoo_corr_all.drop(columns="As Of")
     stat_yahoo_corr_3Y = pd.read_csv(
         Path("excel_creator", "input", stat_corr_3Y_name))
+    stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(columns="As Of")
     stat_yahoo_corr_1Y = pd.read_csv(
         Path("excel_creator", "input", stat_corr_1Y_name))
+    stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(columns="As Of")
     stat_yahoo_corr_1Q = pd.read_csv(
         Path("excel_creator", "input", stat_corr_1Q_name))
+    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(columns="As Of")
     stat_yahoo_corr_1M = pd.read_csv(
         Path("excel_creator", "input", stat_corr_1M_name))
+    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(columns="As Of")
 
     len_corr_mat = stat_yahoo_corr_all.shape[0]
     print(len_corr_mat)
