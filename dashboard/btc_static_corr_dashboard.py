@@ -379,4 +379,4 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
 print("Done")
 # --------------------
 if __name__ == '__main__':
-    app.run_server(debug=True, port=9000)  # , host='0.0.0.0')
+    app.run_server(debug=True, port=9000, host='0.0.0.0')
