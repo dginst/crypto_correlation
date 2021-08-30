@@ -3,12 +3,9 @@ from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
-from pymongo.collection import ReturnDocument
 
-from btc_analysis.config import (CRYPTO_LIST, DB_NAME, INDEX_DB_NAME,
-                                 METAL_LIST, REF_CRYPTO, REF_SP500,
-                                 REF_VARIOUS, VAR_STATIC_LIST,
-                                 VAR_STATIC_LIST_Y, VARIOUS_LIST,
+from btc_analysis.config import (CRYPTO_LIST, DB_NAME, REF_CRYPTO, REF_SP500,
+                                 REF_VARIOUS, VAR_STATIC_LIST, VARIOUS_LIST,
                                  VARIOUS_LIST_Y, VS_SP500_LIST)
 from btc_analysis.mongo_func import mongo_upload, query_mongo
 
@@ -522,13 +519,6 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
         others_comm = VS_SP500_LIST
 
     ref_comm_df = tot_ret_df[["Date", ref_variable]]
-
-    # try:
-
-    #     others_comm.remove(ref_variable)
-
-    # except ValueError:
-    #     pass
 
     for element in others_comm:
 

@@ -12,6 +12,10 @@ REF_VARIOUS = "BITCOIN"
 
 REF_SP500 = "S&P500"
 
+DAY_IN_SECONDS = 86400
+
+SATOSHI_FOR_BTC = 100000000
+
 # -----
 CORR_WINDOW_LIST = ["3Y", "1Y", "1Q", "1M", "YTD"]
 
@@ -84,7 +88,7 @@ BOND = ["Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
 
 BOND_YAHOO = ['US TREASURY',
               'EUR Aggregate Bond'
-]
+              ]
 
 CURRENCY = ["EUR", "GBP", "JPY", "CHF"]
 
@@ -163,25 +167,25 @@ VAR_STATIC_LIST_Y = ["Date",
                      'US Aggregate Bond']
 
 CORR_MATRIX_LIST = ["Date",
-                     "BTC",
-                     "ETH",
-                     "LTC",
-                     "XRP",
-                     'GOLD',
-                     'COPPER',
-                     'CRUDE OIL',
-                     'CORN',
-                     'EUR',
-                     'GBP',
-                     'JPY',
-                     'CHF',
-                     'NASDAQ',
-                     'S&P500',
-                     'EUROSTOXX50',
-                     'VIX',
-                     'US TREASURY',
-                     'EUR Aggregate Bond'
-                     ]
+                    "BTC",
+                    "ETH",
+                    "LTC",
+                    "XRP",
+                    'GOLD',
+                    'COPPER',
+                    'CRUDE OIL',
+                    'CORN',
+                    'EUR',
+                    'GBP',
+                    'JPY',
+                    'CHF',
+                    'NASDAQ',
+                    'S&P500',
+                    'EUROSTOXX50',
+                    'VIX',
+                    'US TREASURY',
+                    'EUR Aggregate Bond'
+                    ]
 
 GRAPH_LINE_WIDTH = 2
 

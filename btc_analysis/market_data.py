@@ -1,19 +1,21 @@
 import json
+import logging
 from datetime import datetime, timezone
 from pathlib import Path
-import logging
 
 import numpy as np
 import pandas as pd
 import requests
 import yfinance as yf
-from pandas_datareader import data
 from dateutil.relativedelta import relativedelta
+from pandas_datareader import data
 
 from btc_analysis.calc import date_gen, date_gen_TS
-from btc_analysis.config import (GOLD_OUNCES_SUPPLY, INDEX_DB_NAME,
+from btc_analysis.config import (DAY_IN_SECONDS, GOLD_OUNCES_SUPPLY,
+                                 INDEX_DB_NAME, SATOSHI_FOR_BTC,
                                  SILVER_OUNCES_SUPPLY, START_DATE, USD_SUPPLY)
-from btc_analysis.mongo_func import mongo_upload, query_mongo, mongo_coll_drop, mongo_delete
+from btc_analysis.mongo_func import (mongo_coll_drop, mongo_delete,
+                                     mongo_upload, query_mongo)
 from btc_analysis.statistics import hist_std_dev
 
 # -----------------------
@@ -37,7 +39,7 @@ def yesterday_str(format_="%Y-%m-%d"):
     today_str = datetime.now().strftime(format_)
     today = datetime.strptime(today_str, format_)
     today_TS = int(today.replace(tzinfo=timezone.utc).timestamp())
-    yesterday_TS = today_TS - 86400
+    yesterday_TS = today_TS - DAY_IN_SECONDS
     yesterday_date = datetime.fromtimestamp(int(yesterday_TS))
     yesterday = yesterday_date.strftime(format_)
 
@@ -49,7 +51,7 @@ def day_before_str(format_="%Y-%m-%d"):
     yesterday_str_ = yesterday_str(format_)
     yesterday = datetime.strptime(yesterday_str_, format_)
     yesterday_TS = int(yesterday.replace(tzinfo=timezone.utc).timestamp())
-    before_TS = yesterday_TS - 86400
+    before_TS = yesterday_TS - DAY_IN_SECONDS
     before_date = datetime.fromtimestamp(int(before_TS))
     before = before_date.strftime(format_)
 
@@ -616,7 +618,7 @@ def blockchain_stats_api():
     try:
         response = response.json()
         r = response
-        sats_for_btc = 100000000
+        sats_for_btc = SATOSHI_FOR_BTC
         timestamp = r["timestamp"]
         total_supply = r["totalbc"] / sats_for_btc
         total_blocks = r["n_blocks_total"]
