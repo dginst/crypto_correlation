@@ -794,7 +794,7 @@ def check_missing_days(coll_to_look, type_="other"):
 
 
 # ----------------------
-# HISTORICAL VOLATILITY
+# VOLATILITY FUNCTIONS
 # ----------------------
 
 

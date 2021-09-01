@@ -409,12 +409,14 @@ def update_index_df(start, stop, n, sel_col):
 
     price_.update_yaxes(
         tickprefix="$",
-        title_text="BTC Price (USD)",
+        title_text="",
+        # title_text="BTC Price (USD)",
         fixedrange=True
     )
 
     price_.update_xaxes(
-        title_text="Date",
+        title_text="",
+        # title_text="Date",
     )
 
     # table
