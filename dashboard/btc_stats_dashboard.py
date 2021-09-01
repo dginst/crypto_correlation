@@ -174,6 +174,41 @@ app.layout = dbc.Container([
 
     ], justify='center'),
 
+
+    dbc.Row([
+            dbc.Col([
+
+                dbc.Card(
+                    [
+                        dbc.CardBody(
+                            [
+
+                                html.Hr(),
+
+                                dbc.Row(
+                                    [
+                                        dbc.Col([
+
+
+                                            dcc.Graph(id="btc_quart", figure={},
+                                                      config={'displayModeBar': True}),
+
+                                        ])
+
+
+                                    ], no_gutters=True),
+
+                            ]),
+                    ],
+                    style={"width": "70rem"},
+                    className="mt-3"
+                )
+
+            ]),
+
+            ], justify='center'),
+
+
     dbc.Row([
         dbc.Col([
 
@@ -219,37 +254,6 @@ app.layout = dbc.Container([
         ]),
 
     ], justify='center'),
-
-
-
-    dbc.Row([
-            dbc.Col([
-
-                dbc.Card(
-                    [
-                        dbc.CardBody(
-                            [
-
-                                html.Hr(),
-
-                                dbc.Row(
-                                    [
-
-                                        dcc.Graph(id="btc_quart", figure={},
-                                                  config={'displayModeBar': False}),
-
-
-                                    ], no_gutters=True),
-
-                            ]),
-                    ],
-                    style={"width": "70rem"},
-                    className="mt-3"
-                )
-
-            ]),
-
-            ], justify='center'),
 
 
     dbc.Row([
@@ -667,6 +671,17 @@ def update_quarter_perf(n, sel_col):
     performance["Quarter Performance"] = performance["Quarter Performance"] * 100
     sub_perf = performance.tail(12)
 
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+        table_font = "black"
+        figure_ann = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+        table_font = "white"
+        figure_ann = "white"
+
     # df_price["Datetime"] = [datetime.strptime(
     #     d, "%d-%m-%Y") for d in df_price["Date"]]
 
@@ -684,7 +699,7 @@ def update_quarter_perf(n, sel_col):
     quarter_fig.update_layout(
         title_text="BTC Quarter Perfomances",
         template=sel_col,
-        height=600,
+        height=500,
     )
 
     annotations = []
@@ -696,7 +711,7 @@ def update_quarter_perf(n, sel_col):
                                 text=str(round(yd)) + '%',
                                 font=dict(family='Arial',
                                           size=13,
-                                          color='white'),
+                                          color=figure_ann),
                                 showarrow=False))
 
     quarter_fig.update_layout(annotations=annotations)
@@ -706,14 +721,6 @@ def update_quarter_perf(n, sel_col):
     quarter_fig.update_xaxes(ticksuffix="%")
 
     # table
-    if sel_col == "plotly_white":
-        table_fill = "white"
-        table_line = "black"
-        table_font = "black"
-    else:
-        table_fill = "black"
-        table_line = "white"
-        table_font = "white"
 
     table_perf = sub_perf[["Year-Quarter", "BTC Price", "Quarter Performance"]]
 
@@ -738,6 +745,7 @@ def update_quarter_perf(n, sel_col):
 
     table_q_perf.update_layout(
         template=sel_col,
+        title_text="Bitcoin Quarter Performances",
         height=600,
     )
 
