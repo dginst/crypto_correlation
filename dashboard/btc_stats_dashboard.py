@@ -113,28 +113,20 @@ app.layout = dbc.Container([
 
                                 dbc.Row(
                                     [
-                                        dbc.Col([
 
 
-                                            dcc.Graph(id="btc_price", figure={},
-                                                      config={'displayModeBar': False}),
+                                        dcc.Graph(id="btc_price", figure={},
+                                                  config={'displayModeBar': False}),
 
-                                            html.A(
-                                                'Download Data',
-                                                id='download-link_price',
-                                                download="btc_price.csv",
-                                                href='',
-                                                target="_blank"
-                                            ),
+                                        html.A(
+                                            'Download Data',
+                                            id='download-link_price',
+                                            download="btc_price.csv",
+                                            href='',
+                                            target="_blank"
+                                        ),
 
-                                        ], width=7),
 
-                                        dbc.Col([
-
-                                            dcc.Graph(
-                                                id='btc_perf', figure={}),
-
-                                        ], width=5)
 
                                     ], no_gutters=True),
 
@@ -160,20 +152,14 @@ app.layout = dbc.Container([
 
                             dbc.Row(
                                 [
-                                    dbc.Col([
-
-                                        dcc.Graph(id="btc_price_log", figure={},
-                                                  config={'displayModeBar': False}),
 
 
-                                    ], width=8),
+                                    dcc.Graph(id="btc_price_log", figure={},
+                                              config={'displayModeBar': False}),
 
-                                    dbc.Col([
 
-                                        dcc.Graph(
-                                            id='btc_log_perf', figure={}),
 
-                                    ], width=4)
+
                                 ], no_gutters=True),
 
                         ]),
@@ -185,6 +171,53 @@ app.layout = dbc.Container([
         ]),
 
     ], justify='center'),
+
+    dbc.Row([
+        dbc.Col([
+
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+
+                            html.Hr(),
+
+                            dbc.Row(
+                                [
+
+                                    dbc.Col([
+
+                                        dbc.Col([
+
+                                            dcc.Graph(
+                                                id='btc_perf', figure={}),
+
+                                        ], width=5),
+
+                                        dcc.Graph(
+                                            id='btc_quart_perf', figure={}),
+
+                                    ], width=4),
+
+                                    dbc.Col([
+
+                                        dcc.Graph(
+                                            id='btc_log_perf', figure={}),
+
+                                    ], width=3)
+
+                                ], no_gutters=True),
+
+                        ]),
+                ],
+                style={"width": "70rem"},
+                className="mt-3"
+            )
+
+        ]),
+
+    ], justify='center'),
+
 
 
     dbc.Row([
@@ -199,20 +232,11 @@ app.layout = dbc.Container([
 
                                 dbc.Row(
                                     [
-                                        dbc.Col([
 
-                                            dcc.Graph(id="btc_quart", figure={},
-                                                      config={'displayModeBar': False}),
+                                        dcc.Graph(id="btc_quart", figure={},
+                                                  config={'displayModeBar': False}),
 
 
-                                        ], width=8),
-
-                                        dbc.Col([
-
-                                            dcc.Graph(
-                                                id='btc_quart_perf', figure={}),
-
-                                        ], width=4)
                                     ], no_gutters=True),
 
                             ]),
@@ -411,11 +435,13 @@ def update_index_df(start, stop, n, sel_col):
         tickprefix="$",
         title_text="",
         # title_text="BTC Price (USD)",
-        fixedrange=True
+        fixedrange=True,
+        tickfont=dict(color="#000000")
     )
 
     price_.update_xaxes(
         title_text="",
+        tickfont=dict(color="#000000")
         # title_text="Date",
     )
 
@@ -568,13 +594,13 @@ def update_log_price(n, sel_col):
     model_cap.update_yaxes(
         tickvals=[1, 10, 100, 1000, 10000, 100000, 1000000],
         tickprefix="$",
-        title_text="BTC Price (USD)",
+        title_text="",
         type="log",
         fixedrange=True
     )
 
     model_cap.update_xaxes(
-        title_text="Date",
+        title_text="",
     )
 
     # table
