@@ -488,11 +488,11 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     ])
 
     if len(asset_selection) <= 5:
-        h = 200
-    elif len(asset_selection) <= 8:
         h = 300
-    else:
+    elif len(asset_selection) <= 8:
         h = 450
+    else:
+        h = 500
 
     table_perf.update_layout(
         title_text="Crypto-Assets: BTC denominated performances",
