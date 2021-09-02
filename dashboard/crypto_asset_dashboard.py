@@ -488,7 +488,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     ])
 
     if len(asset_selection) <= 5:
-        h = 300
+        h = 350
     elif len(asset_selection) <= 8:
         h = 450
     else:
