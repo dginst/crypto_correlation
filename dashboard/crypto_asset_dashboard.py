@@ -312,31 +312,11 @@ app.layout = dbc.Container([
                                         start_date=date(max_year - 1, 1, 1)
                                     ),
 
-                                    # html.Hr(),
-
-                                    # dcc.Checklist(
-                                    #     id='my_alt_check',
-                                    #     options=[
-                                    #         {'label': x, 'value': x} for x in df_alt_col
-                                    #     ],
-                                    #     value=["ETH", "XRP", "LTC", "BCH"],
-                                    #     labelStyle={
-                                    #         'display': 'inline-block'},
-                                    #     inputStyle={"margin-right": "10px",
-                                    #                 "margin-left": "10px"}
-                                    # ),
-
+                                    html.Hr(),
 
                                     dcc.Graph(
                                         id='stable_supply_line', figure={}),
 
-                                    # html.A(
-                                    #     'Download Data',
-                                    #     id='download-link_alt_corr',
-                                    #     download="altcoin_rawdata.csv",
-                                    #     href="",
-                                    #     target="_blank"
-                                    # )
                                 ])
 
                             ]),
@@ -519,7 +499,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
         font_color=title_font,
         title_font_color=title_font,
         template=sel_col,
-        height=500,
+        height=h,
     )
 
     csv_string_alt = dff_alt_w.to_csv(index=False, encoding='utf-8')
