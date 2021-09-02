@@ -443,8 +443,9 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
         x="Date",
         y=asset_selection,
         template=sel_col,
-        labels={"value": "Performance",
-                "variable": ""
+        labels={"value": "",
+                "variable": "",
+                "Date": ""
                 },
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -493,7 +494,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
                     line_color=table_line,
                     fill_color=table_fill,
                     align='center',
-                    font=dict(color=table_font, size=12),
+                    font=dict(color=table_font, size=15),
                     height=35),
         cells=dict(values=[perf_df["Crypto-Asset"], perf_df["Performance"]],
                    line_color=table_line,
@@ -506,8 +507,15 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     )
     ])
 
+    if len(asset_selection) <= 5:
+        h = 200
+    elif len(asset_selection) <= 8:
+        h = 300
+    else:
+        h = 450
+
     table_perf.update_layout(
-        title_text="Crypto-Assets Performances",
+        title_text="Crypto-Assets: BTC denominated performances",
         font_color=title_font,
         title_font_color=title_font,
         template=sel_col,
