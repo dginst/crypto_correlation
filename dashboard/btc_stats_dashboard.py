@@ -411,6 +411,17 @@ def update_index_df(start, stop, n, sel_col):
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
 
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "#000000"
+        table_font = "#000000"
+        title_font = "black"
+    else:
+        table_fill = "#000000"
+        table_line = "white"
+        table_font = "white"
+        title_font = "white"
+
     price_ = go.Figure()
 
     price_.add_trace(
@@ -424,7 +435,9 @@ def update_index_df(start, stop, n, sel_col):
 
     price_.update_layout(
         title_text="Bitcoin Price",
-        template=sel_col
+        template=sel_col,
+        font_color=title_font,
+        title_font_color=title_font,
     )
 
     price_.update_layout(legend=dict(
@@ -455,15 +468,6 @@ def update_index_df(start, stop, n, sel_col):
 
     perf_df = btc_yearly_perf(dff_for_perf)
 
-    if sel_col == "plotly_white":
-        table_fill = "white"
-        table_line = "#000000"
-        table_font = "#000000"
-    else:
-        table_fill = "#000000"
-        table_line = "white"
-        table_font = "white"
-
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[100, 80, 100],
         header=dict(values=list(perf_df.columns),
@@ -486,6 +490,8 @@ def update_index_df(start, stop, n, sel_col):
     table_perf.update_layout(
         title_text="Bitcoin Yearly Performances",
         template=sel_col,
+        font_color=title_font,
+        title_font_color=title_font,
         height=600,
     )
 
@@ -551,6 +557,17 @@ def update_log_price(n, sel_col):
 
     min_point = btc_price_min(dff)
 
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+        table_font = "black"
+        title_font = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+        table_font = "white"
+        title_font = "white"
+
     model_cap = go.Figure()
 
     model_cap.add_trace(
@@ -578,6 +595,8 @@ def update_log_price(n, sel_col):
 
     model_cap.update_layout(
         title_text="Bitcoin Price Log Scale",
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col
     )
 
@@ -610,14 +629,6 @@ def update_log_price(n, sel_col):
     )
 
     # table
-    if sel_col == "plotly_white":
-        table_fill = "white"
-        table_line = "black"
-        table_font = "black"
-    else:
-        table_fill = "black"
-        table_line = "white"
-        table_font = "white"
 
     min_point_dff = min_point.copy()
     min_point_dff["Year"] = [int(d.year) for d in min_point_dff["Datetime"]]
@@ -644,8 +655,8 @@ def update_log_price(n, sel_col):
 
     table_log_perf.update_layout(
         title_text="Bitcoin Minimum Prices",
-        font_color="black",
-        title_font_color="black",
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col,
         height=600,
     )
@@ -678,11 +689,14 @@ def update_quarter_perf(n, sel_col):
         table_line = "black"
         table_font = "black"
         figure_ann = "black"
+        title_font = "black"
+
     else:
         table_fill = "black"
         table_line = "white"
         table_font = "white"
         figure_ann = "white"
+        title_font = "white"
 
     # df_price["Datetime"] = [datetime.strptime(
     #     d, "%d-%m-%Y") for d in df_price["Date"]]
@@ -700,6 +714,8 @@ def update_quarter_perf(n, sel_col):
 
     quarter_fig.update_layout(
         title_text="BTC Quarter Perfomances",
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col,
         height=500,
     )
@@ -748,6 +764,8 @@ def update_quarter_perf(n, sel_col):
     table_q_perf.update_layout(
         template=sel_col,
         title_text="Bitcoin Quarter Performances",
+        font_color=title_font,
+        title_font_color=title_font,
         height=600,
     )
 
@@ -782,8 +800,10 @@ def update_supply(n, sel_col):
 
     if sel_col == "plotly_white":
         line_col = "grey"
+        title_font = "black"
     else:
         line_col = '#FFFFFF'
+        title_font = "white"
 
     supply_graph.add_trace(
         go.Scatter(
@@ -805,6 +825,8 @@ def update_supply(n, sel_col):
 
     supply_graph.update_layout(
         title_text="Bitcoin Supply",
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col
     )
 
@@ -817,10 +839,10 @@ def update_supply(n, sel_col):
     ))
 
     supply_graph.update_yaxes(
-        title_text="Number of Bitcoin",
+        title_text="",
     )
     supply_graph.update_xaxes(nticks=20,
-                              title_text="Date"
+                              title_text=""
                               )
 
     return supply_graph
@@ -897,8 +919,10 @@ def update_hash_rate(start, stop, n, sel_col):
 
     if sel_col == "plotly_white":
         line_col = "grey"
+        title_font = "black"
     else:
         line_col = '#FFFFFF'
+        title_font = "white"
 
     hr_graph.add_trace(
         go.Scatter(
@@ -911,7 +935,9 @@ def update_hash_rate(start, stop, n, sel_col):
 
     hr_graph.update_layout(
         title_text="Bitcoin Hash Rate",
-        template=sel_col
+        template=sel_col,
+        font_color=title_font,
+        title_font_color=title_font,
     )
 
     hr_graph.update_layout(legend=dict(
@@ -923,10 +949,10 @@ def update_hash_rate(start, stop, n, sel_col):
     ))
 
     hr_graph.update_yaxes(
-        title_text="Hash",
+        title_text="",
     )
     hr_graph.update_xaxes(nticks=20,
-                          title_text="Date"
+                          title_text=""
                           )
 
     return hr_graph
