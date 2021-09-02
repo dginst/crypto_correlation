@@ -423,17 +423,26 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     dff_alt_filtered = dff_alt_as_of[asset_selection]
     dff_alt_filtered["Date"] = dff_date_alt
 
+    if sel_col == "plotly_white":
+        table_fill = "white"
+        table_line = "black"
+        table_font = "black"
+        title_font = "black"
+    else:
+        table_fill = "black"
+        table_line = "white"
+        table_font = "white"
+        title_font = "white"
+
     # perf graph
     fig_alt = px.line(
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
         labels={"value": "Performance",
                 "variable": ""
                 },
-        title='Crypto-Assets: BTC denominated performances',
         color_discrete_map={
             "BTC": "#FEAF16",
             "ETH": "#511CFB",
@@ -451,8 +460,22 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     )
 
     fig_alt.update_layout(
+        title_text='Crypto-Assets: BTC denominated performances',
+        font_color=title_font,
+        title_font_color=title_font,
         height=500,
     )
+
+    if len(asset_selection) <= 5:
+        fig_alt.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
+        )
 
     # performances table
     dff_for_table = dff_alt_filtered.copy()
@@ -464,25 +487,26 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
     table_perf = go.Figure(data=[go.Table(
         columnwidth=[60, 80],
         header=dict(values=["Crypto-Asset", "Performance"],
-                    line_color='white',
-                    fill_color='black',
+                    line_color=table_line,
+                    fill_color=table_fill,
                     align='center',
-                    font=dict(color='white', size=12),
+                    font=dict(color=table_font, size=12),
                     height=35),
         cells=dict(values=[perf_df["Crypto-Asset"], perf_df["Performance"]],
-                   line_color='white',
-                   fill_color='black',
+                   line_color=table_line,
+                   fill_color=table_fill,
                    format=[None, ",.2f"],
                    suffix=[None, '%'],
                    align=['center', 'right'],
-                   font=dict(color='white', size=11),
+                   font=dict(color=table_font, size=11),
                    height=25)
     )
     ])
 
     table_perf.update_layout(
         title_text="Crypto-Assets Performances",
-        # template='plotly_dark',
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col,
         height=500,
     )
@@ -557,15 +581,19 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
     dff_alt_filtered = dff_range[asset_selection]
     dff_alt_filtered["Date"] = dff_date
 
+    if sel_col == "plotly_white":
+        title_font = "black"
+    else:
+        title_font = "white"
+
     fig_corr = px.line(
         data_frame=dff_alt_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
-        labels={"value": "Correlation",
-                "variable": ""},
-        title='Crypto-Assets: Correlation with Bitcoin',
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         range_y=[-1, 1],
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -583,6 +611,23 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
         }
     )
 
+    fig_corr.update_layout(yaxis_tickformat='%',
+                           title_text='Crypto-Assets: Correlation with Bitcoin',
+                           font_color=title_font,
+                           title_font_color=title_font,
+                           )
+
+    if len(asset_selection) <= 5:
+        fig_corr.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
+        )
+
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string)
@@ -590,7 +635,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
     return fig_corr, csv_string
 
 
-# syablecoin supply
+# stablecoin supply
 
 
 @ app.callback(
@@ -643,6 +688,11 @@ def update_graph_stable_supply(start, stop, n, sel_col):
         start, stop, inclusive=True)]
     dff_range.reset_index(drop=True, inplace=True)
 
+    if sel_col == "plotly_white":
+        title_font = "black"
+    else:
+        title_font = "white"
+
     fig_stable = go.Figure()
 
     fig_stable.add_trace(
@@ -665,7 +715,8 @@ def update_graph_stable_supply(start, stop, n, sel_col):
 
     fig_stable.update_layout(
         title_text="Stablecoins Supply",
-        # template='plotly_dark',
+        font_color=title_font,
+        title_font_color=title_font,
         template=sel_col,
     )
 
@@ -680,13 +731,12 @@ def update_graph_stable_supply(start, stop, n, sel_col):
     )
 
     fig_stable.update_yaxes(
-        # tickprefix="$",
-        title_text="Number of Coins",
+        title_text="",
         fixedrange=True
     )
 
     fig_stable.update_xaxes(
-        title_text="Date",
+        title_text="",
     )
 
     return fig_stable
