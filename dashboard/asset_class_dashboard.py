@@ -497,7 +497,6 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
         data_frame=dff_filtered_norm,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
         labels={"value": "Performnace",
                 "variable": ""},
@@ -515,6 +514,18 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
             "US TREASURY": "#A777F1",
         }
     )
+
+    if len(asset_selection) <= 5:
+
+        fig_yahoo.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
+        )
 
     csv_string_yahoo = dff_filtered_norm.to_csv(index=False, encoding='utf-8')
     csv_string_yahoo = "data:text/csv;charset=utf-8," + \
