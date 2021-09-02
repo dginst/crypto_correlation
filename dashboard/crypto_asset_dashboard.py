@@ -184,16 +184,18 @@ app.layout = dbc.Container([
                                             href="",
                                             target="_blank"
                                         )
-                                    ], width=8),
+                                    ]),
+
+                                ]),
+                                dbc.Row([
 
                                     dbc.Col([
+                                        dcc.Graph(
+                                            id='crypto_perf', figure={}),
 
-                                            dcc.Graph(
-                                                id='crypto_perf', figure={}),
+                                    ])
 
-                                            ], width=4)
-
-                                ], no_gutters=True),
+                                ]),
                             ]),
                     ],
                     style={"width": "70rem"},
@@ -203,6 +205,7 @@ app.layout = dbc.Container([
             ]),
 
             ], justify='center'),
+
 
     # crypto-assets correlation with bitcoin
 
