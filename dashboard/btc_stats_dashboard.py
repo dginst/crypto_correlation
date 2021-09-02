@@ -644,8 +644,10 @@ def update_log_price(n, sel_col):
 
     table_log_perf.update_layout(
         title_text="Bitcoin Minimum Prices",
+        font_color="black",
+        title_font_color="black",
         template=sel_col,
-        height=500,
+        height=600,
     )
 
     return model_cap, table_log_perf
