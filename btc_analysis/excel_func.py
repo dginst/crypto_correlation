@@ -1,5 +1,6 @@
 from datetime import datetime
 from pathlib import Path
+from numpy import matrix
 
 import pandas as pd
 import xlsxwriter
@@ -154,7 +155,7 @@ def alt_to_excel(file_name, dyn_ret_list, stat_ret_list,
 def yahoo_csv_to_excel(file_name, stat_ret_list,
                        stat_corr_all_name, stat_corr_3Y_name,
                        stat_corr_1Y_name, stat_corr_1Q_name,
-                       stat_corr_1M_name
+                       stat_corr_1M_name, matrix_type="total"
                        ):
 
     stat_yahoo_corr_all = pd.read_csv(
@@ -182,6 +183,7 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
 
         # static correlation matrix
 
+        # all
         stat_yahoo_corr_all.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 1),
@@ -193,8 +195,9 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                             len(stat_ret_list) + space + 1, space_left)
         asset_formatter(writer, 'Correlation Matrix', len(
             stat_ret_list) + space + 2,
-            space_left, set_="yahoo")
+            space_left, set_="yahoo", matrix_type=matrix_type)
 
+        # 3 YEAR
         stat_yahoo_corr_3Y.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 2 + len_corr_mat * 1),
@@ -205,8 +208,9 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                               space_left + 1)
         asset_formatter(writer, 'Correlation Matrix', len(
             stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1,
-            space_left, set_="yahoo")
+            space_left, set_="yahoo", matrix_type=matrix_type)
 
+        # 1 YEAR
         stat_yahoo_corr_1Y.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 3 + len_corr_mat * 2),
@@ -217,8 +221,9 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                               space_left + 1)
         asset_formatter(writer, 'Correlation Matrix', len(
             stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2,
-            space_left, set_="yahoo")
+            space_left, set_="yahoo", matrix_type=matrix_type)
 
+        # 1 Quarter
         stat_yahoo_corr_1Q.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 4 + len_corr_mat * 3),
@@ -229,8 +234,9 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                               space_left + 1)
         asset_formatter(writer, 'Correlation Matrix', len(
             stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3,
-            space_left, set_="yahoo")
+            space_left, set_="yahoo", matrix_type=matrix_type)
 
+        # 1 Month
         stat_yahoo_corr_1M.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 5 + len_corr_mat * 4),
@@ -241,7 +247,7 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                               space_left + 1)
         asset_formatter(writer, 'Correlation Matrix', len(
             stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4,
-            space_left, set_="yahoo")
+            space_left, set_="yahoo", matrix_type=matrix_type)
 
         static_sheet(writer, 'Correlation Matrix', space, space_left,
                      TIME_WINDOW, CORR_MATRIX_LIST, "yahoo")
@@ -894,43 +900,48 @@ def merging_excel(writer_obj, sheet_name, value_to_put, first_row, first_col):
 
 
 def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
-                        first_row, first_col):
+                        first_row, first_col, matrix_type="total"):
 
     workbook = writer_obj.book
     writer_obj.book = workbook
     worksheet = writer_obj.sheets[sheet_name]
 
+    if matrix_type == "total":
+        crypto_list = CRYPTO_FOR_STATIC_YAHOO
+    elif matrix_type == "asset":
+        crypto_list = ['BTC']
+
     if value_to_put == 'Crypto-currency':
 
         bg_color = '#FF9900'
         first_col = first_col
-        last_col = first_col + len(CRYPTO_FOR_STATIC_YAHOO) - 1
+        last_col = first_col + len(crypto_list) - 1
 
     elif value_to_put == 'Commodity':
 
         bg_color = '#6AA84F'
-        first_col = first_col + len(CRYPTO_FOR_STATIC_YAHOO)
+        first_col = first_col + len(crypto_list)
         last_col = first_col + len(COMMODITY_YAHOO) - 1
 
     elif value_to_put == 'Currency':
 
         bg_color = '#0000FF'
         first_col = first_col + \
-            len(CRYPTO_FOR_STATIC_YAHOO) + len(COMMODITY_YAHOO)
+            len(crypto_list) + len(COMMODITY_YAHOO)
         last_col = first_col + len(CURRENCY) - 1
 
     elif value_to_put == 'Equity':
 
         bg_color = '#444444'
         first_col = first_col + \
-            len(CRYPTO_FOR_STATIC_YAHOO) + len(COMMODITY_YAHOO) + len(CURRENCY)
+            len(crypto_list) + len(COMMODITY_YAHOO) + len(CURRENCY)
         last_col = first_col + (len(EQUITY_YAHOO) - 1) - 1
 
     elif value_to_put == 'Volatility':
 
         bg_color = '#CCCCCC'
         first_col = first_col + \
-            len(CRYPTO_FOR_STATIC_YAHOO) + len(COMMODITY_YAHOO) + \
+            len(crypto_list) + len(COMMODITY_YAHOO) + \
             len(CURRENCY) + (len(EQUITY_YAHOO) - 1)
         last_col = first_col + 1 - 1
 
@@ -938,7 +949,7 @@ def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
 
         bg_color = '#999999'
         first_col = first_col + \
-            len(CRYPTO_FOR_STATIC_YAHOO) + len(COMMODITY_YAHOO) + \
+            len(crypto_list) + len(COMMODITY_YAHOO) + \
             len(CURRENCY) + (len(EQUITY_YAHOO) - 1) + 1
         last_col = first_col + len(BOND_YAHOO) - 1
 
@@ -963,7 +974,7 @@ def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
 
 
 def asset_formatter(writer_obj, sheet_name, first_row,
-                    first_col, set_="various"):
+                    first_col, set_="various", matrix_type="total"):
 
     for element in ASSET_CATEGORY:
 
@@ -975,7 +986,8 @@ def asset_formatter(writer_obj, sheet_name, first_row,
         elif set_ == "yahoo":
 
             merging_excel_yahoo(writer_obj, sheet_name,
-                                element, first_row, first_col)
+                                element, first_row,
+                                first_col, matrix_type=matrix_type)
 
 
 # ############# BITCOIN STATISTICS ##############

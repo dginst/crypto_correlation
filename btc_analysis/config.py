@@ -683,26 +683,51 @@ GOLD_FLOW_TONS = 3260
 # -----------
 # STATIC CORRELATION MATRIX COMPUTATION VARIABLES
 
-CORR_MATRIX_LIST = ['BTC',
-                    'ETH',
-                    'LTC',
-                    'XRP',
-                    'GOLD',
-                    'COPPER',
-                    'CRUDE OIL',
-                    'CORN',
-                    'EUR',
-                    'GBP',
-                    'JPY',
-                    'CHF',
-                    'NASDAQ',
-                    'S&P500',
-                    'EUROSTOXX50',
-                    'VIX',
-                    'US TREASURY',
-                    'EUR Aggregate Bond'
-                    ]
+CORR_MATRIX_LIST = [
+    'BTC',
+    'ETH',
+    'LTC',
+    'XRP',
+    'GOLD',
+    'COPPER',
+    'CRUDE OIL',
+    'CORN',
+    'EUR',
+    'GBP',
+    'JPY',
+    'CHF',
+    'NASDAQ',
+    'S&P500',
+    'EUROSTOXX50',
+    'VIX',
+    'US TREASURY',
+    'EUR Aggregate Bond'
+]
 
+CORR_MATRIX_LIST_ASSET = [
+    'BTC',
+    'GOLD',
+    'COPPER',
+    'CRUDE OIL',
+    'CORN',
+    'EUR',
+    'GBP',
+    'JPY',
+    'CHF',
+    'NASDAQ',
+    'S&P500',
+    'EUROSTOXX50',
+    'VIX',
+    'US TREASURY',
+    'EUR Aggregate Bond'
+]
+
+CORR_MATRIX_LIST_CRYPTO = [
+    'BTC',
+    'ETH',
+    'LTC',
+    'XRP'
+]
 
 # STABLECOIN
 
