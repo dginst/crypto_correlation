@@ -504,7 +504,7 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
         x="Date",
         y=asset_selection,
         template=sel_col,
-        labels={"value": "Performnace",
+        labels={"value": "",
                 "variable": "",
                 "Date": ""},
         color_discrete_map={
@@ -536,7 +536,8 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
     fig_yahoo.update_layout(
         title_text='Asset Classes: USD denominated performances',
         font_color=font_col,
-        title_font_color=font_col
+        title_font_color=font_col,
+        height=500,
     )
 
     csv_string_yahoo = dff_filtered_norm.to_csv(index=False, encoding='utf-8')
@@ -611,7 +612,7 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         x="Date",
         y=asset_selection,
         template=sel_col,
-        labels={"value": "Volume (USD)",
+        labels={"value": "",
                 "variable": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -630,7 +631,8 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
     fig_volume.update_layout(
         title_text='Asset Classes: Volume',
         font_color=font_col,
-        title_font_color=font_col
+        title_font_color=font_col,
+        height=500,
     )
 
     csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
@@ -717,7 +719,7 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         x="Date",
         y=asset_selection,
         template=sel_col,
-        labels={"value": "Correlation Value",
+        labels={"value": "",
                 "variable": "",
                 "Date": ""},
         range_y=[-1, 1],
@@ -753,7 +755,8 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         yaxis_tickformat='%',
         title_text='Asset Class correlation with Bitcoin',
         font_color=font_col,
-        title_font_color=font_col
+        title_font_color=font_col,
+        height=500,
     )
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
@@ -831,8 +834,9 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         x="Date",
         y=asset_selection,
         template=sel_col,
-        labels={"value": "Volatility",
-                "variable": ""},
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -861,7 +865,12 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         yaxis_tickformat='%',
         title_text='Annualized Volatility',
         font_color=font_col,
-        title_font_color=font_col
+        title_font_color=font_col,
+        height=500,
+    )
+
+    fig_yahoo_vola.update_yaxis(
+        automargin=True
     )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')

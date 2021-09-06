@@ -606,6 +606,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
                            title_text='Crypto-Assets: Correlation with Bitcoin',
                            font_color=title_font,
                            title_font_color=title_font,
+                           height=500,
                            )
 
     if len(asset_selection) <= 5:
@@ -709,6 +710,7 @@ def update_graph_stable_supply(start, stop, n, sel_col):
         font_color=title_font,
         title_font_color=title_font,
         template=sel_col,
+
     )
 
     fig_stable.update_layout(legend=dict(
