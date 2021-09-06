@@ -317,7 +317,8 @@ app.layout = dbc.Container([
                                             options=[
                                                 {'label': x, 'value': x} for x in YAHOO_DASH_LIST_W_BTC
                                             ],
-                                            value=["BTC", "GOLD", "S&P500",
+                                            value=["BTC", "GOLD", "S&P500", "EUR",
+                                                   "JPY", "EUROSTOXX50",
                                                    "CRUDE OIL", "US TREASURY"],
                                             labelStyle={
                                                 'display': 'inline-block'},
@@ -480,6 +481,11 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
 
     dff_norm = df_usd_norm.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     # window selection
     dff_norm_w = dff_norm.loc[dff_norm.Window == window_selection]
     dff_norm_w = dff_norm_w.drop(columns=["Window"])
@@ -499,8 +505,8 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
         y=asset_selection,
         template=sel_col,
         labels={"value": "Performnace",
-                "variable": ""},
-        title='Asset Classes: USD denominated performances',
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -515,7 +521,7 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
         }
     )
 
-    if len(asset_selection) <= 5:
+    if len(asset_selection) <= 8:
 
         fig_yahoo.update_layout(
             legend=dict(
@@ -526,6 +532,12 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
                 x=1
             )
         )
+
+    fig_yahoo.update_layout(
+        title_text='Asset Classes: USD denominated performances',
+        font_color=font_col,
+        title_font_color=font_col
+    )
 
     csv_string_yahoo = dff_filtered_norm.to_csv(index=False, encoding='utf-8')
     csv_string_yahoo = "data:text/csv;charset=utf-8," + \
@@ -580,6 +592,11 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
     df_volume = query_mongo(DB_NAME, "all_volume_y")
     dff_volume = df_volume.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     dff_volume_range = dff_volume.loc[dff_volume.Date.between(
         start, stop, inclusive=True)]
     dff_volume_range.reset_index(drop=True, inplace=True)
@@ -593,9 +610,7 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         data_frame=dff_vol_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
-        title='Asset Classes: Volume',
         labels={"value": "Volume (USD)",
                 "variable": ""},
         color_discrete_map={
@@ -610,6 +625,12 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
             "DOWJONES": "#750D86",
             "US TREASURY": "#A777F1",
         }
+    )
+
+    fig_volume.update_layout(
+        title_text='Asset Classes: Volume',
+        font_color=font_col,
+        title_font_color=font_col
     )
 
     csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
@@ -669,6 +690,12 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
 
     df_yahoo = query_mongo(DB_NAME, "dash_corr_yahoo")
     dff_yahoo = df_yahoo.copy()
+
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     dff_yahoo["Date"] = [datetime.strptime(
         x, "%Y-%m-%d") for x in dff_yahoo["Date"]]
 
@@ -689,11 +716,10 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         data_frame=dff_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
         labels={"value": "Correlation Value",
-                "variable": ""},
-        title='Asset Class correlation with Bitcoin',
+                "variable": "",
+                "Date": ""},
         range_y=[-1, 1],
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -709,6 +735,25 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
             "US TREASURY": "#A777F1",
             "GOLD": "#F6F926"
         }
+    )
+
+    if len(asset_selection) <= 8:
+
+        fig_corr.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            )
+        )
+
+    fig_corr.update_layout(
+        yaxis_tickformat='%',
+        title_text='Asset Class correlation with Bitcoin',
+        font_color=font_col,
+        title_font_color=font_col
     )
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
@@ -762,6 +807,11 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
     df_vola = query_mongo(DB_NAME, "dash_vola")
     dff_vola = df_vola.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     # selecting the rooling days vola type
     dff_days = dff_vola.loc[dff_vola.Days == days_selection]
     dff_days = dff_days.drop(columns=["Days"])
@@ -780,9 +830,7 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         data_frame=dff_vola_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
         template=sel_col,
-        title='Annualized Volatility',
         labels={"value": "Volatility",
                 "variable": ""},
         color_discrete_map={
@@ -808,6 +856,13 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         xanchor="right",
         x=1,
     ))
+
+    fig_yahoo_vola.update_layout(
+        yaxis_tickformat='%',
+        title_text='Annualized Volatility',
+        font_color=font_col,
+        title_font_color=font_col
+    )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string_vola = "data:text/csv;charset=utf-8," + \
