@@ -487,6 +487,11 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
 
     dff_norm = df_usd_norm.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     # window selection
     dff_norm_w = dff_norm.loc[dff_norm.Window == window_selection]
     dff_norm_w = dff_norm_w.drop(columns=["Window"])
@@ -504,12 +509,10 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
         data_frame=dff_filtered_norm,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
-        # template='plotly_white',
         template=sel_col,
-        labels={"value": "Performance",
-                "variable": ""},
-        title='Best Performing Asset: USD denominated performances',
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
@@ -527,6 +530,12 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
         x=1,
     ))
 
+    fig_yahoo_norm.update_layout(
+        title_text='Best Performing Asset: USD denominated performances',
+        font_color=font_col,
+        title_font_color=font_col,
+        height=500,
+    )
     csv_string_norm = dff_norm_w.to_csv(index=False, encoding='utf-8')
     csv_string_norm = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_norm)
@@ -578,6 +587,11 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
     df_vola = query_mongo(DB_NAME, "dash_vola")
     dff_vola = df_vola.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     # selecting the rooling days vola type
     dff_days = dff_vola.loc[dff_vola.Days == days_selection]
     dff_days = dff_days.drop(columns=["Days"])
@@ -596,12 +610,10 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         data_frame=dff_vola_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
-        # template='plotly_white',
         template=sel_col,
-        title='Annualized Volatility',
-        labels={"value": "Volatility",
-                "variable": ""},
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
@@ -618,6 +630,14 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         xanchor="right",
         x=1,
     ))
+
+    fig_yahoo_vola.update_layout(
+        yaxis_tickformat='%',
+        title_text='Annualized Volatility',
+        font_color=font_col,
+        title_font_color=font_col,
+        height=500,
+    )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string_vola = "data:text/csv;charset=utf-8," + \
@@ -670,6 +690,11 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
     df_volume = query_mongo(DB_NAME, "all_volume_y")
     dff_volume = df_volume.copy()
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     # selecting start and stop
     dff_vol_range = dff_volume.loc[dff_volume.Date.between(
         start, stop, inclusive=True)]
@@ -684,12 +709,10 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         data_frame=dff_vol_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
-        # template='plotly_white',
         template=sel_col,
-        title='Asset Classes: Volume',
-        labels={"value": "Volume (USD)",
-                "variable": ""},
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "TESLA": "#86CE00",
@@ -706,6 +729,13 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         xanchor="right",
         x=1,
     ))
+
+    fig_volume.update_layout(
+        title_text='Volume in USD',
+        font_color=font_col,
+        title_font_color=font_col,
+        height=500,
+    )
 
     csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
     csv_string_volume = "data:text/csv;charset=utf-8," + \
@@ -768,6 +798,11 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
     dff_yahoo["Date"] = [datetime.strptime(
         x, "%Y-%m-%d") for x in dff_yahoo["Date"]]
 
+    if sel_col == "plotly_white":
+        font_col = "black"
+    else:
+        font_col = "white"
+
     dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
 
     dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
@@ -785,12 +820,10 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         data_frame=dff_filtered,
         x="Date",
         y=asset_selection,
-        # template='plotly_dark',
-        # template='plotly_white',
         template=sel_col,
-        labels={"value": "Correlation Value",
-                "variable": ""},
-        title='Best Performing Asset correlation with Bitcoin',
+        labels={"value": "",
+                "variable": "",
+                "Date": ""},
         range_y=[-1, 1],
         color_discrete_map={
             "BTC": "#FEAF16",
@@ -808,6 +841,14 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         xanchor="right",
         x=1,
     ))
+
+    fig_corr.update_layout(
+        yaxis_tickformat='%',
+        title_text='Best Performing Asset correlation with Bitcoin',
+        font_color=font_col,
+        title_font_color=font_col,
+        height=500,
+    )
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + \

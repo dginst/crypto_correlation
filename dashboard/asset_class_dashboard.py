@@ -613,7 +613,8 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         y=asset_selection,
         template=sel_col,
         labels={"value": "",
-                "variable": ""},
+                "variable": "",
+                "Date": ""},
         color_discrete_map={
             "BTC": "#FEAF16",
             "S&P500": "#511CFB",
@@ -867,10 +868,6 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         font_color=font_col,
         title_font_color=font_col,
         height=500,
-    )
-
-    fig_yahoo_vola.update_yaxis(
-        automargin=True
     )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
