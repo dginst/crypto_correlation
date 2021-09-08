@@ -448,6 +448,11 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
         font_color=title_font,
         title_font_color=title_font,
         height=500,
+        title_xanchor="left",
+        title_x=0.05,
+        title_y=0.98,
+        title_yanchor="top",
+        title_pad=dict(b=150)
     )
 
     if len(asset_selection) <= 5:
@@ -607,6 +612,11 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
                            font_color=title_font,
                            title_font_color=title_font,
                            height=500,
+                           title_xanchor="left",
+                           title_x=0.05,
+                           title_y=0.98,
+                           title_yanchor="top",
+                           title_pad=dict(b=150)
                            )
 
     if len(asset_selection) <= 5:
@@ -710,6 +720,12 @@ def update_graph_stable_supply(start, stop, n, sel_col):
         font_color=title_font,
         title_font_color=title_font,
         template=sel_col,
+        title_xanchor="left",
+        title_x=0.05,
+        title_y=0.98,
+        title_yanchor="top",
+        title_pad=dict(b=150),
+        height=600
 
     )
 
@@ -719,8 +735,7 @@ def update_graph_stable_supply(start, stop, n, sel_col):
         y=1.02,
         xanchor="right",
         x=1,
-    ),
-        height=600
+    )
     )
 
     fig_stable.update_yaxes(
