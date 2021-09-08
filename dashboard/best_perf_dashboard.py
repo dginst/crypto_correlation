@@ -525,7 +525,7 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
     fig_yahoo_norm.update_layout(legend=dict(
         orientation="h",
         yanchor="bottom",
-        y=1.02,
+        y=1,
         xanchor="right",
         x=1,
     ))
@@ -535,10 +535,10 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
         font_color=font_col,
         title_font_color=font_col,
         height=600,
-        title_xanchor="left",
-        title_x=0,
+        # title_xanchor="left",
+        title_x=1,
         title_y=1,
-        title_yanchor="top",
+        # title_yanchor="top",
         title_pad=dict(b=150)
     )
     csv_string_norm = dff_norm_w.to_csv(index=False, encoding='utf-8')
