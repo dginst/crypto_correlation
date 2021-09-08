@@ -534,9 +534,9 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
         title_text='Best Performing Asset: USD denominated performances',
         font_color=font_col,
         title_font_color=font_col,
-        height=600,
+        height=500,
         title_xanchor="left",
-        title_x=0.1,
+        title_x=0.05,
         title_y=0.98,
         title_yanchor="top",
         title_pad=dict(b=150)
@@ -642,6 +642,11 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         font_color=font_col,
         title_font_color=font_col,
         height=500,
+        title_xanchor="left",
+        title_x=0.05,
+        title_y=0.98,
+        title_yanchor="top",
+        title_pad=dict(b=150)
     )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
@@ -740,6 +745,11 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         font_color=font_col,
         title_font_color=font_col,
         height=500,
+        title_xanchor="left",
+        title_x=0.05,
+        title_y=0.98,
+        title_yanchor="top",
+        title_pad=dict(b=150)
     )
 
     csv_string_volume = dff_vol_filtered.to_csv(index=False, encoding='utf-8')
@@ -853,6 +863,11 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         font_color=font_col,
         title_font_color=font_col,
         height=500,
+        title_xanchor="left",
+        title_x=0.05,
+        title_y=0.98,
+        title_yanchor="top",
+        title_pad=dict(b=150)
     )
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
