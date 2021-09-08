@@ -869,13 +869,17 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         }
     )
 
-    fig_yahoo_vola.update_layout(legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1,
-    ))
+    if len(asset_selection) <= 8:
+
+        fig_yahoo_vola.update_layout(
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.01,
+                xanchor="right",
+                x=1
+            )
+        )
 
     fig_yahoo_vola.update_layout(
         yaxis_tickformat='%',
@@ -885,9 +889,9 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         height=500,
         title_xanchor="left",
         title_x=0.05,
-        title_y=0.98,
+        title_y=0.99,
         title_yanchor="top",
-        title_pad=dict(b=150)
+        # title_pad=dict(b=150)
     )
 
     csv_string_vola = dff_range.to_csv(index=False, encoding='utf-8')
