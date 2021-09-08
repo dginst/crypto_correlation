@@ -536,8 +536,8 @@ def update_graph_usd_best(window_selection, as_of_selection, asset_selection, se
         title_font_color=font_col,
         height=600,
         # title_xanchor="left",
-        title_x=1,
-        title_y=1,
+        title_x=0.1,
+        title_y=0.9,
         # title_yanchor="top",
         title_pad=dict(b=150)
     )
