@@ -369,7 +369,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
                          size=14)
                      )
 
-    csv_string_static = dff_window.to_csv(index=False, encoding='utf-8')
+    csv_string_static = dff_corr_as_of.to_csv(index=False, encoding='utf-8')
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
 
