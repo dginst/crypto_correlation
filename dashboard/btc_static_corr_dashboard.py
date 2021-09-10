@@ -182,10 +182,12 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
     df_static = query_mongo(DB_NAME, "dash_static_corr")
 
     dff_static = df_static.copy()
+    print(dff_static)
 
     # window selection
     dff_window = dff_static.loc[dff_static.Window == window_selection]
     dff_window = dff_window.drop(columns=["Window"])
+    print(dff_window)
 
     # as of selection
     dff_corr_as_of = dff_window.loc[dff_window["As Of"] == as_of_selection]
