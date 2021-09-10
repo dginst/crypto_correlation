@@ -202,8 +202,6 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
 
     hovertext = [[f'corr_mat({column_set[i]}, {column_set[j]})= {corr_mat[i][j]:.2f}' if i >=
                   j else '' for j in range(N)] for i in range(N)]
-    print(hovertext)
-    print(corr_mat)
 
     fig = go.Figure()
 
@@ -371,7 +369,9 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
                          size=14)
                      )
 
-    csv_string_static = dff_corr_as_of.to_csv(index=False, encoding='utf-8')
+    csv_string_static = dff_corr_as_of.to_csv(
+        index=False, encoding='utf-8', sep='|')
+    print(csv_string_static)
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
 
