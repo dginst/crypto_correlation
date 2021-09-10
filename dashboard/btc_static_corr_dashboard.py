@@ -374,6 +374,7 @@ def update_corr_matrix(window_selection, as_of_selection, n_intervals):
     print(csv_string_static)
     csv_string_static = "data:text/csv;charset=utf-8," + \
         urllib.parse.quote(csv_string_static)
+    print(csv_string_static)
 
     return fig, csv_string_static
 
