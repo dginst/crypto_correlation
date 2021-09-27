@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from btc_analysis.calc import last_quarter_end
-from btc_analysis.config import CORR_MATRIX_LIST, DB_NAME, VARIOUS_LIST_Y
+from btc_analysis.config import (CORR_MATRIX_LIST, DB_NAME, VARIOUS_LIST_Y)
 from btc_analysis.excel_func import yahoo_to_excel
 from btc_analysis.mongo_func import query_mongo
 

@@ -87,7 +87,7 @@ BOND = ["Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
         "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
 BOND_YAHOO = ['US TREASURY',
-              'EUR Aggregate Bond'
+              'PAN EUR'
               ]
 
 CURRENCY = ["EUR", "GBP", "JPY", "CHF"]
@@ -701,7 +701,7 @@ CORR_MATRIX_LIST = [
     'EUROSTOXX50',
     'VIX',
     'US TREASURY',
-    'EUR Aggregate Bond'
+    'PAN EUR'
 ]
 
 CORR_MATRIX_LIST_ASSET = [
@@ -719,7 +719,7 @@ CORR_MATRIX_LIST_ASSET = [
     'EUROSTOXX50',
     'VIX',
     'US TREASURY',
-    'EUR Aggregate Bond'
+    'PAN EUR'
 ]
 
 CORR_MATRIX_LIST_CRYPTO = [

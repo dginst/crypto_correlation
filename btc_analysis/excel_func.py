@@ -159,20 +159,39 @@ def yahoo_csv_to_excel(file_name, stat_ret_list,
                        ):
 
     stat_yahoo_corr_all = pd.read_csv(
-        Path("excel_creator", "input", stat_corr_all_name))
-    stat_yahoo_corr_all = stat_yahoo_corr_all.drop(columns="As Of")
+        Path("excel creator", "input", stat_corr_all_name))
+    try:
+        stat_yahoo_corr_all = stat_yahoo_corr_all.drop(columns="As Of")
+    except KeyError:
+        pass
+
     stat_yahoo_corr_3Y = pd.read_csv(
-        Path("excel_creator", "input", stat_corr_3Y_name))
-    stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(columns="As Of")
+        Path("excel creator", "input", stat_corr_3Y_name))
+    try:
+        stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(columns="As Of")
+    except KeyError:
+        pass
+
     stat_yahoo_corr_1Y = pd.read_csv(
-        Path("excel_creator", "input", stat_corr_1Y_name))
-    stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(columns="As Of")
+        Path("excel creator", "input", stat_corr_1Y_name))
+    try:
+        stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(columns="As Of")
+    except KeyError:
+        pass
+
     stat_yahoo_corr_1Q = pd.read_csv(
-        Path("excel_creator", "input", stat_corr_1Q_name))
-    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(columns="As Of")
+        Path("excel creator", "input", stat_corr_1Q_name))
+    try:
+        stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(columns="As Of")
+    except KeyError:
+        pass
+
     stat_yahoo_corr_1M = pd.read_csv(
-        Path("excel_creator", "input", stat_corr_1M_name))
-    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(columns="As Of")
+        Path("excel creator", "input", stat_corr_1M_name))
+    try:
+        stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(columns="As Of")
+    except KeyError:
+        pass
 
     len_corr_mat = stat_yahoo_corr_all.shape[0]
     print(len_corr_mat)
@@ -324,6 +343,22 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
 
         # static correlation matrix
 
+        stat_yahoo_corr_all = stat_yahoo_corr_all[stat_ret_list]
+        stat_yahoo_corr_all = stat_yahoo_corr_all.rename(
+            columns={'EUR Aggregate Bond': "PAN EUR"})
+        stat_yahoo_corr_3Y = stat_yahoo_corr_3Y[stat_ret_list]
+        stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.rename(
+            columns={'EUR Aggregate Bond': "PAN EUR"})
+        stat_yahoo_corr_1Y = stat_yahoo_corr_1Y[stat_ret_list]
+        stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.rename(
+            columns={'EUR Aggregate Bond': "PAN EUR"})
+        stat_yahoo_corr_1Q = stat_yahoo_corr_1Q[stat_ret_list]
+        stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.rename(
+            columns={'EUR Aggregate Bond': "PAN EUR"})
+        stat_yahoo_corr_1M = stat_yahoo_corr_1M[stat_ret_list]
+        stat_yahoo_corr_1M = stat_yahoo_corr_1M.rename(
+            columns={'EUR Aggregate Bond': "PAN EUR"})
+
         stat_yahoo_corr_all.to_excel(
             writer, sheet_name='Correlation Matrix',
             startrow=(space * 1),
@@ -387,6 +422,132 @@ def yahoo_to_excel(file_name, dyn_ret_list, stat_ret_list,
 
         static_sheet(writer, 'Correlation Matrix', space, space_left,
                      TIME_WINDOW, CORR_MATRIX_LIST, "yahoo")
+        format_sheets(writer, 'Correlation Matrix')
+
+
+def static_corr_to_excel(file_name, stat_ret_list,
+                         stat_yahoo_corr_all, stat_yahoo_corr_3Y,
+                         stat_yahoo_corr_1Y,
+                         stat_yahoo_corr_1Q, stat_yahoo_corr_1M,
+                         matrix_type="total"
+                         ):
+
+    stat_yahoo_corr_all = stat_yahoo_corr_all.rename(
+        columns={'EUR Aggregate Bond': "PAN EUR"})
+    stat_yahoo_corr_all = stat_yahoo_corr_all[stat_ret_list]
+    stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.rename(
+        columns={'EUR Aggregate Bond': "PAN EUR"})
+    stat_yahoo_corr_3Y = stat_yahoo_corr_3Y[stat_ret_list]
+    stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.rename(
+        columns={'EUR Aggregate Bond': "PAN EUR"})
+    stat_yahoo_corr_1Y = stat_yahoo_corr_1Y[stat_ret_list]
+    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.rename(
+        columns={'EUR Aggregate Bond': "PAN EUR"})
+    stat_yahoo_corr_1Q = stat_yahoo_corr_1Q[stat_ret_list]
+    stat_yahoo_corr_1M = stat_yahoo_corr_1M.rename(
+        columns={'EUR Aggregate Bond': "PAN EUR"})
+    stat_yahoo_corr_1M = stat_yahoo_corr_1M[stat_ret_list]
+
+    if matrix_type == "asset":
+        stat_yahoo_corr_all = stat_yahoo_corr_all.drop([1, 2, 3], axis=0)
+        stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop([1, 2, 3], axis=0)
+        stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop([1, 2, 3], axis=0)
+        stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop([1, 2, 3], axis=0)
+        stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop([1, 2, 3], axis=0)
+    elif matrix_type == "crypto":
+        stat_yahoo_corr_all = stat_yahoo_corr_all.drop(
+            [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], axis=0)
+        stat_yahoo_corr_3Y = stat_yahoo_corr_3Y.drop(
+            [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], axis=0)
+        stat_yahoo_corr_1Y = stat_yahoo_corr_1Y.drop(
+            [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], axis=0)
+        stat_yahoo_corr_1Q = stat_yahoo_corr_1Q.drop(
+            [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], axis=0)
+        stat_yahoo_corr_1M = stat_yahoo_corr_1M.drop(
+            [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17], axis=0)
+
+    len_corr_mat = stat_yahoo_corr_all.shape[0]
+    print(len_corr_mat)
+    space = 5
+    space_left = 2
+
+    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
+
+        # static correlation matrix
+
+        # all
+
+        stat_yahoo_corr_all.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 1),
+            startcol=space_left, index=False)
+
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 1) + 1, space_left + 1)
+        format_header_yahoo(writer, 'Correlation Matrix', stat_ret_list,
+                            len(stat_ret_list) + space + 1, space_left)
+
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + space + 2,
+            space_left, set_="yahoo", matrix_type=matrix_type)
+
+        # 3 YEAR
+        stat_yahoo_corr_3Y.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 2 + len_corr_mat * 1),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 2) + 1 + len_corr_mat * 1,
+                              space_left + 1)
+        format_header_yahoo(writer, 'Correlation Matrix', stat_ret_list,
+                            len(stat_ret_list) + (space*2) + 1 + len_corr_mat * 1, space_left)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 2) + 2 + len_corr_mat * 1,
+            space_left, set_="yahoo", matrix_type=matrix_type)
+
+        # 1 YEAR
+        stat_yahoo_corr_1Y.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 3 + len_corr_mat * 2),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 3) + 1 + len_corr_mat * 2,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 3) + 2 + len_corr_mat * 2,
+            space_left, set_="yahoo", matrix_type=matrix_type)
+
+        # 1 Quarter
+        stat_yahoo_corr_1Q.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 4 + len_corr_mat * 3),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 4) + 1 + len_corr_mat * 3,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 4) + 2 + len_corr_mat * 3,
+            space_left, set_="yahoo", matrix_type=matrix_type)
+
+        # 1 Month
+        stat_yahoo_corr_1M.to_excel(
+            writer, sheet_name='Correlation Matrix',
+            startrow=(space * 5 + len_corr_mat * 4),
+            startcol=space_left, index=False)
+        half_matrix_formatter(writer, 'Correlation Matrix',
+                              stat_ret_list,
+                              (space * 5) + 1 + len_corr_mat * 4,
+                              space_left + 1)
+        asset_formatter(writer, 'Correlation Matrix', len(
+            stat_ret_list) + (space * 5) + 2 + len_corr_mat * 4,
+            space_left, set_="yahoo", matrix_type=matrix_type)
+
+        static_sheet(writer, 'Correlation Matrix', space, space_left,
+                     TIME_WINDOW, stat_ret_list, "yahoo")
         format_sheets(writer, 'Correlation Matrix')
 
 
@@ -906,7 +1067,7 @@ def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
     writer_obj.book = workbook
     worksheet = writer_obj.sheets[sheet_name]
 
-    if matrix_type == "total":
+    if matrix_type == "total" or matrix_type == "crypto":
         crypto_list = CRYPTO_FOR_STATIC_YAHOO
     elif matrix_type == "asset":
         crypto_list = ['BTC']
@@ -967,6 +1128,10 @@ def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
 
         worksheet.write(first_row, first_col, value_to_put, merge_format)
 
+    elif value_to_put == "Crypto-currency" and matrix_type == "asset":
+
+        worksheet.write(first_row, first_col, value_to_put, merge_format)
+
     else:
 
         worksheet.merge_range(first_row, first_col, first_row,
@@ -976,18 +1141,26 @@ def merging_excel_yahoo(writer_obj, sheet_name, value_to_put,
 def asset_formatter(writer_obj, sheet_name, first_row,
                     first_col, set_="various", matrix_type="total"):
 
-    for element in ASSET_CATEGORY:
+    if matrix_type == "crypto":
 
-        if set_ == "various":
+        merging_excel_yahoo(writer_obj, sheet_name,
+                            "Crypto-currency", first_row,
+                            first_col, matrix_type=matrix_type)
 
-            merging_excel(writer_obj, sheet_name,
-                          element, first_row, first_col)
+    else:
 
-        elif set_ == "yahoo":
+        for element in ASSET_CATEGORY:
 
-            merging_excel_yahoo(writer_obj, sheet_name,
-                                element, first_row,
-                                first_col, matrix_type=matrix_type)
+            if set_ == "various":
+
+                merging_excel(writer_obj, sheet_name,
+                              element, first_row, first_col)
+
+            elif set_ == "yahoo":
+
+                merging_excel_yahoo(writer_obj, sheet_name,
+                                    element, first_row,
+                                    first_col, matrix_type=matrix_type)
 
 
 # ############# BITCOIN STATISTICS ##############
