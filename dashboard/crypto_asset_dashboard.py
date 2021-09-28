@@ -622,7 +622,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
                            )
 
     fig_corr.update_xaxes(ticks="outside", tickwidth=1,
-                          tickcolor=tick_col, ticklen=10)
+                          ticklen=10)
 
     if len(asset_selection) <= 5:
         fig_corr.update_layout(
