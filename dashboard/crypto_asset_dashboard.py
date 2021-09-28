@@ -582,7 +582,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
         tick_col = "white"
     else:
         title_font = "white"
-        tick_col = "black"
+        tick_col = "#111111"
 
     fig_corr = px.line(
         data_frame=dff_alt_filtered,
@@ -622,7 +622,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
                            )
 
     fig_corr.update_xaxes(ticks="outside", tickwidth=1,
-                          ticklen=10)
+                          tickcolor=tick_col, ticklen=10)
 
     if len(asset_selection) <= 5:
         fig_corr.update_layout(
