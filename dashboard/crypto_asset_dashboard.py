@@ -579,8 +579,10 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
 
     if sel_col == "plotly_white":
         title_font = "black"
+        tick_col = "white"
     else:
         title_font = "white"
+        tick_col = "black"
 
     fig_corr = px.line(
         data_frame=dff_alt_filtered,
@@ -618,6 +620,9 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
                            title_yanchor="top",
                            title_pad=dict(b=150)
                            )
+
+    fig_corr.update_xaxes(ticks="outside", tickwidth=1,
+                          tickcolor=tick_col, ticklen=10)
 
     if len(asset_selection) <= 5:
         fig_corr.update_layout(
