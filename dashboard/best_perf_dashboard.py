@@ -815,8 +815,10 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
 
     if sel_col == "plotly_white":
         font_col = "black"
+        tick_col = "white"
     else:
         font_col = "white"
+        tick_col = "#111111"
 
     dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
 
@@ -869,6 +871,9 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         title_yanchor="top",
         title_pad=dict(b=150)
     )
+
+    fig_corr.update_xaxes(ticks="outside", tickwidth=1,
+                          tickcolor=tick_col, ticklen=10)
 
     csv_string = dff_range.to_csv(index=False, encoding='utf-8')
     csv_string = "data:text/csv;charset=utf-8," + \
