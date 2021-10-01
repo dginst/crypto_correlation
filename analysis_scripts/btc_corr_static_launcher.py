@@ -24,6 +24,8 @@ mongo_indexing()
 # BTC correlation with yahoo assets
 
 tot_ret = query_mongo(DB_NAME, "all_returns_y")
+tot_ret = tot_ret.rename(
+    columns={'EUR Aggregate Bond': "PAN EUR"})
 tot_price = query_mongo(DB_NAME, "all_prices_y")
 
 static_all, static_3Y, static_1Y, static_1Q, static_1M = static_corr_op(
