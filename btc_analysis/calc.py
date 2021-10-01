@@ -267,7 +267,7 @@ def quarter_from_date(df, col_name):
     all_quarter = quarter_list(year_list)
 
     sel_quarter = all_quarter.loc[all_quarter.Quarter > first_date]
-    sel_quarter = sel_quarter.loc[sel_quarter.Quarter < last_date]
+    sel_quarter = sel_quarter.loc[sel_quarter.Quarter <= last_date]
 
     return sel_quarter
 
