@@ -9,7 +9,6 @@ xlrd
 dash
 dash-bootstrap-components
 pandas_datareader
-pathlib
 scikit-learn
 kneed
 coinmetrics

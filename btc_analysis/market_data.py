@@ -316,6 +316,7 @@ def mkt_data_op(series_code_list,
 # ADDING CRYPTOCURRENCIES DATA TO DATAFRAME
 # ----------------------------
 
+
 # function that adds the crypto prices or volume retrived from the "index"
 # database. The default value of the varibale "collection" implies that
 # the prices will be added, if the volumes are needed specify "crypto_volume"
