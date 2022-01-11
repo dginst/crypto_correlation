@@ -17,7 +17,7 @@ price_df = query_mongo("btc_analysis", "all_prices_y")
 complete_price_df = add_crypto(price_df)
 print(complete_price_df)
 
-return_ = all_series_to_return(complete_price_df)
+return_ = all_series_to_return(complete_price_df, YAHOO_TO_RETURN)
 print(return_)
 logret = all_series_to_logret(complete_price_df)
 
