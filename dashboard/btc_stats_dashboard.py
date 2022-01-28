@@ -613,7 +613,7 @@ def update_log_price(n, sel_col):
         xanchor="right",
         x=1
     ),
-        height=500,
+        height=600,
     )
 
     model_cap.update_yaxes(
@@ -717,7 +717,7 @@ def update_quarter_perf(n, sel_col):
         font_color=title_font,
         title_font_color=title_font,
         template=sel_col,
-        height=500,
+        height=600,
     )
 
     annotations = []
