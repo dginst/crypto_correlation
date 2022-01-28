@@ -530,14 +530,15 @@ def update_graph_asset(window_selection, as_of_selection, asset_selection, sel_c
                 y=1.02,
                 xanchor="right",
                 x=1
-            )
+            ),
+            height=600,
         )
 
     fig_yahoo.update_layout(
         title_text='Asset Classes: USD denominated performances',
         font_color=font_col,
         title_font_color=font_col,
-        height=500,
+        height=600,
         title_xanchor="left",
         title_x=0.05,
         title_y=0.98,
@@ -638,7 +639,7 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         title_text='Asset Classes: Volume',
         font_color=font_col,
         title_font_color=font_col,
-        height=500,
+        height=600,
         title_xanchor="left",
         title_x=0.05,
         title_y=0.98,
@@ -769,7 +770,7 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         title_text='Asset Class correlation with Bitcoin',
         font_color=font_col,
         title_font_color=font_col,
-        height=500,
+        height=600,
         title_xanchor="left",
         title_x=0.05,
         title_y=0.98,
@@ -891,7 +892,7 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
         title_text='Annualized Volatility',
         font_color=font_col,
         title_font_color=font_col,
-        height=500,
+        height=600,
         title_xanchor="left",
         title_x=0.05,
         title_y=0.99,
