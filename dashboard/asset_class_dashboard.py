@@ -745,7 +745,7 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
             "SILVER": "#E2E2E2",
             "US index": "#FBE426",
             "CORN": "#DA16FF",
-            "NASDAQ": "black",
+            "NASDAQ": "#7600b6",
             "VIX": "#00B5F7",
             "DOWJONES": "#750D86",
             "US TREASURY": "#A777F1",
