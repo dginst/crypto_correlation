@@ -476,10 +476,10 @@ def dynamic_corr(first_df, second_df, time_window):
         delta_date = roll_single_time(date, time_window)
 
         sub_first_df = first_df.loc[first_df.Date.between(
-            delta_date, date, inclusive=True)]
+            delta_date, date, inclusive='both')]
 
         sub_second_df = second_df.loc[second_df.Date.between(
-            delta_date, date, inclusive=True)]
+            delta_date, date, inclusive='both')]
 
         merged = pd.merge(sub_first_df, sub_second_df, on=["Date"])
 
@@ -581,7 +581,7 @@ def static_corr(return_df, time_window=None, comp_set=None, quarter="N"):
         delta_date = roll_single_time(first_date, time_window)
 
         df_to_compute = return_df.loc[return_df.Date.between(
-            delta_date, first_date, inclusive=True)]
+            delta_date, first_date, inclusive='both')]
 
     if comp_set is None:
         pass
@@ -818,7 +818,7 @@ def usd_normalized_calc(yahoo_returns, time_window, quarter="N"):
         pass
 
     total_df = yahoo_returns.loc[yahoo_returns.Date.between(
-        first_date, last_date, inclusive=True)]
+        first_date, last_date, inclusive='both')]
 
     sub_date = pd.DataFrame(columns=["Date"])
     sub_date["Date"] = total_df["Date"]

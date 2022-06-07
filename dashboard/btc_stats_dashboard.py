@@ -408,7 +408,7 @@ def update_index_df(start, stop, n, sel_col):
     df_to_download = df_price.copy()
 
     dff_range = dff.loc[dff.Datetime.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_range.reset_index(drop=True, inplace=True)
 
     if sel_col == "plotly_white":
@@ -912,7 +912,7 @@ def update_hash_rate(start, stop, n, sel_col):
         date, "%Y-%m-%d") for date in hr_dff["Date"]]
 
     hr_dff_range = hr_dff.loc[hr_dff.Datetime.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     hr_dff_range.reset_index(drop=True, inplace=True)
 
     hr_graph = go.Figure()

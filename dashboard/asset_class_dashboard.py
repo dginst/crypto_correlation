@@ -605,7 +605,7 @@ def update_graph_volume(start, stop, asset_selection, sel_col):
         font_col = "white"
 
     dff_volume_range = dff_volume.loc[dff_volume.Date.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_volume_range.reset_index(drop=True, inplace=True)
 
     dff_range_date = dff_volume_range["Date"]
@@ -721,7 +721,7 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
     dff_w = dff_w.drop(columns=["Window"])
 
     dff_range = dff_w.loc[dff_w.Date.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_range.reset_index(drop=True, inplace=True)
     dff_date = dff_range["Date"]
 
@@ -843,7 +843,7 @@ def update_graph_vola(days_selection, start, stop, asset_selection, sel_col):
 
     # selecting start and stop
     dff_range = dff_days.loc[dff_days.Date.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_range.reset_index(drop=True, inplace=True)
 
     dff_v_date = dff_range["Date"]

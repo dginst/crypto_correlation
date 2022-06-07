@@ -233,7 +233,7 @@ def halving_return(halving_df, start_date, stop_date):
     stop = datetime.strptime(stop_date, "%d-%m-%Y")
 
     period_ret_df = halving_df.loc[halving_df.Datetime.between(
-        start, stop, inclusive=True), "BTC Return"]
+        start, stop, inclusive='both'), "BTC Return"]
 
     return period_ret_df
 

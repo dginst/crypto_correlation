@@ -330,7 +330,7 @@ def period_stat(prices_df, element, time_window):
     first_date, last_date = window_period_back(date_df, time_window)
 
     sub_df = prices_df.loc[prices_df.Date.between(
-        first_date, last_date, inclusive=True)]
+        first_date, last_date, inclusive='both')]
 
     p_stat = statistics_calc(sub_df, element)
 
