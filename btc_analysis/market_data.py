@@ -337,9 +337,9 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     # creating the df with old coins
     index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
     index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
-    old_coin_price_concat = pd.concat((index_old_coin_price, old_coin_price))
+    old_coin_price_concat = pd.concat((old_coin_price, index_old_coin_price))
     print(old_coin_price_concat)
-    old_coin_vol_concat = pd.concat((index_old_coin_volume, old_coin_volume))
+    old_coin_vol_concat = pd.concat((old_coin_volume, index_old_coin_volume))
 
     # creating the df with new coins
     index_new_coin_price = index_df_price.loc[index_df_price.Time >= 1649376000]
