@@ -331,6 +331,7 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     
     old_coin_price, old_coin_volume = crypto_old_series_y(START_DATE, "2015-12-31", set_="old_coin")
     new_coin_price, new_coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="new_coin")
+    print(new_coin_price)
 
 
     # creating the df with old coins
