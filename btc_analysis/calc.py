@@ -483,14 +483,17 @@ def dynamic_corr(first_df, second_df, time_window):
 
         merged = pd.merge(sub_first_df, sub_second_df, on=["Date"])
         merged.reset_index(inplace=True, drop=True)
-        
+
         merged = merged.drop(columns=["Date"])
 
         day_corr = merged.corr()
 
         value_of_int = day_corr.iloc[[0], [1]]
+        print(value_of_int)
+        print(corr_series)
 
         corr_series = pd.concat((corr_series, value_of_int))
+        corr_series.reset_index(inplace=True, drop=True)
 
     return corr_series
 
