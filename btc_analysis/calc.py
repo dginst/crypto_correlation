@@ -482,20 +482,22 @@ def dynamic_corr(first_df, second_df, time_window):
             delta_date, date, inclusive='both')]
 
         merged = pd.merge(sub_first_df, sub_second_df, on=["Date"])
-
+        merged.reset_index(inplace=True, drop=True)
+        
         merged = merged.drop(columns=["Date"])
 
         day_corr = merged.corr()
 
         value_of_int = day_corr.iloc[[0], [1]]
 
-        corr_series = corr_series.append(value_of_int)
+        corr_series = pd.concat((corr_series, value_of_int))
 
     return corr_series
 
 
 def dynamic_total(tot_ret_df, time_window, corr_set):
 
+    tot_ret_dff = tot_ret_df.copy()
     tot_corr = tot_ret_df[["Date"]]
 
     if corr_set == "altcoin":
@@ -518,11 +520,11 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
         ref_variable = REF_SP500
         others_comm = VS_SP500_LIST
 
-    ref_comm_df = tot_ret_df[["Date", ref_variable]]
+    ref_comm_df = tot_ret_dff[["Date", ref_variable]]
 
     for element in others_comm:
 
-        comm_df = tot_ret_df[["Date", element]]
+        comm_df = tot_ret_dff[["Date", element]]
         single_corr = dynamic_corr(ref_comm_df, comm_df, time_window)
 
         if element == ref_variable:

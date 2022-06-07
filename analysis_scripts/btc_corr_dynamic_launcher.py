@@ -16,7 +16,7 @@ logging.info('btc_corr_dynamic_launcher.py start')
 
 # mongo collections operations
 mongo_coll_drop("dynamic_alt")
-mongo_coll_drop("dynamic_yahoo")
+#mongo_coll_drop("dynamic_yahoo")
 mongo_indexing()
 
 all_returns = query_mongo(DB_NAME, "all_returns_y")
@@ -29,14 +29,14 @@ crypto_returns = all_returns[crypto_col]
 # --------------------------------------------
 # BTC correlation with yahoo assets
 
-corr_YTD, corr_3Y, corr_1Y, corr_1Q, corr_1M = dynamic_corr_op(
-    asset_returns, "various_y")
+# corr_YTD, corr_3Y, corr_1Y, corr_1Q, corr_1M = dynamic_corr_op(
+#     asset_returns, "various_y")
 
-mongo_upload(corr_YTD, "collection_YTD_dyn_yahoo")
-mongo_upload(corr_3Y, "collection_3Y_dyn_yahoo")
-mongo_upload(corr_1Y, "collection_1Y_dyn_yahoo")
-mongo_upload(corr_1Q, "collection_1Q_dyn_yahoo")
-mongo_upload(corr_1M, "collection_1M_dyn_yahoo")
+# mongo_upload(corr_YTD, "collection_YTD_dyn_yahoo")
+# mongo_upload(corr_3Y, "collection_3Y_dyn_yahoo")
+# mongo_upload(corr_1Y, "collection_1Y_dyn_yahoo")
+# mongo_upload(corr_1Q, "collection_1Q_dyn_yahoo")
+# mongo_upload(corr_1M, "collection_1M_dyn_yahoo")
 
 # ------------------------------------------------------------------------
 # BTC correlations with altcoins

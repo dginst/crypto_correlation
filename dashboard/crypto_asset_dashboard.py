@@ -569,7 +569,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
     dff_w_alt = dff_w_alt.drop(columns=["Window", "As Of"])
 
     dff_range = dff_w_alt.loc[dff_w_alt.Date.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_range.reset_index(drop=True, inplace=True)
 
     dff_date = dff_range["Date"]
@@ -692,7 +692,7 @@ def update_graph_stable_supply(start, stop, n, sel_col):
         x, "%Y-%m-%d") for x in dff_stable["Date"]]
 
     dff_range = dff_stable.loc[dff_stable.Datetime.between(
-        start, stop, inclusive=True)]
+        start, stop, inclusive='both')]
     dff_range.reset_index(drop=True, inplace=True)
 
     if sel_col == "plotly_white":
