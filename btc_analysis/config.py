@@ -35,13 +35,16 @@ ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
 CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
                'ADA', 'XLM', 'XMR', 'BSV',
-               'AVAX', 'SHIB', 'DOGE', 'MATIC']
+               'MATIC', 'SHIB', 'ADA', 'AVAX',
+               'DOGE', 'DOT', 'LUNA']
 
 METAL_LIST = ["Gold", "Silver", "Copper"]
 
 CRYPTO_STATIC_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                       'BCH', 'EOS', 'ETC', 'ZEC',
-                      'ADA', 'XLM', 'XMR', 'BSV']
+                      'ADA', 'XLM', 'XMR', 'BSV',
+                      'MATIC', 'SHIB', 'ADA', 'AVAX',
+                      'DOGE', 'DOT', 'LUNA']
 
 VARIOUS_LIST = ["BITCOIN", "ETH", "LTC", "XRP", "GOLD", "IND_METALS", "WTI",
                 "GRAIN", "EUR", "CHF", "GBP", "JPY",

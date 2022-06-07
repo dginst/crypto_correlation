@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 from pandas_datareader import data
 
 from btc_analysis.calc import date_gen, date_gen_TS
-from btc_analysis.config import (DAY_IN_SECONDS, GOLD_OUNCES_SUPPLY,
+from btc_analysis.config import (DAY_IN_SECONDS, DB_NAME, GOLD_OUNCES_SUPPLY,
                                  INDEX_DB_NAME, SATOSHI_FOR_BTC,
                                  SILVER_OUNCES_SUPPLY, START_DATE, USD_SUPPLY)
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_delete,
@@ -232,7 +232,10 @@ def mkt_data_op(series_code_list,
                 daily="N"):
 
     if daily == "Y":
+
         if is_business_day(start_period) is True:
+
+            # downloading the last days values from yahoo
             (all_series_df_price,
              all_series_df_volume) = all_series_download(series_code_list,
                                                          all_el_list_d,
@@ -241,20 +244,26 @@ def mkt_data_op(series_code_list,
                                                          daily=daily)
             mongo_delete("collection_prices_y", {"Date": start_period})
             mongo_delete("collection_prices_y", {"Date": end_period})
-            old_price_df = query_mongo("btc_analysis", "all_prices_y")
-            updated_price_df = old_price_df.append(all_series_df_price)
 
-            complete_series_df_price = add_crypto(updated_price_df)
+            # defining the df with all prices 
+            old_price_df = query_mongo("btc_analysis", "all_prices_y")
+            updated_price_df = pd.concat((old_price_df, all_series_df_price))
+
+            # adding the crypto prices
+            crypto_prices = query_mongo(DB_NAME, "crypto_prices")
+            complete_series_df_price = add_crypto_to_yahoo(updated_price_df, crypto_prices)
 
             to_upload = complete_series_df_price.tail(2)
             print(to_upload)
             to_upload = to_upload.tail(1)
             mongo_upload(to_upload, "collection_prices_y")
+            # FIXME : add the volumes daily update
         else:
             mongo_delete("collection_prices_y", {"Date": start_period})
             mongo_delete("collection_prices_y", {"Date": end_period})
             print("passed")
     else:
+        # downloading all the assets history values
         (all_series_df_price,
          all_series_df_volume) = all_series_download(series_code_list,
                                                      all_el_list_d,
@@ -267,12 +276,16 @@ def mkt_data_op(series_code_list,
     # price and returns operation
     if daily == "Y":
         pass
+
     else:
 
-        complete_series_df_price = add_crypto(all_series_df_price)
+        # prices
+        crypto_prices = query_mongo(DB_NAME, "crypto_prices")
+        complete_series_df_price = add_crypto_to_yahoo(all_series_df_price, crypto_prices)
 
         mongo_upload(complete_series_df_price, "collection_prices_y")
 
+        # returns
         all_ret_df = all_series_to_return(
             complete_series_df_price, all_el_list_r)
 
@@ -282,10 +295,10 @@ def mkt_data_op(series_code_list,
 
         mongo_upload(all_logret_df, "collection_logreturns_y")
 
-        # volume operation
+        # volumes
+        crypto_volumes = query_mongo(DB_NAME, "crypto_volumes")
+        complete_series_df_volume = add_crypto_to_yahoo(all_series_df_volume, crypto_volumes)
 
-        complete_series_df_volume = add_crypto(
-            all_series_df_volume, collection="crypto_volume")
 
         df_all_pair = query_mongo("index", "index_data_feed")
 
@@ -306,6 +319,7 @@ def mkt_data_op(series_code_list,
         complete_series_df_volume = complete_series_df_volume.drop(
             columns="Date")
 
+        # volues as a 7days rolling wiundow
         complete_series_df_vol_rolling = complete_series_df_volume.rolling(
             7).sum()
         complete_series_df_vol_rolling["Date"] = date_arr
@@ -316,49 +330,70 @@ def mkt_data_op(series_code_list,
 # ADDING CRYPTOCURRENCIES DATA TO DATAFRAME
 # ----------------------------
 
+def crypto_price_and_vol_daily(start, stop, how=None):
+
+    if how == "yahoo":
+
+        coin_price, coin_volume = crypto_old_series_y(start, stop, set_="all_coin")
+
+    elif how == "index":
+        coin_price = query_mongo("index", "crypto_price", {"Date": start})
+        coin_volume = query_mongo("index", "crypto_volume", {"Date": start})
+    
+    final_price_df = coin_price[['Date', 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+    final_vol_df = coin_volume[['Date', 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+
+    return final_price_df, final_vol_df
 
 
-def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date=None):
+def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date=None, use_index=True):
 
     index_df_price = initial_df_price.copy()
     index_df_vol = initial_df_vol.copy()
 
-    if new_coin_stop_date is None:
-        stop_date = yesterday_str("%Y-%m-%d")
+    if use_index is True:
+        if new_coin_stop_date is None:
+            stop_date = yesterday_str("%Y-%m-%d")
+        else:
+            stop_date = "2022-04-07"
+        
+        
+        old_coin_price, old_coin_volume = crypto_old_series_y(START_DATE, "2015-12-31", set_="old_coin")
+        new_coin_price, new_coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="new_coin")
+
+
+        # creating the df with old coins
+        index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+        index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+        old_coin_price_concat = pd.concat((old_coin_price, index_old_coin_price))
+        old_coin_vol_concat = pd.concat((old_coin_volume, index_old_coin_volume))
+
+        # creating the df with new coins
+        index_new_coin_price = index_df_price.loc[index_df_price.Time >= 1649376000]
+        index_new_coin_volume = index_df_vol.loc[index_df_vol.Time >= 1649376000]
+        index_new_coin_price = index_new_coin_price[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
+        index_new_coin_volume = index_new_coin_volume[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
+        new_coin_price_concat = pd.concat((new_coin_price, index_new_coin_price))
+        new_coin_vol_concat = pd.concat((new_coin_volume, index_new_coin_volume))
+
+        # merging price and volume df
+        final_price_df = pd.merge(old_coin_price_concat, new_coin_price_concat, how='left', on="Date")
+        final_vol_df = pd.merge(old_coin_vol_concat, new_coin_vol_concat, how='left', on="Date")
+
+        final_price_df.reset_index(drop=True, inplace=True)
+        final_vol_df.reset_index(drop=True, inplace=True)
+    
     else:
-        stop_date = "2022-04-07"
-    
-    
-    old_coin_price, old_coin_volume = crypto_old_series_y(START_DATE, "2015-12-31", set_="old_coin")
-    new_coin_price, new_coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="new_coin")
-
-
-    # creating the df with old coins
-    index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
-    index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
-    old_coin_price_concat = pd.concat((old_coin_price, index_old_coin_price))
-    old_coin_vol_concat = pd.concat((old_coin_volume, index_old_coin_volume))
-
-    # creating the df with new coins
-    index_new_coin_price = index_df_price.loc[index_df_price.Time >= 1649376000]
-    index_new_coin_volume = index_df_vol.loc[index_df_vol.Time >= 1649376000]
-    index_new_coin_price = index_new_coin_price[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
-    index_new_coin_volume = index_new_coin_volume[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
-    new_coin_price_concat = pd.concat((new_coin_price, index_new_coin_price))
-    new_coin_vol_concat = pd.concat((new_coin_volume, index_new_coin_volume))
-
-    # merging price and volume df
-    final_price_df = pd.merge(old_coin_price_concat, new_coin_price_concat, how='left', on="Date")
-    final_vol_df = pd.merge(old_coin_vol_concat, new_coin_vol_concat, how='left', on="Date")
-
-    final_price_df.reset_index(drop=True, inplace=True)
-    final_vol_df.reset_index(drop=True, inplace=True)
+        stop_date = yesterday_str("%Y-%m-%d")
+        coin_price, coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="all_coin")
+        final_price_df = coin_price[['Date', 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+        final_vol_df = coin_volume[['Date', 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
 
     return final_price_df, final_vol_df
 
 # ###
 
-def add_crypto_v2(yahoo_df, crypto_df):
+def add_crypto_to_yahoo(yahoo_df, crypto_df):
 
     y_df = yahoo_df.copy()
     c_df = crypto_df.copy()

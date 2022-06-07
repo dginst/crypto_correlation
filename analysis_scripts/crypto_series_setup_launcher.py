@@ -18,7 +18,8 @@ mongo_coll_drop("crypto_all")
 index_crypto_prices = query_mongo("index", "crypto_price")
 index_crypto_volume = query_mongo("index", "crypto_volume")
 
-crypto_prices, crypto_volumes = crypto_price_and_volume(index_crypto_prices, index_crypto_prices, new_coin_stop_date="index_start")
+# put new_coin_stop_date="index_start" and use_index=True to use the index values and collections
+crypto_prices, crypto_volumes = crypto_price_and_volume(index_crypto_prices, index_crypto_prices, use_index=False)
 
 print(crypto_prices)
 
