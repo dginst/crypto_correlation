@@ -338,6 +338,7 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
     index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
     old_coin_price_concat = pd.concat((index_old_coin_price, old_coin_price))
+    print(old_coin_price_concat)
     old_coin_vol_concat = pd.concat((index_old_coin_volume, old_coin_volume))
 
     # creating the df with new coins
@@ -345,8 +346,9 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     index_new_coin_volume = index_df_vol.loc[index_df_vol.Time >= 1649376000]
     index_new_coin_price = index_new_coin_price[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
     index_new_coin_volume = index_new_coin_volume[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
-    new_coin_price_concat = pd.concat((index_new_coin_price, new_coin_price))
-    new_coin_vol_concat = pd.concat((index_new_coin_volume, new_coin_volume))
+    new_coin_price_concat = pd.concat((new_coin_price, index_new_coin_price))
+    print(new_coin_price_concat)
+    new_coin_vol_concat = pd.concat((new_coin_volume, index_new_coin_volume))
 
     # merging price and volume df
     final_price_df = pd.merge(old_coin_price_concat, new_coin_price_concat, how='left', on="Date")
