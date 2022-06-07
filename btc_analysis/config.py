@@ -34,7 +34,8 @@ ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
 
 CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
-               'ADA', 'XLM', 'XMR', 'BSV']
+               'ADA', 'XLM', 'XMR', 'BSV',
+               'AVAX', 'SHIB', 'DOGE', 'MATIC']
 
 METAL_LIST = ["Gold", "Silver", "Copper"]
 
