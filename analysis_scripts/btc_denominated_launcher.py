@@ -22,15 +22,15 @@ mongo_indexing()
 
 all_yahoo_price = query_mongo(DB_NAME, "all_prices_y")
 #
-crypto_price = query_mongo(DB_NAME, "crypto_prices")
-yahoo_price_df = add_crypto_to_yahoo(all_yahoo_price, crypto_price)
-yahoo_price_df = yahoo_price_fix(yahoo_price_df)
+# crypto_price = query_mongo(DB_NAME, "crypto_prices")
+# yahoo_price_df = add_crypto_to_yahoo(all_yahoo_price, crypto_price)
+# yahoo_price_df = yahoo_price_fix(yahoo_price_df)
 #
 # yahoo_price_df = yahoo_price_fix(all_yahoo_price)
 
 # alt_price_df = price_retrieve("crypto_price", db_name=INDEX_DB_NAME)
 
-btc_denominated_total(yahoo_price_df, yahoo_price_df)
+btc_denominated_total(all_yahoo_price, all_yahoo_price)
 
 # --------------
 # total btc denominated dataframes for dashboard
