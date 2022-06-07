@@ -317,6 +317,45 @@ def mkt_data_op(series_code_list,
 # ----------------------------
 
 
+
+def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date=None):
+
+    index_df_price = initial_df_price.copy()
+    index_df_vol = initial_df_vol.copy()
+
+    if new_coin_stop_date is None:
+        stop_date = yesterday_str("%Y-%m-%d")
+    else:
+        stop_date = "2022-04-07"
+    
+    
+    old_coin_price, old_coin_volume = crypto_old_series_y(START_DATE, "2015-12-31", set_="old_coin")
+    new_coin_price, new_coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="new_coin")
+
+
+    # creating the df with old coins
+    index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+    index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+    old_coin_price_concat = pd.concat((index_old_coin_price, old_coin_price))
+    old_coin_vol_concat = pd.concat((index_old_coin_volume, old_coin_volume))
+
+    # creating the df with new coins
+    index_new_coin_price = index_df_price.loc[index_df_price.Time >= 1649376000]
+    index_new_coin_volume = index_df_vol.loc[index_df_vol.Time >= 1649376000]
+    index_new_coin_price = index_new_coin_price[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
+    index_new_coin_volume = index_new_coin_volume[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
+    new_coin_price_concat = pd.concat((index_new_coin_price, new_coin_price))
+    new_coin_vol_concat = pd.concat(index_new_coin_volume, new_coin_volume)
+
+    # merging price and volume df
+    final_price_df = pd.merge(old_coin_price_concat, new_coin_price_concat, how='left', on="Date")
+    final_vol_df = pd.merge(old_coin_vol_concat, new_coin_vol_concat, how='left', on="Date")
+
+    final_price_df.reset_index(drop=True, inplace=True)
+    final_vol_df.reset_index(drop=True, inplace=True)
+
+    return final_price_df, final_vol_df
+
 # function that adds the crypto prices or volume retrived from the "index"
 # database. The default value of the varibale "collection" implies that
 # the prices will be added, if the volumes are needed specify "crypto_volume"
@@ -335,12 +374,10 @@ def add_crypto(initial_df, collection="crypto_price"):
         _, yahoo_old_crypto = crypto_old_series_y(START_DATE, "2015-12-31")
 
     crypto_df = crypto_df[["Date", "BTC", "ETH", "LTC", "XRP", "BCH"]]
-    print(crypto_df)
 
     tot_crypto_df = yahoo_old_crypto.append(crypto_df, sort=True)
     tot_crypto_df.reset_index(drop=True, inplace=True)
-    print(initial_df)
-    print(tot_crypto_df)
+
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
 
     complete_df = complete_df.rename(columns={"BTC_y": "BTC",
@@ -353,7 +390,7 @@ def add_crypto(initial_df, collection="crypto_price"):
             columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"])
     except KeyError:
         pass
-    print(complete_df)
+
     complete_df = complete_df[["Date",
                                "BTC",
                                "ETH",
@@ -391,11 +428,27 @@ def add_crypto(initial_df, collection="crypto_price"):
 # function that allows to download from Yahoo Finance the historical series
 # of crypto prior to 01/01/2016 (the starting date of "index" DB series)
 
-def crypto_old_series_y(start, stop):
+def crypto_old_series_y(start, stop, set_=None):
 
-    yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD']
+    if set_ is None:
 
-    yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']
+        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD']
+        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']
+    
+    elif set_ == "old_coin":
+        
+        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD', 'XLM-USD', 'XMR-USD', 'ZEC-USD', 'EOS-USD', 'ETC-USD', 'BSV-USD']
+        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']
+
+    elif set_ == "new_coin":
+        
+        yahoo_code = ['MATIC-USD', 'SHIB-USD', 'ADA-USD', 'AVAX-USD', 'DOGE-USD', 'DOT-USD', 'LUNA1-USD', 'SOL-USD']
+        yahoo_name = ['MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']
+    
+    elif set_ == "all_coin":
+        
+        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD', 'MATIC-USD', 'SHIB-USD', 'ADA-USD', 'AVAX-USD', 'DOGE-USD', 'DOT-USD', 'LUNA1-USD', 'SOL-USD', 'XLM-USD', 'XMR-USD', 'ZEC-USD', 'EOS-USD', 'ETC-USD', 'BSV-USD']
+        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']
 
     (crypto_df_price,
      crypto_df_volume) = all_series_download(yahoo_code,

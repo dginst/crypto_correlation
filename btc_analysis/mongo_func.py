@@ -229,6 +229,11 @@ def mongo_indexing():
     db.dash_usd_den.create_index([("id", -1)])
     db.dash_static_corr.create_index([("id", -1)])
 
+    # only crypto
+    db.crypto_prices.create_index([("id", -1)])
+    db.crypto_returns.create_index([("id", -1)])
+    db.crypto_volumes.create_index([("id", -1)])
+
 
 def mongo_coll(db_name="btc_analysis"):
 
@@ -403,6 +408,10 @@ def mongo_coll(db_name="btc_analysis"):
             # ---
             "collection_dash_usd_den": db.dash_usd_den,
 
+            # only crypto collections
+            "collection_crypto_prices": db.crypto_prices,
+            "collection_crypto_returns": db.crypto_returns,
+            "collection_crypto_volume": db.crypto_volumes,
 
         }
 
@@ -654,6 +663,12 @@ def mongo_coll_drop(corr_type):
 
         db.crypto_price.drop()
         db.crypto_volume.drop()
+    
+    elif corr_type == "crypto_all":
+
+        db.crypto_prices.drop()
+        db.crypto_returns.drop()
+        db.crypto_volumes.drop()
 
 
 def mongo_correlation_drop():
