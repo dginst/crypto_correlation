@@ -493,6 +493,7 @@ def dynamic_corr(first_df, second_df, time_window):
             print(value_of_int)
         elif i == 1:
             print(value_of_int)
+        i = i + 1
         corr_series = pd.concat((corr_series, value_of_int))
         corr_series.reset_index(inplace=True, drop=True)
 
