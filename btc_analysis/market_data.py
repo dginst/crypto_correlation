@@ -331,14 +331,12 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     
     old_coin_price, old_coin_volume = crypto_old_series_y(START_DATE, "2015-12-31", set_="old_coin")
     new_coin_price, new_coin_volume = crypto_old_series_y(START_DATE, stop_date, set_="new_coin")
-    print(new_coin_price)
 
 
     # creating the df with old coins
     index_old_coin_price = index_df_price[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
     index_old_coin_volume = index_df_vol[["Date", 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
     old_coin_price_concat = pd.concat((old_coin_price, index_old_coin_price))
-    print(old_coin_price_concat)
     old_coin_vol_concat = pd.concat((old_coin_volume, index_old_coin_volume))
 
     # creating the df with new coins
@@ -347,7 +345,6 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     index_new_coin_price = index_new_coin_price[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
     index_new_coin_volume = index_new_coin_volume[["Date", 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']]
     new_coin_price_concat = pd.concat((new_coin_price, index_new_coin_price))
-    print(new_coin_price_concat)
     new_coin_vol_concat = pd.concat((new_coin_volume, index_new_coin_volume))
 
     # merging price and volume df
@@ -358,6 +355,77 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
     final_vol_df.reset_index(drop=True, inplace=True)
 
     return final_price_df, final_vol_df
+
+# ###
+
+def add_crypto_v2(yahoo_df, crypto_df):
+
+    y_df = yahoo_df.copy()
+    c_df = crypto_df.copy()
+    crypto_df = crypto_df[['Date', 'BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']]
+
+
+
+    complete_df = pd.merge(y_df, c_df, on="Date", how="left")
+
+    complete_df = complete_df.rename(columns={"BTC_y": "BTC",
+                                              "ETH_y": "ETH",
+                                              "LTC_y": "LTC",
+                                              "BCH_y": "BCH",
+                                              "XRP_y": "XRP"})
+    try:
+        complete_df = complete_df.drop(
+            columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"])
+    except KeyError:
+        pass
+
+    complete_df = complete_df[["Date",
+                               "BTC",
+                               "ETH",
+                               "LTC",
+                               "XRP",
+                               "BCH",
+                                'MATIC',
+                                'SHIB',
+                                'ADA',
+                                'AVAX',
+                                'DOGE',
+                                'DOT',
+                                'LUNA',
+                                'SOL',
+                                'XLM',
+                                'XMR',
+                                'ZEC',
+                                'EOS',
+                                'ETC',
+                                'BSV',
+                               'GOLD',
+                               'SILVER',
+                               'COPPER',
+                               'NATURAL_GAS',
+                               'CRUDE OIL',
+                               'CORN',
+                               'EUR',
+                               'GBP',
+                               'JPY',
+                               'CHF',
+                               'NASDAQ',
+                               'DOWJONES',
+                               'S&P500',
+                               'EUROSTOXX50',
+                               'VIX',
+                               'US TREASURY',
+                               'EUR Aggregate Bond',
+                               'US Aggregate Bond',
+                               'US index',
+                               'TESLA',
+                               'AMAZON',
+                               'APPLE',
+                               'NETFLIX'
+                               ]]
+
+    return complete_df
+
 
 # function that adds the crypto prices or volume retrived from the "index"
 # database. The default value of the varibale "collection" implies that

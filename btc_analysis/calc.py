@@ -363,7 +363,7 @@ def yahoo_price_fix(df):
 
     date_arr = df["Date"]
 
-    # initializing the fixed df and assigning the Dayte column
+    # initializing the fixed df and assigning the Date column
     fixed_df = pd.DataFrame(columns=header)
     fixed_df["Date"] = df["Date"]
 
