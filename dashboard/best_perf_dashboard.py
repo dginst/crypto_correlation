@@ -291,7 +291,7 @@ app.layout = dbc.Container([
                                                 {'label': w, 'value': w} for w in vola_days_list
                                             ],
                                             multi=False,
-                                            value="ewm",
+                                            value="252",
                                             style={"width": "50%"},
                                             clearable=False
                                         ),

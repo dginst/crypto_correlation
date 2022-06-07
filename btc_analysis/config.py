@@ -78,9 +78,9 @@ VARIOUS_LIST = ["BITCOIN", "ETH", "LTC", "XRP", "GOLD", "IND_METALS", "WTI",
                 "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
 
 VARIOUS_LIST_Y = ["BTC",
-                  "ETH",
-                  "LTC",
-                  "XRP",
+                #   "ETH",
+                #   "LTC",
+                #   "XRP",
                   'GOLD',
                   'COPPER',
                   'NATURAL_GAS',
