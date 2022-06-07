@@ -38,6 +38,30 @@ CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'MATIC', 'SHIB', 'ADA', 'AVAX',
                'DOGE', 'DOT', 'LUNA']
 
+ASSET_LIST = ['S&P500',
+                'DOWJONES',
+                'GOLD',
+                'SILVER',
+                'COPPER',
+                'NATURAL_GAS',
+                'CRUDE OIL',
+                'CORN',
+                'EUR',
+                'GBP',
+                'JPY',
+                'CHF',
+                'EUROSTOXX50',
+                'VIX',
+                'NASDAQ',
+                'US TREASURY',
+                'EUR Aggregate Bond',
+                'US Aggregate Bond',
+                'US index',
+                'TESLA',
+                'AMAZON',
+                'APPLE',
+                'NETFLIX']
+
 METAL_LIST = ["Gold", "Silver", "Copper"]
 
 CRYPTO_STATIC_LIST = ['BTC', 'ETH', 'XRP', 'LTC',

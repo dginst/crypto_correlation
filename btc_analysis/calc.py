@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from btc_analysis.config import (CRYPTO_LIST, DB_NAME, REF_CRYPTO, REF_SP500,
+from btc_analysis.config import (ASSET_LIST, CRYPTO_LIST, DB_NAME, REF_CRYPTO, REF_SP500,
                                  REF_VARIOUS, VAR_STATIC_LIST, VARIOUS_LIST,
                                  VARIOUS_LIST_Y, VS_SP500_LIST)
 from btc_analysis.mongo_func import mongo_upload, query_mongo
@@ -663,8 +663,14 @@ def return_in_btc_comp(total_df, time_window, quarter="N"):
     return normalized_df
 
 
-def btc_denominated_total(yahoo_price_df, alt_price_df):
+def btc_denominated_total(input_df:pd.DataFrame):
 
+    df = input_df.copy()
+
+    crypto_col = ["Date"] + CRYPTO_LIST
+    asset_col = ["Date", "BTC"] + ASSET_LIST
+    yahoo_price_df = df[crypto_col]
+    alt_price_df = df[asset_col]
     # computation as of yesterday
 
     yahoo_df_YTD = return_in_btc_comp(yahoo_price_df, "YTD")
