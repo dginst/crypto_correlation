@@ -490,7 +490,6 @@ def dynamic_corr(first_df, second_df, time_window):
 
         value_of_int = day_corr.iloc[[0], [1]]
         print(value_of_int)
-        print(corr_series)
 
         corr_series = pd.concat((corr_series, value_of_int))
         corr_series.reset_index(inplace=True, drop=True)
@@ -529,7 +528,7 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
 
         comm_df = tot_ret_dff[["Date", element]]
         single_corr = dynamic_corr(ref_comm_df, comm_df, time_window)
-
+        print(single_corr)
         if element == ref_variable:
 
             single_corr = single_corr.drop(columns=element)
