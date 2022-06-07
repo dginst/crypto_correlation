@@ -630,7 +630,7 @@ def return_in_btc_comp(total_df, time_window, quarter="N"):
         pass
 
     total_df = total_df.loc[total_df.Date.between(
-        first_date, last_date, inclusive=True)]
+        first_date, last_date, inclusive='both')]
     total_df.reset_index(drop=True, inplace=True)
 
     sub_date = pd.DataFrame(columns=["Date"])
@@ -669,8 +669,8 @@ def btc_denominated_total(input_df:pd.DataFrame):
 
     crypto_col = ["Date"] + CRYPTO_LIST
     asset_col = ["Date", "BTC"] + ASSET_LIST
-    yahoo_price_df = df[crypto_col]
-    alt_price_df = df[asset_col]
+    alt_price_df = df[crypto_col]
+    yahoo_price_df = df[asset_col]
     # computation as of yesterday
 
     yahoo_df_YTD = return_in_btc_comp(yahoo_price_df, "YTD")
