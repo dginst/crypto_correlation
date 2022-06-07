@@ -35,7 +35,7 @@ ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
 CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                'BCH', 'EOS', 'ETC', 'ZEC',
                'ADA', 'XLM', 'XMR', 'BSV',
-               'MATIC', 'SHIB', 'ADA', 'AVAX',
+               'MATIC', 'SHIB', 'AVAX',
                'DOGE', 'DOT', 'LUNA']
 
 ASSET_LIST = ['S&P500',

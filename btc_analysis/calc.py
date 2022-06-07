@@ -470,7 +470,7 @@ def dynamic_corr(first_df, second_df, time_window):
         pass
 
     corr_series = pd.DataFrame(columns=column_set)
-    i = 0
+
     for date in first_df["Date"]:
 
         delta_date = roll_single_time(date, time_window)
@@ -489,11 +489,7 @@ def dynamic_corr(first_df, second_df, time_window):
         day_corr = merged.corr()
 
         value_of_int = day_corr.iloc[[0], [1]]
-        if i == 0:
-            print(value_of_int)
-        elif i == 1:
-            print(value_of_int)
-        i = i + 1
+ 
         corr_series = pd.concat((corr_series, value_of_int))
         corr_series.reset_index(inplace=True, drop=True)
 
@@ -531,7 +527,7 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
 
         comm_df = tot_ret_dff[["Date", element]]
         single_corr = dynamic_corr(ref_comm_df, comm_df, time_window)
-        print(single_corr)
+
         if element == ref_variable:
 
             single_corr = single_corr.drop(columns=element)
@@ -539,7 +535,6 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
 
         single_corr.reset_index(drop=True, inplace=True)
         tot_corr[element] = single_corr[element]
-        print(tot_corr)
 
     return tot_corr
 

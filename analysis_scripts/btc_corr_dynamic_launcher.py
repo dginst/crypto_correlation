@@ -40,7 +40,6 @@ crypto_returns = all_returns[crypto_col]
 
 # ------------------------------------------------------------------------
 # BTC correlations with altcoins
-print(crypto_returns)
 
 (dyn_alt_corr_YTD, dyn_alt_corr_3Y, dyn_alt_corr_1Y,
  dyn_alt_corr_1Q, dyn_alt_corr_1M) = dynamic_corr_op(
