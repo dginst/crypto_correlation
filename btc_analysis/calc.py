@@ -4,9 +4,8 @@ import numpy as np
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
-from btc_analysis.config import (ASSET_LIST, CRYPTO_LIST, DB_NAME, REF_CRYPTO, REF_SP500,
-                                 REF_VARIOUS, VAR_STATIC_LIST, VARIOUS_LIST,
-                                 VARIOUS_LIST_Y, VS_SP500_LIST)
+from btc_analysis.config import (ASSET_LIST, CRYPTO_LIST, DB_NAME, REF_CRYPTO,
+                                 VAR_STATIC_LIST)
 from btc_analysis.mongo_func import mongo_upload, query_mongo
 
 # -----------------------
