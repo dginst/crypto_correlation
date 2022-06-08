@@ -506,20 +506,10 @@ def dynamic_total(tot_ret_df, time_window, corr_set):
         ref_variable = REF_CRYPTO
         others_comm = CRYPTO_LIST
 
-    elif corr_set == "various":
-
-        ref_variable = REF_VARIOUS
-        others_comm = VARIOUS_LIST
-
-    elif corr_set == "various_y":
+    elif corr_set == "assets":
 
         ref_variable = REF_CRYPTO
-        others_comm = VARIOUS_LIST_Y
-
-    elif corr_set == "SP500":
-
-        ref_variable = REF_SP500
-        others_comm = VS_SP500_LIST
+        others_comm = ["BTC"] + ASSET_LIST
 
     ref_comm_df = tot_ret_dff[["Date", ref_variable]]
 

@@ -1,22 +1,17 @@
 DB_NAME = "btc_analysis"
 
-START_DATE = "2012-12-31"
+MKT_ANALYSIS_START_DATE = "2012-12-31"
 
 INDEX_START_DATE = "2016-01-01"
 
 INDEX_DB_NAME = "index"
-
-REF_CRYPTO = "BTC"
-
-REF_VARIOUS = "BITCOIN"
-
-REF_SP500 = "S&P500"
 
 DAY_IN_SECONDS = 86400
 
 SATOSHI_FOR_BTC = 100000000
 
 # -----
+
 CORR_WINDOW_LIST = ["3Y", "1Y", "1Q", "1M", "YTD"]
 
 WINDOW_LIST = ["5Y", "3Y", "2Y", "1Y", "6M", "3M", "1M", "1W", "YTD"]
@@ -27,40 +22,65 @@ STAT_CORR_WINDOW_LIST = ['all', '3Y', '1Y', '1Q', '1M']
 
 VOLA_DAY_LIST = ["252", "90", "30", "ewm"]
 
-# ----------
+# -----------------------------------
+# Crypto and anssets definition
+# --------------------------------------
 
 ASSET_CATEGORY = ['Crypto-currency', 'Commodity',
                   'Currency', 'Equity', 'Volatility', 'Bond']
 
-CRYPTO_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
-               'BCH', 'EOS', 'ETC', 'ZEC',
-               'ADA', 'XLM', 'XMR', 'BSV',
-               'MATIC', 'SHIB', 'AVAX',
-               'DOGE', 'DOT', 'LUNA']
+ORIGINAL_CRYPTO_LIST = [
+        'BTC', 'ETH', 'XRP', 'LTC',
+        'BCH', 'EOS', 'ETC', 'ZEC',
+        'ADA', 'XLM', 'XMR', 'BSV'
+               ]
 
-ASSET_LIST = ['S&P500',
-                'DOWJONES',
-                'GOLD',
-                'SILVER',
-                'COPPER',
-                'NATURAL_GAS',
-                'CRUDE OIL',
-                'CORN',
-                'EUR',
-                'GBP',
-                'JPY',
-                'CHF',
-                'EUROSTOXX50',
-                'VIX',
-                'NASDAQ',
-                'US TREASURY',
-                'EUR Aggregate Bond',
-                'US Aggregate Bond',
-                'US index',
-                'TESLA',
-                'AMAZON',
-                'APPLE',
-                'NETFLIX']
+
+NEW_CRYPTO_LIST = [
+               'MATIC', 'SHIB', 'AVAX',
+               'DOGE', 'DOT', 'LUNA'
+               ]
+
+CRYPTO_LIST = ORIGINAL_CRYPTO_LIST + NEW_CRYPTO_LIST
+
+ASSET_LIST = [
+        'S&P500',
+        'DOWJONES',
+        'GOLD',
+        'SILVER',
+        'COPPER',
+        'NATURAL_GAS',
+        'CRUDE OIL',
+        'CORN',
+        'EUR',
+        'GBP',
+        'JPY',
+        'CHF',
+        'EUROSTOXX50',
+        'VIX',
+        'NASDAQ',
+        'US TREASURY',
+        'EUR Aggregate Bond',
+        'US Aggregate Bond',
+        'US index',
+        'TESLA',
+        'AMAZON',
+        'APPLE',
+        'NETFLIX'
+        ]
+
+
+# ------------------------------
+# list for dynamic correlation
+# ------------------------------
+
+VARIOUS_LIST_Y = ["BTC"] + ASSET_LIST
+
+REF_CRYPTO = "BTC"
+
+# ------------------------------
+# list for static correlation
+# ------------------------------
 
 METAL_LIST = ["Gold", "Silver", "Copper"]
 
@@ -70,38 +90,6 @@ CRYPTO_STATIC_LIST = ['BTC', 'ETH', 'XRP', 'LTC',
                       'MATIC', 'SHIB', 'ADA', 'AVAX',
                       'DOGE', 'DOT', 'LUNA']
 
-VARIOUS_LIST = ["BITCOIN", "ETH", "LTC", "XRP", "GOLD", "IND_METALS", "WTI",
-                "GRAIN", "EUR", "CHF", "GBP", "JPY",
-                "NASDAQ", "EUROSTOXX50", "S&P500",
-                "MSCI BRIC ", "VIX Index",
-                "Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
-                "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
-
-VARIOUS_LIST_Y = ["BTC",
-                #   "ETH",
-                #   "LTC",
-                #   "XRP",
-                  'GOLD',
-                  'COPPER',
-                  'NATURAL_GAS',
-                  'CRUDE OIL',
-                  'CORN',
-                  'EUR',
-                  'GBP',
-                  'JPY',
-                  'CHF',
-                  'NASDAQ',
-                  'DOWJONES',
-                  'S&P500',
-                  'EUROSTOXX50',
-                  'VIX',
-                  'US TREASURY',
-                  'EUR Aggregate Bond',
-                  'US Aggregate Bond',
-                  "AMAZON",
-                  "TESLA",
-                  "APPLE",
-                  "NETFLIX"]
 
 EQUITY = ["NASDAQ", "EUROSTOXX50", "S&P500",
           "MSCI BRIC ", "VIX Index"]
@@ -140,12 +128,7 @@ CRYPTO = ["BITCOIN", "BTC", "ETH",
           'EOS', 'ETC', 'ZEC',
           'ADA', 'XLM', 'XMR', 'BSV']
 
-VS_SP500_LIST = ["BITCOIN", "GOLD", "IND_METALS", "WTI",
-                 "GRAIN", "EUR", "CHF", "GBP", "JPY",
-                 "NASDAQ", "EUROSTOXX50",
-                 "MSCI BRIC ", "VIX Index",
-                 "Bloomberg Barclays EuroAgg Total Return Index Value Unhedged EUR",
-                 "BBG Barclays PAN EURO Aggregate", "BBG Barclays PAN US Aggregate"]
+
 
 SP500_GRAPH_LIST = ["BITCOIN", "GOLD", "GRAIN", "EUR", "JPY",
                     "EUROSTOXX50", "VIX Index",
@@ -215,7 +198,15 @@ CORR_MATRIX_LIST = ["Date",
                     'EUR Aggregate Bond'
                     ]
 
+
+
+
+# ------------------------------------
+# Variables for dashboards
+# -------------------------------------------
+
 GRAPH_LINE_WIDTH = 2
+
 
 GRAPH_COLOR = {
 
@@ -414,6 +405,8 @@ FORMAT_DICT = {
 }
 
 
+# ------------------------------------------------------
+
 Y_FINANCE_DICT = {
 
     'S&P500': '^GSPC',
@@ -535,35 +528,6 @@ YAHOO_NAME_SERV = ['GBTC',
                    'WisdomTree Bitcoin',
                    'BTCetc Bitcoin Exchange Traded',
                    '21Shares Crypto Basket Index ET'
-                   ]
-
-YAHOO_TO_RETURN = ["BTC",
-                   "ETH",
-                   "LTC",
-                   "XRP",
-                   'S&P500',
-                   'DOWJONES',
-                   'GOLD',
-                   'SILVER',
-                   'COPPER',
-                   'NATURAL_GAS',
-                   'CRUDE OIL',
-                   'CORN',
-                   'EUR',
-                   'GBP',
-                   'JPY',
-                   'CHF',
-                   'EUROSTOXX50',
-                   'VIX',
-                   'NASDAQ',
-                   'US TREASURY',
-                   'EUR Aggregate Bond',
-                   'US Aggregate Bond',
-                   'US index',
-                   'TESLA',
-                   'AMAZON',
-                   'APPLE',
-                   'NETFLIX'
                    ]
 
 

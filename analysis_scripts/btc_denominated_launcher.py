@@ -1,10 +1,8 @@
 import logging
 
-from btc_analysis.calc import (btc_denominated_total, price_retrieve,
-                               yahoo_price_fix)
-from btc_analysis.config import DB_NAME, INDEX_DB_NAME, WINDOW_LIST
+from btc_analysis.calc import btc_denominated_total
+from btc_analysis.config import DB_NAME, WINDOW_LIST
 from btc_analysis.dashboard_func import dash_btc_den_df
-from btc_analysis.market_data import add_crypto_to_yahoo
 from btc_analysis.mongo_func import (mongo_coll_drop, mongo_indexing,
                                      query_mongo)
 

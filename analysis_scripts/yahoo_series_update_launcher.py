@@ -1,7 +1,7 @@
 import logging
 
 from btc_analysis.config import (ASSET_LIST, CRYPTO_LIST, YAHOO_TO_DOWNLOAD_CODE,
-                                 YAHOO_TO_DOWNLOAD_NAME, YAHOO_TO_RETURN)
+                                 YAHOO_TO_DOWNLOAD_NAME)
 from btc_analysis.market_data import mkt_data_op, yesterday_str
 from btc_analysis.mongo_func import mongo_coll_drop, mongo_indexing
 

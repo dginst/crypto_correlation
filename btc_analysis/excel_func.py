@@ -9,12 +9,12 @@ from btc_analysis.calc import price_retrieve, return_retrieve
 from btc_analysis.config import (ASSET_CATEGORY, BOND, BOND_YAHOO, COMMODITY,
                                  COMMODITY_YAHOO, CORR_MATRIX_LIST, CRYPTO,
                                  CRYPTO_FOR_STATIC, CRYPTO_FOR_STATIC_YAHOO,
-                                 CRYPTO_GRAPH_LIST, CRYPTO_LIST,
-                                 CRYPTO_STATIC_LIST, CURRENCY, DB_NAME, EQUITY,
+                                 CRYPTO_GRAPH_LIST,
+                                 CRYPTO_STATIC_LIST, CURRENCY, EQUITY,
                                  EQUITY_YAHOO, FORMAT_DICT, GRAPH_COLOR,
-                                 INDEX_DB_NAME, SP500_GRAPH_LIST, TIME_WINDOW,
-                                 VAR_GRAPH_LIST, VAR_STATIC_LIST_Y,
-                                 VS_SP500_LIST)
+                                 INDEX_DB_NAME, TIME_WINDOW,
+                                 VAR_GRAPH_LIST
+                                 )
 
 # -------------------------
 # TIME FUNCTION
@@ -549,17 +549,6 @@ def static_corr_to_excel(file_name, stat_ret_list,
         static_sheet(writer, 'Correlation Matrix', space, space_left,
                      TIME_WINDOW, stat_ret_list, "yahoo")
         format_sheets(writer, 'Correlation Matrix')
-
-
-def SP500_to_excel(file_name, dyn_SP500_corr_3Y):
-
-    with pd.ExcelWriter(file_name, engine='xlsxwriter') as writer:
-
-        dyn_SP500_corr_3Y.to_excel(
-            writer, sheet_name='3Y RW S&P500', index=False)
-        put_graph(writer, '3Y RW S&P500', dyn_SP500_corr_3Y,
-                  graph_name='Correlation with S&P500 on a 3 years rolling window',
-                  graph_set=SP500_GRAPH_LIST)
 
 
 # -------------------------------

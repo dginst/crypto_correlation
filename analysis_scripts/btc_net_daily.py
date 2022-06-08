@@ -60,7 +60,6 @@ try:
 
         pass
 
-
 except Exception:
 
     logging.error("Exception occurred", exc_info=True)
@@ -83,6 +82,7 @@ except Exception:
     logging.info(
         'BTC network operation failed to update')
     pass
+
 # ---
 # hash rate
 
