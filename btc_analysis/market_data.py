@@ -305,6 +305,8 @@ def mkt_data_op(series_code_list,
         try:
 
             no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
+            complete_series_df_volume = add_no_stable(
+            complete_series_df_volume, no_stable_vol_df)
 
         except Exception:
 
@@ -313,8 +315,8 @@ def mkt_data_op(series_code_list,
                 'The collection with all the exchanges values of volume\
                 may be not updated')
 
-        complete_series_df_volume = add_no_stable(
-            complete_series_df_volume, no_stable_vol_df)
+
+
         date_arr = complete_series_df_volume["Date"]
         complete_series_df_volume = complete_series_df_volume.drop(
             columns="Date")
