@@ -62,8 +62,13 @@ all_options = {
 
 
 df_yahoo = query_mongo(DB_NAME, "dash_corr_yahoo")
-df_yahoo = df_yahoo.drop(
-    columns=["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"])
+for el in ["ETH", "XRP", "LTC", "Date", "Window", 'NATURAL_GAS', "As Of"]:
+
+    try:
+        df_yahoo = df_yahoo.drop(columns=el)
+    except KeyError:
+        pass
+
 df_col_yahoo = list(df_yahoo.columns)
 
 # ----------------
