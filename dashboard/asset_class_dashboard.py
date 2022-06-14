@@ -720,7 +720,10 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
     dff_yahoo["Date"] = [datetime.strptime(
         x, "%Y-%m-%d") for x in dff_yahoo["Date"]]
 
-    dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+    try:
+        dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+    except KeyError:
+        pass
 
     dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
     dff_w = dff_w.drop(columns=["Window"])
