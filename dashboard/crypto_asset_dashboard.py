@@ -455,7 +455,7 @@ def update_graph_btc_den(window_selection, as_of_selection, asset_selection, sel
         title_pad=dict(b=150)
     )
 
-    if len(asset_selection) <= 5:
+    if len(asset_selection) <= 8:
         fig_alt.update_layout(
             legend=dict(
                 orientation="h",
@@ -624,7 +624,7 @@ def update_graph_corr(window_selection, start, stop, asset_selection, n, sel_col
     fig_corr.update_xaxes(ticks="outside", tickwidth=1,
                           tickcolor=tick_col, ticklen=10)
 
-    if len(asset_selection) <= 5:
+    if len(asset_selection) <= 8:
         fig_corr.update_layout(
             legend=dict(
                 orientation="h",
