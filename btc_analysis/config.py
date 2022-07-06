@@ -678,8 +678,11 @@ GOLD_FLOW_TONS = 3260
 CORR_MATRIX_LIST = [
     'BTC',
     'ETH',
-    'LTC',
     'XRP',
+    'ADA',
+    'DOGE',
+    'MATIC',
+    'AVAX',
     'GOLD',
     'COPPER',
     'CRUDE OIL',
@@ -717,8 +720,11 @@ CORR_MATRIX_LIST_ASSET = [
 CORR_MATRIX_LIST_CRYPTO = [
     'BTC',
     'ETH',
-    'LTC',
-    'XRP'
+    'XRP',
+    'ADA',
+    'DOGE',
+    'MATIC',
+    'AVAX',
 ]
 
 # STABLECOIN
