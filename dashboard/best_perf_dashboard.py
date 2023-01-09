@@ -820,7 +820,10 @@ def update_corr_graph_asset(window_selection, start, stop, asset_selection, n, s
         font_col = "white"
         tick_col = "#111111"
 
-    dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+    try:
+        dff_yahoo = dff_yahoo.drop(columns=["ETH", "XRP", "LTC"])
+    except KeyError:
+        pass
 
     dff_w = dff_yahoo.loc[dff_yahoo.Window == window_selection]
     dff_w = dff_w.drop(columns=["Window"])
