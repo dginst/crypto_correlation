@@ -1073,11 +1073,16 @@ def ewm_volatility(return_df, square_root=252):
 
 
 def decay_volatility(return_df, decay_factor=0.94, square_root=252):
+
+    date = return_df["Date"]
+    date = date.sort_values(ascending=True)
+    date.reset_index(drop=True, inplace=True)
+
     returns = return_df['BTC'].values
     weights = np.power(decay_factor, np.arange(len(returns), 0, -1))
     ewma_volatility = np.sqrt(np.sum(weights * returns**2) * square_root)
-
-    date = return_df['Date'].values[-1]  # Assuming the last date is used as the date for the volatility estimate
+    print(ewma_volatility)
+    
     ewma_volatility_df = pd.DataFrame({'Date': [date], 'Volatility': [ewma_volatility]})
 
     return ewma_volatility_df
