@@ -11,11 +11,26 @@ from dateutil.relativedelta import relativedelta
 from pandas_datareader import data
 
 from btc_analysis.calc import date_gen, date_gen_TS
-from btc_analysis.config import (ASSET_LIST, CRYPTO_LIST, DAY_IN_SECONDS, DB_NAME, GOLD_OUNCES_SUPPLY,
-                                 INDEX_DB_NAME, NEW_CRYPTO_LIST, ORIGINAL_CRYPTO_LIST, SATOSHI_FOR_BTC,
-                                 SILVER_OUNCES_SUPPLY, MKT_ANALYSIS_START_DATE, USD_SUPPLY)
-from btc_analysis.mongo_func import (mongo_coll_drop, mongo_delete,
-                                     mongo_upload, query_mongo)
+from btc_analysis.config import (
+    ASSET_LIST,
+    CRYPTO_LIST,
+    DAY_IN_SECONDS,
+    DB_NAME,
+    GOLD_OUNCES_SUPPLY,
+    INDEX_DB_NAME,
+    MKT_ANALYSIS_START_DATE,
+    NEW_CRYPTO_LIST,
+    ORIGINAL_CRYPTO_LIST,
+    SATOSHI_FOR_BTC,
+    SILVER_OUNCES_SUPPLY,
+    USD_SUPPLY,
+)
+from btc_analysis.mongo_func import (
+    mongo_coll_drop,
+    mongo_delete,
+    mongo_upload,
+    query_mongo,
+)
 from btc_analysis.statistics import hist_std_dev
 
 # -----------------------
@@ -76,8 +91,7 @@ def index_coll_check(collection_name):
 
     if crypto_price == []:
 
-        crypto_df = pd.read_csv(
-            Path("source_data", "index_collections", file_name))
+        crypto_df = pd.read_csv(Path("source_data", "index_collections", file_name))
         mongo_upload(crypto_df, upload_name, db_name="index")
 
     else:
@@ -85,8 +99,7 @@ def index_coll_check(collection_name):
         if yesterday != last_date:
 
             mongo_coll_drop("index", db_name="index")
-            crypto_df = pd.read_csv(
-                Path("source_data", "index_collections", file_name))
+            crypto_df = pd.read_csv(Path("source_data", "index_collections", file_name))
             mongo_upload(crypto_df, upload_name, db_name="index")
 
         else:
@@ -102,8 +115,9 @@ def index_coll_check(collection_name):
 # ---------------------------
 
 
-def all_series_download(series_code_list, all_el_list,
-                        start_period, end_period, daily="N"):
+def all_series_download(
+    series_code_list, all_el_list, start_period, end_period, daily="N"
+):
 
     all_series_df_price = pd.DataFrame(columns=all_el_list)
     all_series_df_volume = pd.DataFrame(columns=all_el_list)
@@ -113,7 +127,8 @@ def all_series_download(series_code_list, all_el_list,
         var = all_el_list[i]
 
         single_series = single_series_download(
-            element, start_period, end_period, daily=daily)
+            element, start_period, end_period, daily=daily
+        )
 
         if "BTC" in all_el_list:
 
@@ -149,8 +164,7 @@ def single_series_download(series_code, start_period, end_period, daily="N"):
     except Exception:
 
         logging.error("Exception occurred", exc_info=True)
-        logging.info(
-            'The asset with code {series_code} failed to download')
+        logging.info("The asset with code {series_code} failed to download")
 
     # create the complete array of date
     date_arr = np.array(date_gen(start_period, end_period, holiday="N"))
@@ -224,34 +238,30 @@ def all_series_to_logret(all_price_df):
     return log_ret_df
 
 
-def mkt_data_op(series_code_list,
-                all_el_list_d,
-                all_el_list_r,
-                start_period,
-                end_period,
-                daily="N"):
+def mkt_data_op(
+    series_code_list, all_el_list_d, all_el_list_r, start_period, end_period, daily="N"
+):
 
     if daily == "Y":
 
         if is_business_day(start_period) is True:
 
             # downloading the last days values from yahoo
-            (all_series_df_price,
-             all_series_df_volume) = all_series_download(series_code_list,
-                                                         all_el_list_d,
-                                                         start_period,
-                                                         end_period,
-                                                         daily=daily)
+            (all_series_df_price, all_series_df_volume) = all_series_download(
+                series_code_list, all_el_list_d, start_period, end_period, daily=daily
+            )
             mongo_delete("collection_prices_y", {"Date": start_period})
             mongo_delete("collection_prices_y", {"Date": end_period})
 
-            # defining the df with all prices 
+            # defining the df with all prices
             old_price_df = query_mongo("btc_analysis", "all_prices_y")
             updated_price_df = pd.concat((old_price_df, all_series_df_price))
 
             # adding the crypto prices
             crypto_prices = query_mongo(DB_NAME, "crypto_prices")
-            complete_series_df_price = add_crypto_to_yahoo(updated_price_df, crypto_prices)
+            complete_series_df_price = add_crypto_to_yahoo(
+                updated_price_df, crypto_prices
+            )
 
             to_upload = complete_series_df_price.tail(2)
             print(to_upload)
@@ -264,12 +274,9 @@ def mkt_data_op(series_code_list,
             print("passed")
     else:
         # downloading all the assets history values
-        (all_series_df_price,
-         all_series_df_volume) = all_series_download(series_code_list,
-                                                     all_el_list_d,
-                                                     start_period,
-                                                     end_period,
-                                                     daily=daily)
+        (all_series_df_price, all_series_df_volume) = all_series_download(
+            series_code_list, all_el_list_d, start_period, end_period, daily=daily
+        )
 
         complete_series_df_price = all_series_df_price
 
@@ -281,13 +288,14 @@ def mkt_data_op(series_code_list,
 
         # prices
         crypto_prices = query_mongo(DB_NAME, "crypto_prices")
-        complete_series_df_price = add_crypto_to_yahoo(all_series_df_price, crypto_prices)
+        complete_series_df_price = add_crypto_to_yahoo(
+            all_series_df_price, crypto_prices
+        )
 
         mongo_upload(complete_series_df_price, "collection_prices_y")
 
         # returns
-        all_ret_df = all_series_to_return(
-            complete_series_df_price, all_el_list_r)
+        all_ret_df = all_series_to_return(complete_series_df_price, all_el_list_r)
 
         mongo_upload(all_ret_df, "collection_returns_y")
 
@@ -297,8 +305,9 @@ def mkt_data_op(series_code_list,
 
         # volumes
         crypto_volumes = query_mongo(DB_NAME, "crypto_volumes")
-        complete_series_df_volume = add_crypto_to_yahoo(all_series_df_volume, crypto_volumes)
-
+        complete_series_df_volume = add_crypto_to_yahoo(
+            all_series_df_volume, crypto_volumes
+        )
 
         df_all_pair = query_mongo("index", "index_data_feed")
 
@@ -306,24 +315,22 @@ def mkt_data_op(series_code_list,
 
             no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
             complete_series_df_volume = add_no_stable(
-            complete_series_df_volume, no_stable_vol_df)
+                complete_series_df_volume, no_stable_vol_df
+            )
 
         except Exception:
 
             logging.error("Exception occurred", exc_info=True)
             logging.info(
-                'The collection with all the exchanges values of volume\
-                may be not updated')
-
-
+                "The collection with all the exchanges values of volume\
+                may be not updated"
+            )
 
         date_arr = complete_series_df_volume["Date"]
-        complete_series_df_volume = complete_series_df_volume.drop(
-            columns="Date")
+        complete_series_df_volume = complete_series_df_volume.drop(columns="Date")
 
         # volues as a 7days rolling wiundow
-        complete_series_df_vol_rolling = complete_series_df_volume.rolling(
-            7).sum()
+        complete_series_df_vol_rolling = complete_series_df_volume.rolling(7).sum()
         complete_series_df_vol_rolling["Date"] = date_arr
         mongo_upload(complete_series_df_vol_rolling, "collection_volume_y")
 
@@ -331,6 +338,7 @@ def mkt_data_op(series_code_list,
 # -----------------------------
 # ADDING CRYPTOCURRENCIES DATA TO DATAFRAME
 # ----------------------------
+
 
 def crypto_price_and_vol_daily(start, stop, how=None):
 
@@ -343,14 +351,16 @@ def crypto_price_and_vol_daily(start, stop, how=None):
     elif how == "index":
         coin_price = query_mongo("index", "crypto_price", {"Date": start})
         coin_volume = query_mongo("index", "crypto_volume", {"Date": start})
-    
+
     final_price_df = coin_price[crypto_col]
     final_vol_df = coin_volume[crypto_col]
 
     return final_price_df, final_vol_df
 
 
-def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date=None, use_index=True):
+def crypto_price_and_volume(
+    initial_df_price, initial_df_vol, new_coin_stop_date=None, use_index=True
+):
 
     index_df_price = initial_df_price.copy()
     index_df_vol = initial_df_vol.copy()
@@ -364,11 +374,13 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
             stop_date = yesterday_str("%Y-%m-%d")
         else:
             stop_date = "2022-04-07"
-        
-        
-        old_coin_price, old_coin_volume = crypto_old_series_y(MKT_ANALYSIS_START_DATE, "2015-12-31", set_="old_coin")
-        new_coin_price, new_coin_volume = crypto_old_series_y(MKT_ANALYSIS_START_DATE, stop_date, set_="new_coin")
 
+        old_coin_price, old_coin_volume = crypto_old_series_y(
+            MKT_ANALYSIS_START_DATE, "2015-12-31", set_="old_coin"
+        )
+        new_coin_price, new_coin_volume = crypto_old_series_y(
+            MKT_ANALYSIS_START_DATE, stop_date, set_="new_coin"
+        )
 
         # creating the df with old coins
         index_old_coin_price = index_df_price[old_coin_set]
@@ -385,43 +397,54 @@ def crypto_price_and_volume(initial_df_price, initial_df_vol, new_coin_stop_date
         new_coin_vol_concat = pd.concat((new_coin_volume, index_new_coin_volume))
 
         # merging price and volume df
-        final_price_df = pd.merge(old_coin_price_concat, new_coin_price_concat, how='left', on="Date")
-        final_vol_df = pd.merge(old_coin_vol_concat, new_coin_vol_concat, how='left', on="Date")
+        final_price_df = pd.merge(
+            old_coin_price_concat, new_coin_price_concat, how="left", on="Date"
+        )
+        final_vol_df = pd.merge(
+            old_coin_vol_concat, new_coin_vol_concat, how="left", on="Date"
+        )
 
         final_price_df.reset_index(drop=True, inplace=True)
         final_vol_df.reset_index(drop=True, inplace=True)
-    
+
     else:
         stop_date = yesterday_str("%Y-%m-%d")
-        coin_price, coin_volume = crypto_old_series_y(MKT_ANALYSIS_START_DATE, stop_date, set_="all_coin")
+        coin_price, coin_volume = crypto_old_series_y(
+            MKT_ANALYSIS_START_DATE, stop_date, set_="all_coin"
+        )
         final_price_df = coin_price[all_coin_set]
         final_vol_df = coin_volume[all_coin_set]
 
     return final_price_df, final_vol_df
 
+
 # ###
+
 
 def add_crypto_to_yahoo(yahoo_df, crypto_df):
 
     y_df = yahoo_df.copy()
     c_df = crypto_df.copy()
-    
+
     crypto_col = ["Date"] + CRYPTO_LIST
     all_col = ["Date"] + CRYPTO_LIST + ASSET_LIST
     crypto_df = crypto_df[crypto_col]
 
-
-
     complete_df = pd.merge(y_df, c_df, on="Date", how="left")
 
-    complete_df = complete_df.rename(columns={"BTC_y": "BTC",
-                                              "ETH_y": "ETH",
-                                              "LTC_y": "LTC",
-                                              "BCH_y": "BCH",
-                                              "XRP_y": "XRP"})
+    complete_df = complete_df.rename(
+        columns={
+            "BTC_y": "BTC",
+            "ETH_y": "ETH",
+            "LTC_y": "LTC",
+            "BCH_y": "BCH",
+            "XRP_y": "XRP",
+        }
+    )
     try:
         complete_df = complete_df.drop(
-            columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"])
+            columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"]
+        )
     except KeyError:
         pass
 
@@ -454,47 +477,55 @@ def add_crypto(initial_df, collection="crypto_price"):
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
 
-    complete_df = complete_df.rename(columns={"BTC_y": "BTC",
-                                              "ETH_y": "ETH",
-                                              "LTC_y": "LTC",
-                                              "BCH_y": "BCH",
-                                              "XRP_y": "XRP"})
+    complete_df = complete_df.rename(
+        columns={
+            "BTC_y": "BTC",
+            "ETH_y": "ETH",
+            "LTC_y": "LTC",
+            "BCH_y": "BCH",
+            "XRP_y": "XRP",
+        }
+    )
     try:
         complete_df = complete_df.drop(
-            columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"])
+            columns=["BCH_x", "BTC_x", "ETH_x", "LTC_x", "XRP_x"]
+        )
     except KeyError:
         pass
 
-    complete_df = complete_df[["Date",
-                               "BTC",
-                               "ETH",
-                               "LTC",
-                               "XRP",
-                               "BCH",
-                               'GOLD',
-                               'SILVER',
-                               'COPPER',
-                               'NATURAL_GAS',
-                               'CRUDE OIL',
-                               'CORN',
-                               'EUR',
-                               'GBP',
-                               'JPY',
-                               'CHF',
-                               'NASDAQ',
-                               'DOWJONES',
-                               'S&P500',
-                               'EUROSTOXX50',
-                               'VIX',
-                               'US TREASURY',
-                               'EUR Aggregate Bond',
-                               'US Aggregate Bond',
-                               'US index',
-                               'TESLA',
-                               'AMAZON',
-                               'APPLE',
-                               'NETFLIX'
-                               ]]
+    complete_df = complete_df[
+        [
+            "Date",
+            "BTC",
+            "ETH",
+            "LTC",
+            "XRP",
+            "BCH",
+            "GOLD",
+            "SILVER",
+            "COPPER",
+            "NATURAL_GAS",
+            "CRUDE OIL",
+            "CORN",
+            "EUR",
+            "GBP",
+            "JPY",
+            "CHF",
+            "NASDAQ",
+            "DOWJONES",
+            "S&P500",
+            "EUROSTOXX50",
+            "VIX",
+            "US TREASURY",
+            "EUR Aggregate Bond",
+            "US Aggregate Bond",
+            "US index",
+            "TESLA",
+            "AMAZON",
+            "APPLE",
+            "NETFLIX",
+        ]
+    ]
 
     return complete_df
 
@@ -502,33 +533,105 @@ def add_crypto(initial_df, collection="crypto_price"):
 # function that allows to download from Yahoo Finance the historical series
 # of crypto prior to 01/01/2016 (the starting date of "index" DB series)
 
+
 def crypto_old_series_y(start, stop, set_=None):
 
     if set_ is None:
 
-        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD']
-        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH']
-    
+        yahoo_code = ["BTC-USD", "ETH-USD", "LTC-USD", "XRP-USD", "BCH-USD"]
+        yahoo_name = ["BTC", "ETH", "LTC", "XRP", "BCH"]
+
     elif set_ == "old_coin":
-        
-        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD', 'XLM-USD', 'XMR-USD', 'ZEC-USD', 'EOS-USD', 'ETC-USD', 'BSV-USD']
-        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']
+
+        yahoo_code = [
+            "BTC-USD",
+            "ETH-USD",
+            "LTC-USD",
+            "XRP-USD",
+            "BCH-USD",
+            "XLM-USD",
+            "XMR-USD",
+            "ZEC-USD",
+            "EOS-USD",
+            "ETC-USD",
+            "BSV-USD",
+        ]
+        yahoo_name = [
+            "BTC",
+            "ETH",
+            "LTC",
+            "XRP",
+            "BCH",
+            "XLM",
+            "XMR",
+            "ZEC",
+            "EOS",
+            "ETC",
+            "BSV",
+        ]
 
     elif set_ == "new_coin":
-        
-        yahoo_code = ['MATIC-USD', 'SHIB-USD', 'ADA-USD', 'AVAX-USD', 'DOGE-USD', 'DOT-USD', 'LUNA1-USD', 'SOL-USD']
-        yahoo_name = ['MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL']
-    
-    elif set_ == "all_coin":
-        
-        yahoo_code = ['BTC-USD', 'ETH-USD', 'LTC-USD', 'XRP-USD', 'BCH-USD', 'MATIC-USD', 'SHIB-USD', 'ADA-USD', 'AVAX-USD', 'DOGE-USD', 'DOT-USD', 'LUNA1-USD', 'SOL-USD', 'XLM-USD', 'XMR-USD', 'ZEC-USD', 'EOS-USD', 'ETC-USD', 'BSV-USD']
-        yahoo_name = ['BTC', 'ETH', 'LTC', 'XRP', 'BCH', 'MATIC', 'SHIB', 'ADA', 'AVAX', 'DOGE', 'DOT', 'LUNA', 'SOL', 'XLM', 'XMR', 'ZEC', 'EOS', 'ETC', 'BSV']
 
-    (crypto_df_price,
-     crypto_df_volume) = all_series_download(yahoo_code,
-                                             yahoo_name,
-                                             start, stop,
-                                             daily="N")
+        yahoo_code = [
+            "MATIC-USD",
+            "SHIB-USD",
+            "ADA-USD",
+            "AVAX-USD",
+            "DOGE-USD",
+            "DOT-USD",
+            "LUNA1-USD",
+            "SOL-USD",
+        ]
+        yahoo_name = ["MATIC", "SHIB", "ADA", "AVAX", "DOGE", "DOT", "LUNA", "SOL"]
+
+    elif set_ == "all_coin":
+
+        yahoo_code = [
+            "BTC-USD",
+            "ETH-USD",
+            "LTC-USD",
+            "XRP-USD",
+            "BCH-USD",
+            "MATIC-USD",
+            "SHIB-USD",
+            "ADA-USD",
+            "AVAX-USD",
+            "DOGE-USD",
+            "DOT-USD",
+            "LUNA1-USD",
+            "SOL-USD",
+            "XLM-USD",
+            "XMR-USD",
+            "ZEC-USD",
+            "EOS-USD",
+            "ETC-USD",
+            "BSV-USD",
+        ]
+        yahoo_name = [
+            "BTC",
+            "ETH",
+            "LTC",
+            "XRP",
+            "BCH",
+            "MATIC",
+            "SHIB",
+            "ADA",
+            "AVAX",
+            "DOGE",
+            "DOT",
+            "LUNA",
+            "SOL",
+            "XLM",
+            "XMR",
+            "ZEC",
+            "EOS",
+            "ETC",
+            "BSV",
+        ]
+
+    (crypto_df_price, crypto_df_volume) = all_series_download(
+        yahoo_code, yahoo_name, start, stop, daily="N"
+    )
 
     return crypto_df_price, crypto_df_volume
 
@@ -539,6 +642,7 @@ def crypto_old_series_y(start, stop, set_=None):
 
 # function that allows to isolate the volumes of BTC related to stablecoins
 # transaction (USDT and USDC only)
+
 
 def stablecoin_volume(all_exc_df):
 
@@ -567,6 +671,7 @@ def stablecoin_volume(all_exc_df):
 # of volume and then subtracts the volumes related to stablecoins
 # transactions
 
+
 def crypto_vol_no_stable(all_exc_df):
 
     only_stable_vol = stablecoin_volume(all_exc_df)
@@ -583,6 +688,7 @@ def crypto_vol_no_stable(all_exc_df):
 # function that add to a given dataframe (initial_df) the data related
 # to BTC volumes without stablecoins transaction
 
+
 def add_no_stable(initial_df, no_stable_vol_df):
 
     no_stable_vol_df = no_stable_vol_df.drop(columns="Time")
@@ -597,39 +703,43 @@ def add_no_stable(initial_df, no_stable_vol_df):
 
     complete_df = pd.merge(initial_df, tot_crypto_df, on="Date", how="left")
 
-    complete_df = complete_df[["Date",
-                               "BTC",
-                               "BTC no stable",
-                               "ETH",
-                               "LTC",
-                               "XRP",
-                               "BCH",
-                               'GOLD',
-                               'SILVER',
-                               'COPPER',
-                               'NATURAL_GAS',
-                               'CRUDE OIL',
-                               'CORN',
-                               'EUR',
-                               'GBP',
-                               'JPY',
-                               'CHF',
-                               'NASDAQ',
-                               'DOWJONES',
-                               'S&P500',
-                               'EUROSTOXX50',
-                               'VIX',
-                               'US TREASURY',
-                               'EUR Aggregate Bond',
-                               'US Aggregate Bond',
-                               'US index',
-                               'TESLA',
-                               'AMAZON',
-                               'APPLE',
-                               'NETFLIX'
-                               ]]
+    complete_df = complete_df[
+        [
+            "Date",
+            "BTC",
+            "BTC no stable",
+            "ETH",
+            "LTC",
+            "XRP",
+            "BCH",
+            "GOLD",
+            "SILVER",
+            "COPPER",
+            "NATURAL_GAS",
+            "CRUDE OIL",
+            "CORN",
+            "EUR",
+            "GBP",
+            "JPY",
+            "CHF",
+            "NASDAQ",
+            "DOWJONES",
+            "S&P500",
+            "EUROSTOXX50",
+            "VIX",
+            "US TREASURY",
+            "EUR Aggregate Bond",
+            "US Aggregate Bond",
+            "US index",
+            "TESLA",
+            "AMAZON",
+            "APPLE",
+            "NETFLIX",
+        ]
+    ]
 
     return complete_df
+
 
 # -----------------------
 # MARKET CAP OPERATION
@@ -648,16 +758,16 @@ def mkt_cap_downloader(tickers_list, name_list):
 
         name = name_list[i]
         market_cap = pd.DataFrame(
-            {name: int(data.get_quote_yahoo(str)['marketCap'])}, index=[0])
+            {name: int(data.get_quote_yahoo(str)["marketCap"])}, index=[0]
+        )
         mkt_cap_df[name] = market_cap[name]
 
-        i = i+1
+        i = i + 1
 
     return mkt_cap_df
 
 
-def mkt_cap_adder(mkt_cap_df, USD_SUPPLY,
-                  GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY):
+def mkt_cap_adder(mkt_cap_df, USD_SUPPLY, GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY):
 
     mkt_cap_df["USD"] = USD_SUPPLY
 
@@ -679,8 +789,8 @@ def mkt_cap_op(tickers_list, name_list, yesterday_human):
     mkt_cap_df = mkt_cap_downloader(tickers_list, name_list)
 
     mkt_cap_df_comp = mkt_cap_adder(
-        mkt_cap_df, USD_SUPPLY,
-        GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY)
+        mkt_cap_df, USD_SUPPLY, GOLD_OUNCES_SUPPLY, SILVER_OUNCES_SUPPLY
+    )
 
     btc_mkt_cap = mkt_cap_btc(yesterday_human)
 
@@ -723,12 +833,14 @@ def ticker_price_downloader(tickers_list, name_list):
 
         name = name_list[i]
         ticker_price = pd.DataFrame(
-            {name: int(data.get_quote_yahoo(str)['price'])}, index=[0])
+            {name: int(data.get_quote_yahoo(str)["price"])}, index=[0]
+        )
         ticker_price_df[name] = ticker_price[name]
 
-        i = i+1
+        i = i + 1
 
     return ticker_price_df
+
 
 # ------------------------
 # BTC NETWORK
@@ -795,8 +907,7 @@ def check_and_add_supply():
 
     yesterday = yesterday_str("%d-%m-%Y")
 
-    df_from_csv = pd.read_csv(
-        Path("source_data", "BTC_issuance.csv"), sep="|")
+    df_from_csv = pd.read_csv(Path("source_data", "BTC_issuance.csv"), sep="|")
     last_day = df_from_csv.tail(1)
     last_date = np.array(last_day["Date"])[0]
 
@@ -810,18 +921,23 @@ def check_and_add_supply():
         day_issuance = np.array(supply_df["Daily BTC"])[0]
         day_block = np.array(supply_df["Daily Block"])[0]
         array_to_add = np.column_stack((yesterday, day_issuance, day_block))
-        df_to_add = pd.DataFrame(array_to_add, columns=[
-                                 "Date", "BTC Issuance", "BTC Blocks"])
+        df_to_add = pd.DataFrame(
+            array_to_add, columns=["Date", "BTC Issuance", "BTC Blocks"]
+        )
 
-        df_to_add.to_csv(Path("source_data", "BTC_issuance.csv"),
-                         mode='a', index=False, header=False, sep='|')
+        df_to_add.to_csv(
+            Path("source_data", "BTC_issuance.csv"),
+            mode="a",
+            index=False,
+            header=False,
+            sep="|",
+        )
 
 
 def to_cumulative(issuance_df):
 
     complete_df = issuance_df.copy()
-    complete_df["BTC Issuance"] = [float(x)
-                                   for x in complete_df["BTC Issuance"]]
+    complete_df["BTC Issuance"] = [float(x) for x in complete_df["BTC Issuance"]]
     complete_df["BTC Blocks"] = [float(x) for x in complete_df["BTC Blocks"]]
     complete_df["Supply"] = complete_df["BTC Issuance"].cumsum()
     complete_df["Total Blocks"] = complete_df["BTC Blocks"].cumsum()
@@ -956,8 +1072,19 @@ def ewm_volatility(return_df, square_root=252):
     return ewm_vola_df
 
 
+def decay_volatility(return_df, decay_factor=0.94, square_root=252):
+    returns = return_df['BTC'].values
+    weights = np.power(decay_factor, np.arange(len(returns), 0, -1))
+    ewma_volatility = np.sqrt(np.sum(weights * returns**2) * square_root)
+
+    date = return_df['Date'].values[-1]  # Assuming the last date is used as the date for the volatility estimate
+    ewma_volatility_df = pd.DataFrame({'Date': [date], 'Volatility': [ewma_volatility]})
+
+    return ewma_volatility_df
+
 # --------------------------
 # BTC Derivatives
+
 
 def daily_btc_fut_download():
 
@@ -986,12 +1113,19 @@ def btc_fut_downloader(tickers_list, name_list):
 
         name = name_list[i]
         returned = pd.DataFrame(
-            {name: int(data.get_data_yahoo(str, start=yesterday_str_,
-                                           end=yesterday_str_)["Volume"])}, index=[0])
+            {
+                name: int(
+                    data.get_data_yahoo(str, start=yesterday_str_, end=yesterday_str_)[
+                        "Volume"
+                    ]
+                )
+            },
+            index=[0],
+        )
         print(returned)
         fut_df[name] = returned[name]
 
-        i = i+1
+        i = i + 1
 
     return fut_df
 
@@ -1056,20 +1190,21 @@ def yearly_quarter_start(year):
 # ---------------------------
 # Derivatives
 
-def btc_der_op(series_code_list, all_el_list_d,
-               all_el_list_r,
-               start_period, end_period):
 
-    _, series_df_volume = all_series_download(series_code_list,
-                                              all_el_list_d,
-                                              start_period,
-                                              end_period)
+def btc_der_op(
+    series_code_list, all_el_list_d, all_el_list_r, start_period, end_period
+):
+
+    _, series_df_volume = all_series_download(
+        series_code_list, all_el_list_d, start_period, end_period
+    )
 
     # volume operation
 
     no_stable_vol_df = crypto_vol_no_stable(df_all_pair)
     complete_series_df_volume = add_no_stable(
-        complete_series_df_volume, no_stable_vol_df)
+        complete_series_df_volume, no_stable_vol_df
+    )
     date_arr = complete_series_df_volume["Date"]
     complete_series_df_volume = complete_series_df_volume.drop(columns="Date")
 
