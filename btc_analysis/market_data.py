@@ -1078,7 +1078,7 @@ def decay_vola(returns, lambda_):
     weighted_returns = weights * returns
     return np.sqrt(np.sum(weighted_returns**2))
 
-def decay_volatility(return_df, logret_df, window_days, lambda_):
+def decay_volatility(return_df, logret_df, window_days, lambda_=0.94):
     date = return_df["Date"]
     date = date.sort_values(ascending=True)
     date.reset_index(drop=True, inplace=True)
