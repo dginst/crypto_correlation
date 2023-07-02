@@ -1072,20 +1072,29 @@ def ewm_volatility(return_df, square_root=252):
     return ewm_vola_df
 
 
-def decay_volatility(return_df, decay_factor=0.94, square_root=252):
 
+def decay_vola(returns, lambda_):
+    weights = [lambda_**(i - 1) for i in range(len(returns))]
+    weighted_returns = weights * returns
+    return np.sqrt(np.sum(weighted_returns**2))
+
+def decay_volatility(return_df, logret_df, window_days, lambda_):
     date = return_df["Date"]
     date = date.sort_values(ascending=True)
     date.reset_index(drop=True, inplace=True)
 
-    returns = return_df['BTC'].values
-    weights = np.power(decay_factor, np.arange(len(returns), 0, -1))
-    ewma_volatility = np.sqrt(np.sum(weights * returns**2) * square_root)
-    print(ewma_volatility)
-    
-    ewma_volatility_df = pd.DataFrame({'Date': [date], 'Volatility': [ewma_volatility]})
+    logret_df.fillna(0, inplace=True)
 
-    return ewma_volatility_df
+    decay_vola_values = []
+    for i in range(window_days, len(logret_df) + 1):
+        window_returns = logret_df.iloc[i-window_days:i]
+        decay_vola_values.append(decay_vola(window_returns, lambda_))
+
+    decay_vola_df = pd.DataFrame(decay_vola_values, columns=['Decay Volatility'])
+    decay_vola_df["Date"] = date.iloc[window_days:]
+    decay_vola_df.reset_index(drop=True, inplace=True)
+
+    return decay_vola_df
 
 # --------------------------
 # BTC Derivatives
