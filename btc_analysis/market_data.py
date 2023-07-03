@@ -1066,7 +1066,8 @@ def ewm_volatility(return_df, square_root=252):
 
     span = len(np.array(return_df["BTC"])) - 1
 
-    ewm_vola_df = return_df.ewm(span=span).std() * np.sqrt(square_root)
+    # ewm_vola_df = return_df.ewm(span=span).std() * np.sqrt(square_root)
+    ewm_vola_df = return_df.ewm(alpha=0.94).std() * np.sqrt(square_root)
     ewm_vola_df["Date"] = date
 
     return ewm_vola_df
