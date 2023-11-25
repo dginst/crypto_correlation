@@ -3,8 +3,8 @@ from pymongo import MongoClient
 
 # connecting to mongo in local
 # connection = MongoClient("internal-ip-172-31-27-40", 27017)
-connection = MongoClient("3.138.244.245", 27017)
-# connection = MongoClient("localhost", 27017)
+# connection = MongoClient("3.138.244.245", 27017)
+connection = MongoClient("localhost", 27017)
 # creating the database called index
 db = connection.btc_analysis
 
@@ -54,8 +54,8 @@ def mongo_index_conn():
 
     # connecting to mongo in local
     # connection = MongoClient("internal-ip-172-31-27-40", 27017)
-    connection = MongoClient("3.138.244.245", 27017)
-    # connection = MongoClient("localhost", 27017)
+    # connection = MongoClient("3.138.244.245", 27017)
+    connection = MongoClient("localhost", 27017)
 
     db = connection.btc_analysis
 
