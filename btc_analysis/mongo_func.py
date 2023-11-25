@@ -2,8 +2,9 @@ import pandas as pd
 from pymongo import MongoClient
 
 # connecting to mongo in local
+connection = MongoClient("internal-ip-172-31-27-40", 27017)
 # connection = MongoClient("3.138.244.245", 27017)
-connection = MongoClient("localhost", 27017)
+# connection = MongoClient("localhost", 27017)
 # creating the database called index
 db = connection.btc_analysis
 
@@ -52,8 +53,9 @@ def query_mongo(database, collection, query_dict=None):
 def mongo_index_conn():
 
     # connecting to mongo in local
+    connection = MongoClient("internal-ip-172-31-27-40", 27017)
     # connection = MongoClient("3.138.244.245", 27017)
-    connection = MongoClient("localhost", 27017)
+    # connection = MongoClient("localhost", 27017)
 
     db = connection.btc_analysis
 
@@ -242,31 +244,26 @@ def mongo_coll(db_name="btc_analysis"):
         db = mongo_index_conn()
 
         dict_of_coll = {
-
             # yahoo collections
             "collection_prices_y": db.all_prices_y,
             "collection_returns_y": db.all_returns_y,
             "collection_logreturns_y": db.all_logreturns_y,
             "collection_volume_y": db.all_volume_y,
-
             # return collections
             "collection_ret_var": db.return_various,
             "collection_ret_crypto": db.return_crypto,
-
             # dynamic altcoins correlation collections
             "collection_YTD_dyn_alt": db.dyn_alt_correlation_YTD,
             "collection_3Y_dyn_alt": db.dyn_alt_correlation_3Y,
             "collection_1Y_dyn_alt": db.dyn_alt_correlation_1Y,
             "collection_1Q_dyn_alt": db.dyn_alt_correlation_1Q,
             "collection_1M_dyn_alt": db.dyn_alt_correlation_1M,
-
             # dynamic yahoo correlation collections
             "collection_YTD_dyn_yahoo": db.dyn_yahoo_correlation_YTD,
             "collection_3Y_dyn_yahoo": db.dyn_yahoo_correlation_3Y,
             "collection_1Y_dyn_yahoo": db.dyn_yahoo_correlation_1Y,
             "collection_1Q_dyn_yahoo": db.dyn_yahoo_correlation_1Q,
             "collection_1M_dyn_yahoo": db.dyn_yahoo_correlation_1M,
-
             # static yahoo correlation collections
             "collection_all_stat_yahoo": db.stat_yahoo_correlation_all,
             "collection_3Y_stat_yahoo": db.stat_yahoo_correlation_3Y,
@@ -279,20 +276,17 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_1Y_stat_yahoo_quarter": db.stat_yahoo_correlation_1Y_quarter,
             "collection_1Q_stat_yahoo_quarter": db.stat_yahoo_correlation_1Q_quarter,
             "collection_1M_stat_yahoo_quarter": db.stat_yahoo_correlation_1M_quarter,
-
             # static altcoins correlation collections
             "collection_all_stat_alt": db.stat_alt_correlation_all,
             "collection_3Y_stat_alt": db.stat_alt_correlation_3Y,
             "collection_1Y_stat_alt": db.stat_alt_correlation_1Y,
             "collection_1Q_stat_alt": db.stat_alt_correlation_1Q,
             "collection_1M_stat_alt": db.stat_alt_correlation_1M,
-
             # dynamic SP500 correlation collections
             "collection_3Y_dyn_SP500": db.dyn_SP500_correlation_3Y,
             "collection_1Y_dyn_SP500": db.dyn_SP500_correlation_1Y,
             "collection_1Q_dyn_SP500": db.dyn_SP500_correlation_1Q,
             "collection_1M_dyn_SP500": db.dyn_SP500_correlation_1M,
-
             # priced denominated in BTC collections
             "collection_yahoo_btc_den_5Y": db.yahoo_btc_denominated_5Y,
             "collection_alt_btc_den_5Y": db.altcoin_btc_denominated_5Y,
@@ -331,7 +325,6 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_alt_btc_den_1W_quarter": db.altcoin_btc_denominated_1W_quarter,
             "collection_yahoo_btc_den_YTD_quarter": db.yahoo_btc_denominated_YTD_quarter,
             "collection_alt_btc_den_YTD_quarter": db.altcoin_btc_denominated_YTD_quarter,
-
             # normalized prices
             "collection_normalized_prices_5Y": db.normalized_prices_5Y,
             "collection_normalized_prices_3Y": db.normalized_prices_3Y,
@@ -352,22 +345,18 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_normalized_prices_1M_quarter": db.normalized_prices_1M_quarter,
             "collection_normalized_prices_1W_quarter": db.normalized_prices_1W_quarter,
             "collection_normalized_prices_YTD_quarter": db.normalized_prices_YTD_quarter,
-
             # volatility
             "collection_volatility_252": db.volatility_252,
             "collection_volatility_90": db.volatility_90,
             "collection_volatility_30": db.volatility_30,
             # -----
             "collection_volatility_ewm": db.volatility_ewm,
-
             # market cap
             "collection_market_cap": db.market_cap,
             "collection_btc_supply": db.btc_supply,
-
             # markovitz
             "collection_CAPM": db.CAPM,
             "collection_CAPM_no_BTC": db.CAPM_no_BTC,
-
             # stock to flow
             "collection_S2F": db.S2F_model,
             "collection_S2F_BTC": db.S2F_BTC_price,
@@ -377,24 +366,18 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_S2FX_cluster": db.S2FX_cluster,
             "collection_S2FX_regression": db.S2FX_regression,
             "collection_S2FX": db.S2FX_model,
-
             # supply
             "collection_total_supply": db.btc_total_supply,
             "collection_hist_supply": db.btc_hist_supply,
-
             # network information
             "collection_btc_network": db.btc_network,
-
             # hash rate
             "collection_hash_rate": db.hash_rate,
-
             # btc price
             "collection_btc_price": db.btc_price,
-
             # stablecoin
             "collection_stablecoin_all": db.stablecoin_all,
             "collection_stablecoin_daily": db.stablecoin_daily,
-
             # dashboard total df
             "collection_dash_static_corr": db.dash_static_corr,
             # ---
@@ -407,12 +390,10 @@ def mongo_coll(db_name="btc_analysis"):
             "collection_dash_volatility": db.dash_vola,
             # ---
             "collection_dash_usd_den": db.dash_usd_den,
-
             # only crypto collections
             "collection_crypto_prices": db.crypto_prices,
             "collection_crypto_returns": db.crypto_returns,
             "collection_crypto_volume": db.crypto_volumes,
-
         }
 
     else:
@@ -420,7 +401,6 @@ def mongo_coll(db_name="btc_analysis"):
         db = mongo_index_conn()
 
         dict_of_coll = {
-
             # index collections
             "collection_crypto_price": db.crypto_price,
             "collection_crypto_volume": db.crypto_volume,
@@ -663,7 +643,7 @@ def mongo_coll_drop(corr_type):
 
         db.crypto_price.drop()
         db.crypto_volume.drop()
-    
+
     elif corr_type == "crypto_all":
 
         db.crypto_prices.drop()
@@ -680,8 +660,9 @@ def mongo_correlation_drop():
     mongo_coll_drop("dynamic_SP500")
 
 
-def mongo_upload(data_to_upload, where_to_upload,
-                 column_set_val=None, db_name="btc_analysis"):
+def mongo_upload(
+    data_to_upload, where_to_upload, column_set_val=None, db_name="btc_analysis"
+):
 
     collection_dict = mongo_coll("btc_analysis")
     data_to_dict = data_to_upload.to_dict(orient="records")
