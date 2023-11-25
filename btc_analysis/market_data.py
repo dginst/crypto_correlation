@@ -429,8 +429,10 @@ def add_crypto_to_yahoo(yahoo_df, crypto_df):
     crypto_col = ["Date"] + CRYPTO_LIST
     all_col = ["Date"] + CRYPTO_LIST + ASSET_LIST
     crypto_df = crypto_df[crypto_col]
+    print(crypto_df)
 
     complete_df = pd.merge(y_df, c_df, on="Date", how="left")
+    print(complete_df)
 
     complete_df = complete_df.rename(
         columns={
