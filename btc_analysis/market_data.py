@@ -288,6 +288,7 @@ def mkt_data_op(
 
         # prices
         crypto_prices = query_mongo(DB_NAME, "crypto_prices")
+        print(crypto_prices)
         complete_series_df_price = add_crypto_to_yahoo(
             all_series_df_price, crypto_prices
         )
