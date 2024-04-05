@@ -306,6 +306,7 @@ def mkt_data_op(
 
         # volumes
         crypto_volumes = query_mongo(DB_NAME, "crypto_volumes")
+        crypto_volumes["SOL"] = 0.0
         complete_series_df_volume = add_crypto_to_yahoo(
             all_series_df_volume, crypto_volumes
         )
