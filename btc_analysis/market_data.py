@@ -426,7 +426,7 @@ def add_crypto_to_yahoo(yahoo_df, crypto_df):
 
     y_df = yahoo_df.copy()
     c_df = crypto_df.copy()
-
+    print(crypto_df)
     crypto_col = ["Date"] + CRYPTO_LIST
     all_col = ["Date"] + CRYPTO_LIST + ASSET_LIST
     crypto_df = crypto_df[crypto_col]
