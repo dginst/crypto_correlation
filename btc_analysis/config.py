@@ -51,7 +51,7 @@ ORIGINAL_CRYPTO_LIST = [
 ]
 
 
-NEW_CRYPTO_LIST = ["MATIC", "SHIB", "AVAX", "DOGE", "DOT", "LUNA"]
+NEW_CRYPTO_LIST = ["MATIC", "SHIB", "AVAX", "DOGE", "DOT", "LUNA", "SOL"]
 
 CRYPTO_LIST = ORIGINAL_CRYPTO_LIST + NEW_CRYPTO_LIST
 
@@ -156,6 +156,7 @@ CRYPTO = [
     "XLM",
     "XMR",
     "BSV",
+    "SOL",
 ]
 
 
@@ -203,6 +204,7 @@ CRYPTO_GRAPH_LIST = [
     "XLM",
     "XMR",
     "BSV",
+    "SOL",
 ]
 
 METAL_GRAPH_LIST = ["Gold", "Silver", "Copper"]
